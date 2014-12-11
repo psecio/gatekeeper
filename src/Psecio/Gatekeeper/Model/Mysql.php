@@ -186,7 +186,8 @@ class Mysql extends \Modler\Model
         list($columns, $bind) = $this->setup($data);
         $update = array();
         foreach ($bind as $column => $name) {
-            $update[] = $column.' = '.$name;
+            $colName = $this->properties[$column]['column'];
+            $update[] = $colName.' = '.$name;
         }
 
         $sql = 'update '.$this->getTableName().' set '.implode(',', $update).' where ID = '.$this->id;
