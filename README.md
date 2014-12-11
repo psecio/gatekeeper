@@ -73,6 +73,17 @@ if (Gatekeeper::authenticate($credentials) === true) {
 } else {
     echo 'Auth fail!';
 }
+
+// We can perform password reset handling too
+$userId = 1;
+$code = Gatekeeper::findUserById($userId)->getResetPasswordCode();
+
+$userCode = 'user-inputted-code-goes-here';
+
+if (Gatekeeper::findUserById($userId)->checkResetPasswordCode($userCode) === true) {
+    echo 'Code is valid!';
+}
+
 ```
 
 @author Chris Cornutt <ccornutt@phpdeveloper.org>
