@@ -145,4 +145,74 @@ class UserModel extends \Psecio\Gatekeeper\Model\Mysql
 
         return $code;
     }
+
+    /**
+     * Check the given code against he value in the database
+     *
+     * @param string $resetCode Reset code to verify
+     * @return boolean Pass/fail of verification
+     */
+    public function checkResetPasswordCode($resetCode)
+    {
+        // Verify we have a user
+        if ($this->id === null) {
+            return false;
+        }
+        if ($this->resetCode === null) {
+            throw new Exception\PasswordResetInvalid('No reset code defined for user '.$this->username);
+            return false;
+        }
+
+        // Verify the timeout
+        $timeout = new \DateTime($this->resetCodeTimeout);
+        if ($timeout <= new \DateTime()) {
+            $this->clearPasswordResetCode();
+            throw new Exception\PasswordResetTimeout();
+        }
+
+        // We made it this far, compare the hashes
+        $result = ($this->hash_equals($this->resetCode, $resetCode));
+        if ($result === true) {
+            $this->clearPasswordResetCode();
+        }
+        return $result;
+    }
+
+    /**
+     * Clear all data from the passsword reset code handling
+     * @return [type] [description]
+     */
+    public function clearPasswordResetCode()
+    {
+        // Verify we have a user
+        if ($this->id === null) {
+            return false;
+        }
+        $this->resetCode = null;
+        $this->resetCodeTimeout = null;
+        return $this->save();
+    }
+
+    /**
+     * Safer way to evaluate if hashes equal
+     *
+     * @param string $hash1 Hash #1
+     * @param string $hash2 Hash #1
+     * @return boolean Pass/fail on hash equality
+     */
+    public function hash_equals($hash1, $hash2)
+    {
+        if (\function_exists('hash_equals')) {
+            return \hash_equals($hash1, $hash2);
+        }
+        if (\strlen($hash1) !== \strlen($hash2)) {
+            return false;
+        }
+        $res = 0;
+        $len = \strlen($hash1);
+        for ($i = 0; $i < $len; ++$i) {
+            $res |= \ord($hash1[$i]) ^ \ord($hash2[$i]);
+        }
+        return $res === 0;
+    }
 }
