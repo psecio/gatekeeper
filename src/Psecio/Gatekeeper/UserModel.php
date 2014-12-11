@@ -4,6 +4,9 @@ namespace Psecio\Gatekeeper;
 
 class UserModel extends \Psecio\Gatekeeper\Model\Mysql
 {
+    const STATUS_ACTIVE = 'active';
+    const STATUS_INACTIVE = 'inactive';
+
     /**
      * Database table name
      * @var string
@@ -50,6 +53,11 @@ class UserModel extends \Psecio\Gatekeeper\Model\Mysql
             'column' => 'updated',
             'type' => 'datetime'
         ),
+        'status' => array(
+            'description' => 'Status',
+            'column' => 'status',
+            'type' => 'varchar'
+        ),
         'id' => array(
             'description' => 'User ID',
             'column' => 'id',
@@ -81,5 +89,35 @@ class UserModel extends \Psecio\Gatekeeper\Model\Mysql
     public function findByUsername($username)
     {
         return $this->find(array('username' => $username));
+    }
+
+    /**
+     * Activate the user (status)
+     *
+     * @return boolean Success/fail of activation
+     */
+    public function activate()
+    {
+        // Verify we have a user
+        if ($this->id === null) {
+            return false;
+        }
+        $this->status = self::STATUS_ACTIVE;
+        return $this->save();
+    }
+
+    /**
+     * Deactivate the user
+     *
+     * @return boolean Success/fail of deactivation
+     */
+    public function deactivate()
+    {
+        // Verify we have a user
+        if ($this->id === null) {
+            return false;
+        }
+        $this->status = self::STATUS_INACTIVE;
+        return $this->save();
     }
 }
