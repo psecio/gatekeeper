@@ -20,6 +20,10 @@ class CreateUserTable extends AbstractMigration
               ->addColumn('updated', 'datetime', array('default' => null))
               ->addIndex(array('username'), array('unique' => true))
               ->save();
+
+        // Manually add these as there seems to be a bug in Phinx...
+        $this->execute('alter table users add password_reset_code VARCHAR(100)');
+        $this->execute('alter table users add password_reset_code_timeout DATETIME');
     }
 
     /**
