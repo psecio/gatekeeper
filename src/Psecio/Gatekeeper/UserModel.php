@@ -33,12 +33,12 @@ class UserModel extends \Psecio\Gatekeeper\Model\Mysql
             'column' => 'email',
             'type' => 'varchar'
         ),
-        'first_name' => array(
+        'firstName' => array(
             'description' => 'First Name',
             'column' => 'first_name',
             'type' => 'varchar'
         ),
-        'last_name' => array(
+        'lastName' => array(
             'description' => 'Last Name',
             'column' => 'last_name',
             'type' => 'varchar'
@@ -62,6 +62,16 @@ class UserModel extends \Psecio\Gatekeeper\Model\Mysql
             'description' => 'User ID',
             'column' => 'id',
             'type' => 'integer'
+        ),
+        'resetCode' => array(
+            'description' => 'Password Reset Code',
+            'column' => 'password_reset_code',
+            'type' => 'varchar'
+        ),
+        'resetCodeTimeout' => array(
+            'description' => 'Password Reset Code Timeout',
+            'column' => 'password_reset_code_timeout',
+            'type' => 'datetime'
         )
     );
 
@@ -119,5 +129,20 @@ class UserModel extends \Psecio\Gatekeeper\Model\Mysql
         }
         $this->status = self::STATUS_INACTIVE;
         return $this->save();
+    }
+
+    public function getResetPasswordCode($length = 80)
+    {
+        // Verify we have a user
+        if ($this->id === null) {
+            return false;
+        }
+        // Generate a random-ish code and save it to the user record
+        $code = substr(bin2hex(openssl_random_pseudo_bytes($length)), 0, $length);
+        $this->resetCode = $code;
+        $this->resetCodeTimeout = date('Y-m-d H:i:s', strtotime('+1 hour'));
+        $this->save();
+
+        return $code;
     }
 }
