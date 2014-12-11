@@ -15,6 +15,7 @@ class CreateUserTable extends AbstractMigration
               ->addColumn('email', 'string', array('limit' => 100))
               ->addColumn('first_name', 'string', array('limit' => 30))
               ->addColumn('last_name', 'string', array('limit' => 30))
+              ->addColumn('status', 'string', array('limit' => 30, 'default' => 'active'))
               ->addColumn('created', 'datetime')
               ->addColumn('updated', 'datetime', array('default' => null))
               ->addIndex(array('username'), array('unique' => true))
