@@ -39,6 +39,12 @@ class Gatekeeper
         $user = new UserModel(self::$pdo);
         $user->findByUsername($username);
 
+        // If they're inactive, they can't log in
+        if ($user->status === UserModel::STATUS_INACTIVE) {
+            throw new Exception\UserInactiveException('User "'.$username.'" is inactive and cannot log in.');
+            return false;
+        }
+
         return (password_verify($credentials['password'], $user->password));
     }
 
@@ -56,5 +62,18 @@ class Gatekeeper
             return false;
         }
         return true;
+    }
+
+    /**
+     * Find a user by the given ID
+     *
+     * @param integer $userId User ID
+     * @return \Psecio\Gatekeeper\UserModel instance
+     */
+    public static function findUserById($userId)
+    {
+        $user = new UserModel(self::$pdo);
+        $user->findById($userId);
+        return $user;
     }
 }
