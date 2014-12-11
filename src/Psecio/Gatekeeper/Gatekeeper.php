@@ -74,6 +74,9 @@ class Gatekeeper
     {
         $user = new UserModel(self::$pdo);
         $user->findById($userId);
+        if ($user->id === null) {
+            throw new Exception\UserNotFoundException('User could not be found for ID '.$userId);
+        }
         return $user;
     }
 }
