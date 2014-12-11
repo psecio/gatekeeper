@@ -219,6 +219,28 @@ class Mysql extends \Modler\Model
     }
 
     /**
+     * Load the given data into the current model
+     *
+     * @param array $data Property data
+     * @return boolean True when complete
+     */
+    public function load($data)
+    {
+        $loadData = array();
+        foreach ($this->getProperties() as $propertyName => $propertyDetail) {
+            if (!isset($propertyDetail['column'])) {
+                continue;
+            }
+            $column = $propertyDetail['column'];
+            if (isset($data[$column])) {
+                $loadData[$propertyName] = $data[$column];
+            }
+        }
+        parent::load($loadData);
+        return true;
+    }
+
+    /**
      * Find a record by ID
      *
      * @param integer $id ID to locate
