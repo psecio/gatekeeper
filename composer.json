@@ -2,7 +2,7 @@
     "name":"psecio/gatekeeper",
     "type":"library",
     "description":"A simple PHP authentication and authorization library",
-    "keywords":["authentication", "authorization",],
+    "keywords":["authentication", "authorization"],
     "homepage":"https://github.com/psecio/gatekeeper.git",
     "license":"MIT",
     "authors":[
