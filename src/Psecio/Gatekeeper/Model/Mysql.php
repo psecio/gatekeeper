@@ -70,44 +70,15 @@ class Mysql extends \Modler\Model
     }
 
     /**
-     * Get the value of a current property
+     * Make a new model instance
      *
-     * @param string $name Property name
-     * @return mixed The property value if found, null if not
+     * @param string $model Model namespace "path"
+     * @return object Model instance
      */
-    public function __get($name)
+    public function makeModelInstance($model)
     {
-        $property = $this->getProperty($name);
-
-        if ($property == null) {
-            throw new \InvalidArgumentException('Property "'.$name.'" is invalid');
-        }
-
-        // See if it's a relation
-        if (isset($property['type']) && strtolower($property['type']) == 'relation') {
-            $model = $property['relation']['model'];
-            $method = $property['relation']['method'];
-            $local = $property['relation']['local'];
-
-            if (!class_exists($model)) {
-                throw new \InvalidArgumentException('Model "'.$model.'" does not exist');
-            }
-
-            $instance = new $model($this->getDb());
-            if (!method_exists($instance, $method)) {
-                throw new \InvalidArgumentException('Method "'.$method.'" does not exist on model '.get_class($instance));
-            }
-            $params = array(
-                (isset($this->values[$local])) ? $this->values[$local] : null
-            );
-
-            call_user_func_array(array($instance, $method), $params);
-            return $instance;
-        }
-
-        // If not, probably just a value - return that (or null)
-        return (array_key_exists($name, $this->values))
-            ? $this->values[$name] : null;
+        $instance = new $model($this->getDb());
+        return $instance;
     }
 
     /**
