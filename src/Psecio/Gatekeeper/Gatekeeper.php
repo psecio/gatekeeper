@@ -108,4 +108,33 @@ class Gatekeeper
         }
         return $group;
     }
+
+    /**
+     * Create permission record
+     *
+     * @param array $data Permission data for create
+     * @return PermissionModel instance
+     */
+    public static function createPermission(array $data)
+    {
+        $perm = new PermissionModel(self::$pdo, $data);
+        $perm->save();
+        return $perm;
+    }
+
+    /**
+     * Find a permission by ID
+     *
+     * @param integer $permId Permission ID
+     * @return PermissionModel instance
+     */
+    public static function findPermissionById($permId)
+    {
+        $perm = new PermissionModel(self::$pdo);
+        $perm->findById($permId);
+        if ($perm->id === null) {
+            throw new Exception\PermissionNotFoundException('Group could not be found for ID '.$permId);
+        }
+        return $perm;
+    }
 }
