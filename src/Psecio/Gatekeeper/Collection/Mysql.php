@@ -107,44 +107,4 @@ class Mysql extends \Modler\Collection
         $results = $sth->fetchAll(\PDO::FETCH_ASSOC);
         return ($single === true) ? array_shift($results) : $results;
     }
-
-    /**
-     * Get the value of a current property
-     *
-     * @param string $name Property name
-     * @return mixed The property value if found, null if not
-     */
-    public function __get($name)
-    {
-        $property = $this->getProperty($name);
-
-        if ($property == null) {
-            throw new \InvalidArgumentException('Property "'.$name.'" is invalid');
-        }
-
-        // See if it's a relation
-        if (isset($property['type']) && strtolower($property['type']) == 'relation') {
-            $model = $property['relation']['model'];
-            $method = $property['relation']['method'];
-            $local = $property['relation']['local'];
-
-            if (!class_exists($model)) {
-                throw new \InvalidArgumentException('Model "'.$model.'" does not exist');
-            }
-
-            $instance = new $model($this->getDb());
-            if (!method_exists($instance, $method)) {
-                throw new \InvalidArgumentException('Method "'.$method.'" does not exist on model '.get_class($instance));
-            }
-            $params = array(
-                (isset($this->values[$name])) ? $this->values[$name] : null
-            );
-            call_user_func_array(array($instance, $method), $params);
-            return $instance;
-        }
-
-        // If not, probably just a value - return that (or null)
-        return (array_key_exists($name, $this->values))
-            ? $this->values[$name] : null;
-    }
 }
