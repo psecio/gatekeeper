@@ -72,6 +72,15 @@ class UserModel extends \Psecio\Gatekeeper\Model\Mysql
             'description' => 'Password Reset Code Timeout',
             'column' => 'password_reset_code_timeout',
             'type' => 'datetime'
+        ),
+        'groups' => array(
+            'description' => 'Groups the User Belongs to',
+            'type' => 'relation',
+            'relation' => array(
+                'model' => '\\Psecio\\Gatekeeper\\GroupCollection',
+                'method' => 'findByUserId',
+                'local' => 'id'
+            )
         )
     );
 
