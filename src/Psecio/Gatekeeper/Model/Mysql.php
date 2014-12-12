@@ -167,6 +167,11 @@ class Mysql extends \Modler\Model
 
         list($columns, $bind) = $this->setup($data);
 
+        foreach ($columns as $index => $column) {
+            $colName = $this->properties[$column]['column'];
+            $columns[$index] = $colName;
+        }
+
         $sql = 'insert into '.$this->getTableName()
             .' ('.implode(',', $columns).') values ('.implode(',', array_values($bind)).')';
         return $this->execute($sql, $data);
@@ -224,7 +229,7 @@ class Mysql extends \Modler\Model
      * @param array $data Property data
      * @return boolean True when complete
      */
-    public function load($data)
+    public function load(array $data)
     {
         $loadData = array();
         foreach ($this->getProperties() as $propertyName => $propertyDetail) {
