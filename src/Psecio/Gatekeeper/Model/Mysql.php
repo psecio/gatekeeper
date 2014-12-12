@@ -174,7 +174,12 @@ class Mysql extends \Modler\Model
 
         $sql = 'insert into '.$this->getTableName()
             .' ('.implode(',', $columns).') values ('.implode(',', array_values($bind)).')';
-        return $this->execute($sql, $data);
+        $result = $this->execute($sql, $data);
+        if ($result !== false) {
+            $this->id = $this->getDb()->lastInsertId();
+        }
+
+        return $result;
     }
 
     /**
