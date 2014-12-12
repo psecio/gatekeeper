@@ -10,7 +10,8 @@ secure foundation to base your user system around.
 *Gatekeeper* is best classified as a Role-Base Access Control (RBAC) system with users, groups and permissions. It is
 framework-agnostic and is set up to use its own database for the user handling.
 
-### Dependencies
+Dependencies
+----------------
 
 *Gatekeeper* makes use of several other PHP dependencies to help reduce code duplication:
 
@@ -19,7 +20,8 @@ framework-agnostic and is set up to use its own database for the user handling.
 - [password_compat](http://github.com/ircmaxell/password-compat)
 - [phpdotenv](http://github.com/rvlucas/phpdotenv)
 
-### Setup
+Setup
+----------------
 
 There's a few things you'll need to do before using the system. First off, it uses [Phinx](https://phinx.org) for working
 with the database tables (creation and all). Second it uses the handy [phpdotenv](https://github.com/vlucas/phpdotenv) library
@@ -64,7 +66,8 @@ Gatekeeper::init();
 ?>
 ```
 
-### Authentication
+Authentication
+----------------
 
 One of the main features of the library is validating a `username` and `password` combination against a current user record. Is it achieved with the `authenticate` method:
 
@@ -80,7 +83,8 @@ if (Gatekeeper::authenticate($credentials) == true) {
 ?>
 ```
 
-### Users
+Users
+----------------
 
 We'll start with the *User* handling. *Gatekeeper* makes it simple to manage users and perform the usual CRUD (create, read
 update, delete) operations on their data.
@@ -171,7 +175,8 @@ foreach($groups as $group) {
 ?>
 ```
 
-### Groups
+Groups
+----------------
 
 #### Creating a Group
 
@@ -237,7 +242,8 @@ if ($user->checkResetPasswordCode($code) === true) {
 
 If the code is valid, it and the timeout are cleared from the user's record.
 
-### Contact
+Contact
+----------------
 
 If you have any questions or suggestions about this library, please let me know by adding an issue [in the Gatekeeper Issues list](https://github.com/psecio/gatekeeper/issues) on GitHub.
 
