@@ -79,4 +79,33 @@ class Gatekeeper
         }
         return $user;
     }
+
+    /**
+     * Create a new group
+     *
+     * @param array $data Group data
+     * @return GroupModel instance
+     */
+    public static function createGroup(array $data)
+    {
+        $group = new GroupModel(self::$pdo, $data);
+        $group->save();
+        return $group;
+    }
+
+    /**
+     * Find a group by its ID
+     *
+     * @param integer $groupId Group ID
+     * @return GroupModel instance
+     */
+    public static function findGroupById($groupId)
+    {
+        $group = new GroupModel(self::$pdo);
+        $group->findById($groupId);
+        if ($group->id === null) {
+            throw new Exception\GroupNotFoundException('Group could not be found for ID '.$groupId);
+        }
+        return $group;
+    }
 }
