@@ -34,6 +34,15 @@ class GroupModel extends \Psecio\Gatekeeper\Model\Mysql
             'description' => 'Date Updated',
             'column' => 'updated',
             'type' => 'datetime'
+        ),
+        'users' => array(
+            'description' => 'Users belonging to this group',
+            'type' => 'relation',
+            'relation' => array(
+                'model' => '\\Psecio\\Gatekeeper\\UserCollection',
+                'method' => 'findByGroupId',
+                'local' => 'id'
+            )
         )
     );
 
