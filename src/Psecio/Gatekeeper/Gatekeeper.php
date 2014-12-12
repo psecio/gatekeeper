@@ -65,32 +65,6 @@ class Gatekeeper
     }
 
     /**
-     * Create a new group
-     *
-     * @param array $data Group data
-     * @return GroupModel instance
-     */
-    public static function createGroup(array $data)
-    {
-        $group = new GroupModel(self::$pdo, $data);
-        $group->save();
-        return $group;
-    }
-
-    /**
-     * Create permission record
-     *
-     * @param array $data Permission data for create
-     * @return PermissionModel instance
-     */
-    public static function createPermission(array $data)
-    {
-        $perm = new PermissionModel(self::$pdo, $data);
-        $perm->save();
-        return $perm;
-    }
-
-    /**
      * Handle undefined static function calls
      *
      * @param string $name Function name
@@ -101,6 +75,29 @@ class Gatekeeper
     {
         if (substr($name, -4) == 'ById') {
             return self::handleFindById($name, $args);
+        } elseif (substr($name, 0, 6) === 'create') {
+            return self::handleCreate($name, $args);
+        }
+        return false;
+    }
+
+    /**
+     * Handle the calls to create a new instance
+     *
+     * @param string $name Function name
+     * @param array $args Argument set
+     * @throws Exception\ModelNotFoundException If model type is not found
+     * @return mixed Boolean false if method incorrect, model instance if created
+     */
+    public static function handleCreate($name, array $args)
+    {
+        $model = '\\Psecio\\Gatekeeper\\'.str_replace('create', '', $name).'Model';
+        if (class_exists($model) === true) {
+            $instance = new $model(self::$pdo, $args[0]);
+            $instance->save();
+            return $instance;
+        } else {
+            throw new Exception\ModelNotFoundException('Model type '.$model.' could not be found');
         }
         return false;
     }
@@ -113,7 +110,7 @@ class Gatekeeper
      * @throws Exception\ModelNotFoundException If model type is not found
      * @return mixed Boolean false if method incorrect, model instance if found
      */
-    public static function handleFindById($name, $args)
+    public static function handleFindById($name, array $args)
     {
         $type = preg_match('/find(.+)ById/', $name, $matches);
 
