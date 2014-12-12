@@ -9,7 +9,7 @@
         
         <link rel="shortcut icon" href="./img/favicon.ico">
 
-        <title>My Docs</title>
+        <title>Gatekeeper</title>
 
         <link href="./css/bootstrap-custom.min.css" rel="stylesheet">
         <link href="./css/font-awesome-4.0.3.css" rel="stylesheet">
@@ -35,7 +35,7 @@
             
 
             <!-- Main title -->
-            <a class="navbar-brand" href=".">My Docs</a>
+            <a class="navbar-brand" href=".">Gatekeeper</a>
         </div>
 
         <!-- Expanded navigation -->
@@ -52,32 +52,223 @@
                 <div class="col-md-3"><div class="bs-sidebar hidden-print affix well" role="complementary">
     <ul class="nav bs-sidenav">
     
-        <li class="main active"><a href="#welcome-to-mkdocs">Welcome to MkDocs</a></li>
+        <li class="main active"><a href="#gatekeeper-an-authentication-authorization-library">Gatekeeper: An Authentication &amp; Authorization Library</a></li>
         
-            <li><a href="#commands">Commands</a></li>
+            <li><a href="#introduction">Introduction</a></li>
         
-            <li><a href="#project-layout">Project layout</a></li>
+            <li><a href="#dependencies">Dependencies</a></li>
+        
+            <li><a href="#setup">Setup</a></li>
+        
+            <li><a href="#authentication">Authentication</a></li>
+        
+            <li><a href="#users">Users</a></li>
+        
+            <li><a href="#groups">Groups</a></li>
+        
+            <li><a href="#password-reset-handling">Password Reset Handling</a></li>
+        
+            <li><a href="#contact">Contact</a></li>
         
     
     </ul>
 </div></div>
                 <div class="col-md-9" role="main">
 
-<h1 id="welcome-to-mkdocs">Welcome to MkDocs</h1>
-<p>For full documentation visit <a href="http://mkdocs.org">mkdocs.org</a>.</p>
-<h2 id="commands">Commands</h2>
+<h2 id="gatekeeper-an-authentication-authorization-library"><strong>Gatekeeper:</strong> An Authentication &amp; Authorization Library</h2>
+<h3 id="introduction">Introduction</h3>
+<p>The <strong>Gatekeeper</strong> library is a simple drop-in library that can be used to manage users, permissions and groups for
+your application. The goal is to make securing your application as simple as possible why still providing a solid and
+secure foundation to base your user system around.</p>
+<p><em>Gatekeeper</em> is best classified as a Role-Base Access Control (RBAC) system with users, groups and permissions. It is
+framework-agnostic and is set up to use its own database for the user handling.</p>
+<h3 id="dependencies">Dependencies</h3>
+<p><em>Gatekeeper</em> makes use of several other PHP dependencies to help reduce code duplication:</p>
 <ul>
-<li><code>mkdocs new [dir-name]</code> - Create a new project.</li>
-<li><code>mkdocs serve</code> - Start the live-reloading docs server.</li>
-<li><code>mkdocs build</code> - Build the documentation site.</li>
-<li><code>mkdocs help</code> - Print this help message.</li>
+<li><a href="http://github.com/enygma/modler">Modler</a></li>
+<li><a href="http://github.com/robmorgan/phinx">Phinx</a></li>
+<li><a href="http://github.com/ircmaxell/password-compat">password_compat</a></li>
+<li><a href="http://github.com/rvlucas/phpdotenv">phpdotenv</a></li>
 </ul>
-<h2 id="project-layout">Project layout</h2>
-<pre><code>mkdocs.yml    # The configuration file.
-docs/
-    index.md  # The documentation homepage.
-    ...       # Other markdown pages, images and other files.
+<h3 id="setup">Setup</h3>
+<p>There's a few things you'll need to do before using the system. First off, it uses <a href="https://phinx.org">Phinx</a> for working
+with the database tables (creation and all). Second it uses the handy <a href="https://github.com/vlucas/phpdotenv">phpdotenv</a> library
+to handle the loading of environment values. This helps you understand the installation and usage a bit better.</p>
+<ol>
+<li>Create a database named <code>gatekeeper</code> and create a user for it (this is configured later)</li>
+</ol>
+<pre><code>create database gatekeeper;
+grant all on gatekeeper.* to 'gk-user'@'localhost' identified by 'some-password-here';
+flush privileges;
 </code></pre>
+
+<ol>
+<li>Copy the <code>.env.dist</code> file from the <em>Gatekeeper</em> vendor directory to the (non-<code>DOCUMENT_ROOT</code>) place of your choosing and rename it to <code>.env</code>.</li>
+<li>Copy the <code>phinx.dist.xml</code> file to the place of your choosing (again, non-<code>DOCUMENT_ROOT</code>) and rename it to <code>phinx.yml</code>.</li>
+</ol>
+<pre><code>cp vendor/psecio/gatekeeper/.env.dist /tmp/someplace/.env
+cp vendor/psecio/gatekeeper/phinx.dist.yml /tmp/someplace/phinx.yml
+</code></pre>
+
+<ol>
+<li>Open both of these files and update the <strong>connection information</strong> to match the database you created earlier.</li>
+<li>Now we run the migrations:</li>
+</ol>
+<pre><code>vendor/bin/phinx migrate -c /tmp/somplace/phinx.yml
+</code></pre>
+
+<p>Where the <code>/tmp/someplace/phinx.yml</code> is the path to where you put your <code>phinx.yml</code> file (again, not in the document root <strong>please!</strong>).</p>
+<p>If you get errors here, be sure the connection information is correct.</p>
+<ol>
+<li>You're ready to go!</li>
+</ol>
+<p>You can now start using the <em>Gatekeeper</em> functionality in your application. You only need to call the <code>init</code> function to set
+up the connection and get the instance configured:</p>
+<pre><code class="php">&lt;?php
+require_once 'vendor/autoload.php';
+Gatekeeper::init();
+?&gt;
+</code></pre>
+
+<h3 id="authentication">Authentication</h3>
+<p>One of the main features of the library is validating a <code>username</code> and <code>password</code> combination against a current user record. Is it achieved with the <code>authenticate</code> method:</p>
+<pre><code class="php">&lt;?php
+$credentials = array(
+    'username' =&gt; 'ccornutt',
+    'password' =&gt; 'valid-password'
+);
+if (Gatekeeper::authenticate($credentials) == true) {
+    echo 'valid!';
+}
+?&gt;
+</code></pre>
+
+<h3 id="users">Users</h3>
+<p>We'll start with the <em>User</em> handling. <em>Gatekeeper</em> makes it simple to manage users and perform the usual CRUD (create, read
+update, delete) operations on their data.</p>
+<p>Users are represented as objects in the code with the following properties:</p>
+<ul>
+<li>username</li>
+<li>password</li>
+<li>email</li>
+<li>firstName</li>
+<li>lastName</li>
+<li>status</li>
+<li>id</li>
+<li>resetCode</li>
+<li>resetCodeTimeout</li>
+<li>groups</li>
+<li>created</li>
+<li>updated</li>
+</ul>
+<p>You can access this data on a populated user object as you would any other object properties:</p>
+<pre><code class="php">&lt;?php
+echo 'Full name: '.$user-&gt;firstName.' '.$user-&gt;lastName.&quot;\n&quot;;
+?&gt;
+</code></pre>
+
+<h4 id="creating-users">Creating Users</h4>
+<p>To create a user, you only need to provide the user details to the <code>register</code> method:</p>
+<pre><code class="php">&lt;?php
+$credentials = array(
+    'username' =&gt; 'ccornutt',
+    'password' =&gt; 'test1',
+    'email' =&gt; 'ccornutt@phpdeveloper.org',
+    'first_name' =&gt; 'Chris',
+    'last_name' =&gt; 'Cornutt'
+);
+Gatekeeper::register($credentials);
+?&gt;
+</code></pre>
+
+<p>The return value from the <code>register</code> call is a <em>boolean</em> indicating the pass/fail status of the registration.</p>
+<h4 id="finding-users">Finding Users</h4>
+<p>You can use the <code>findByUserId</code> method to locate a user by their ID number:</p>
+<pre><code class="php">&lt;?php
+$userId = 1;
+$user = Gatekeeper::findUserById($userId);
+
+// Or, to get a property directly
+$username = Gatekeeper::findUserById($userId)-&gt;username;
+?&gt;
+</code></pre>
+
+<p>The return value is an instance of the <code>UserModel</code> with the properties populated with the user data (if it was found). A <code>UserNotFoundException</code> will be thrown if the user is not found.</p>
+<h4 id="activatingdeactivating-users">Activating/Deactivating Users</h4>
+<p>You can mark a user as active or inactive in the system easily. Inactive users will not be able to log in using the <code>authenticate</code> method. Changing the user status is easy:</p>
+<pre><code class="php">&lt;?php
+// Change the user status to active
+Gatekeeper::findUserById(1)-&gt;activate();
+
+// Change the user status to inactive
+Gatekeeper::findUserById($userId)-&gt;deactivate();
+?&gt;
+</code></pre>
+
+<h4 id="get-user-groups">Get User Groups</h4>
+<p>You can use the <code>groups</code> relational property to find the groups the user is a member of. It will return an iterable collection
+you can use like any other array of data:</p>
+<pre><code class="php">&lt;?php
+$groups = Gatekeeper::findUserById($userId)-&gt;groups;
+foreach($groups as $group) {
+    echo 'Group name: '.$group-&gt;name.&quot;\n&quot;;
+}
+?&gt;
+</code></pre>
+
+<h3 id="groups">Groups</h3>
+<h4 id="creating-a-group">Creating a Group</h4>
+<p>Making a new group is as easy as making a new user. One thing to note, the <em>group name</em> must be *<em>unique</em>:</p>
+<pre><code class="php">&lt;?php
+$attrs = array(
+    'name' =&gt; 'Group #1'
+);
+Gatekeeper::createGroup($attrs);
+?&gt;
+</code></pre>
+
+<h4 id="finding-groups">Finding Groups</h4>
+<p>And, like users, you can find groups by their IDs:</p>
+<pre><code class="php">&lt;?php
+$group = Gatekeeper::findGroupById(1);
+?&gt;
+</code></pre>
+
+<p>If the group is not found, a <code>GroupNotFoundException</code> will be thrown.</p>
+<h4 id="getting-group-users">Getting Group Users</h4>
+<p>Much like you can easily get the groups the user belongs to, you can also get the members of a group. This will return a collection of user objects:</p>
+<pre><code class="php">&lt;?php
+$users = Gatekeeper::findGroupById(1)-&gt;users;
+
+foreach ($users as $user) {
+    echo 'Username: '.$user-&gt;username.&quot;\n&quot;;
+}
+?&gt;
+</code></pre>
+
+<h3 id="password-reset-handling">Password Reset Handling</h3>
+<p><em>Gatekeeper</em> also includes some password reset handling functionality. It doesn't try to send an email or output a web page
+with the functionality. Instead, it provides methods to generate and validate a unique code. When the code is generated, it is
+added into the user's record and stored for evaluation.</p>
+<p>The code will expire in <em>one hour</em> from the time it was generated.</p>
+<pre><code class="php">&lt;?php
+$user = Gatekeeper::findUserById(1);
+$code = $user-&gt;getResetPasswordCode();
+
+echo 'Your password reset code is: '.$code.&quot;\n&quot;;
+
+// Now lets verify it...
+$code = $_GET['code'];
+if ($user-&gt;checkResetPasswordCode($code) === true) {
+    echo 'valid!';
+}
+?&gt;
+</code></pre>
+
+<p>If the code is valid, it and the timeout are cleared from the user's record.</p>
+<h3 id="contact">Contact</h3>
+<p>If you have any questions or suggestions about this library, please let me know by adding an issue <a href="https://github.com/psecio/gatekeeper/issues">in the Gatekeeper Issues list</a> on GitHub.</p>
+<p>Thanks! I hope you find <em>Gatekeeper</em> useful!</p>
 </div>
             
         </div>
