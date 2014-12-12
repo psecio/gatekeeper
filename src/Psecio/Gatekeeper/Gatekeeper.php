@@ -91,6 +91,21 @@ class Gatekeeper
     }
 
     /**
+     * Handle undefined static function calls
+     *
+     * @param string $name Function name
+     * @param arrya $args Arguments set
+     * @return mixed Boolean false if function not matched, otherwise Model instance
+     */
+    public static function __callStatic($name, $args)
+    {
+        if (substr($name, -4) == 'ById') {
+            return self::handleFindById($name, $args);
+        }
+        return false;
+    }
+
+    /**
      * Handle the "find*ById" calls
      *
      * @param string $name Function name
@@ -98,7 +113,7 @@ class Gatekeeper
      * @throws Exception\ModelNotFoundException If model type is not found
      * @return mixed Boolean false if method incorrect, model instance if found
      */
-    public static function __callStatic($name, $args)
+    public static function handleFindById($name, $args)
     {
         $type = preg_match('/find(.+)ById/', $name, $matches);
 
