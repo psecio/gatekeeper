@@ -14,6 +14,7 @@ class CreatePermissionsTable extends AbstractMigration
               ->addColumn('description', 'text')
               ->addColumn('created', 'datetime')
               ->addColumn('updated', 'datetime', array('default' => null))
+              ->addIndex(array('name'), array('unique' => true))
               ->save();
     }
 
