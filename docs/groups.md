@@ -1,7 +1,4 @@
-Groups
-======
-
-test
+# Groups
 
 Creating a Group
 ----------------
