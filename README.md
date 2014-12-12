@@ -84,6 +84,20 @@ if (Gatekeeper::findUserById($userId)->checkResetPasswordCode($userCode) === tru
     echo 'Code is valid!';
 }
 
+// Now for Groups.....
+
+// Creating a group, returns the group instance
+$attrs = array('name' => 'Group #1');
+$group = Gatekeeper::createGroup($attrs);
+
+// Find a group by ID
+$group = Gatekeeper::findById(1);
+
+// Add a user to the group
+$userId = 1;
+$groupId = 1;
+Gatekeeper::findById($groupId)->addUser($userId);
+
 ```
 
 @author Chris Cornutt <ccornutt@phpdeveloper.org>
