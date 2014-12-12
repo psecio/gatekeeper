@@ -1,4 +1,6 @@
-## **Gatekeeper:** An Authentication & Authorization Library
+# **Gatekeeper:** An Authentication & Authorization Library
+
+## Test
 
 Introduction
 ----------------
@@ -217,7 +219,8 @@ foreach ($users as $user) {
 ?>
 ```
 
-### Password Reset Handling
+Password Reset Handling
+----------------
 
 *Gatekeeper* also includes some password reset handling functionality. It doesn't try to send an email or output a web page
 with the functionality. Instead, it provides methods to generate and validate a unique code. When the code is generated, it is
