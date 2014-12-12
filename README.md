@@ -84,7 +84,10 @@ if (Gatekeeper::findUserById($userId)->checkResetPasswordCode($userCode) === tru
     echo 'Code is valid!';
 }
 
-// Now for Groups.....
+// Want to get a user's groups? No problem...
+$groups = Gatekeeper::findUserById(1)->groups;
+
+// ------- Now for Groups.....
 
 // Creating a group, returns the group instance
 $attrs = array('name' => 'Group #1');
