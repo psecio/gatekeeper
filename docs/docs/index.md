@@ -242,4 +242,4 @@ If you have any questions or suggestions about this library, please let me know 
 
 Thanks! I hope you find *Gatekeeper* useful!
 
-
+Chris Cornutt <ccornutt@phpdeveloper.org>
