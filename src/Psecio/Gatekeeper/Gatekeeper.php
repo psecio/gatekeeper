@@ -65,22 +65,6 @@ class Gatekeeper
     }
 
     /**
-     * Find a user by the given ID
-     *
-     * @param integer $userId User ID
-     * @return \Psecio\Gatekeeper\UserModel instance
-     */
-    public static function findUserById($userId)
-    {
-        $user = new UserModel(self::$pdo);
-        $user->findById($userId);
-        if ($user->id === null) {
-            throw new Exception\UserNotFoundException('User could not be found for ID '.$userId);
-        }
-        return $user;
-    }
-
-    /**
      * Create a new group
      *
      * @param array $data Group data
@@ -90,22 +74,6 @@ class Gatekeeper
     {
         $group = new GroupModel(self::$pdo, $data);
         $group->save();
-        return $group;
-    }
-
-    /**
-     * Find a group by its ID
-     *
-     * @param integer $groupId Group ID
-     * @return GroupModel instance
-     */
-    public static function findGroupById($groupId)
-    {
-        $group = new GroupModel(self::$pdo);
-        $group->findById($groupId);
-        if ($group->id === null) {
-            throw new Exception\GroupNotFoundException('Group could not be found for ID '.$groupId);
-        }
         return $group;
     }
 
@@ -123,18 +91,34 @@ class Gatekeeper
     }
 
     /**
-     * Find a permission by ID
+     * Handle the "find*ById" calls
      *
-     * @param integer $permId Permission ID
-     * @return PermissionModel instance
+     * @param string $name Function name
+     * @param array $args Argument set
+     * @throws Exception\ModelNotFoundException If model type is not found
+     * @return mixed Boolean false if method incorrect, model instance if found
      */
-    public static function findPermissionById($permId)
+    public static function __callStatic($name, $args)
     {
-        $perm = new PermissionModel(self::$pdo);
-        $perm->findById($permId);
-        if ($perm->id === null) {
-            throw new Exception\PermissionNotFoundException('Group could not be found for ID '.$permId);
+        $type = preg_match('/find(.+)ById/', $name, $matches);
+
+        if (isset($matches[1])) {
+            $model = '\\Psecio\\Gatekeeper\\'.$matches[1].'Model';
+            if (class_exists($model)) {
+                $exception = '\\Psecio\\Gatekeeper\\Exception\\'.$matches[1].'NotFoundException';
+                $id = $args[0];
+                $instance = new $model(self::$pdo);
+
+                $result = $instance->findById($id);
+                if ($instance->id === null) {
+                    throw new $exception($matches[1].' could not be found for ID '.$id);
+                }
+                return $instance;
+            } else {
+                throw new Exception\ModelNotFoundException('Model type '.$model.' could not be found');
+            }
+        } else {
+            return false;
         }
-        return $perm;
     }
 }
