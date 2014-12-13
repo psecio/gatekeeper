@@ -1,5 +1,13 @@
 # Groups
 
+Groups are represented as objects in the Gatekeeper system with the following properties:
+
+- name
+- id
+- created
+- updated
+- users (relational)
+
 Creating a Group
 ----------------
 
