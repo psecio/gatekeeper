@@ -46,7 +46,8 @@ You can use the `inGroup` method to check and see if a user ID is in a group:
 
 ```php
 <?php
-if (Gatekeeper::findGroupById(1)->inGroup(1) === true) {
+$userId = 1;
+if (Gatekeeper::findGroupById(1)->inGroup($userId) === true) {
 	echo 'User is in the group!';
 }
 ?>
