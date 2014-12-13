@@ -203,6 +203,22 @@ class UserModel extends \Psecio\Gatekeeper\Model\Mysql
     }
 
     /**
+     * Check to see if the user is in the group
+     *
+     * @param integer $groupId Group ID
+     * @return boolean Found/not found in the group
+     */
+    public function inGroup($groupId)
+    {
+        $userGroup = new UserGroupModel($this->getDb());
+        $result = $userGroup->find(array(
+            'group_id' => $groupId,
+            'user_id' => $this->id
+        ));
+        return ($userGroup->id !== null) ? true : false;
+    }
+
+    /**
      * Safer way to evaluate if hashes equal
      *
      * @param string $hash1 Hash #1
