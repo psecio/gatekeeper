@@ -111,6 +111,20 @@ class UserModel extends \Psecio\Gatekeeper\Model\Mysql
     }
 
     /**
+     * Attach a permission to a user account
+     *
+     * @param integer $permId Permission ID
+     */
+    public function addPermission($permId)
+    {
+        $perm = new UserPermissionModel($this->getDb(), array(
+            'user_id' => $this->id,
+            'permission_id' => $permId
+        ));
+        $perm->save();
+    }
+
+    /**
      * Activate the user (status)
      *
      * @return boolean Success/fail of activation
@@ -140,6 +154,13 @@ class UserModel extends \Psecio\Gatekeeper\Model\Mysql
         return $this->save();
     }
 
+    /**
+     * Generate and return the code for a password reset
+     *     Also updates the user record
+     *
+     * @param integer $length Length of returned string
+     * @return string Geenrated code
+     */
     public function getResetPasswordCode($length = 80)
     {
         // Verify we have a user
@@ -216,6 +237,22 @@ class UserModel extends \Psecio\Gatekeeper\Model\Mysql
             'user_id' => $this->id
         ));
         return ($userGroup->id !== null) ? true : false;
+    }
+
+    /**
+     * Check to see if a user has a permission
+     *
+     * @param integer $permId Permission ID
+     * @return boolean Found/not found in user permission set
+     */
+    public function hasPermission($permId)
+    {
+        $perm = new UserPermissionModel($this->getDb());
+        $result = $perm->find(array(
+            'permission_id' => $permId,
+            'user_id' => $this->id
+        ));
+        return ($perm->id !== null) ? true : false;
     }
 
     /**
