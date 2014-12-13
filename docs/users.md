@@ -61,7 +61,7 @@ $username = Gatekeeper::findUserById($userId)->username;
 
 The return value is an instance of the `UserModel` with the properties populated with the user data (if it was found). A `UserNotFoundException` will be thrown if the user is not found.
 
-#### Activating/Deactivating Users
+## Activating/Deactivating Users
 
 You can mark a user as active or inactive in the system easily. Inactive users will not be able to log in using the `authenticate` method. Changing the user status is easy:
 
@@ -86,5 +86,20 @@ $groups = Gatekeeper::findUserById($userId)->groups;
 foreach($groups as $group) {
     echo 'Group name: '.$group->name."\n";
 }
+?>
+```
+
+## See if a user is in a group
+
+You can check to see if a user is in a group with the `inGroup` method:
+
+```php
+<?php
+$groupId = 1;
+
+if (Gatekeeper::findUserById(1)->inGroup($groupId) === true) {
+	echo 'The user is in the group!';
+}
+
 ?>
 ```
