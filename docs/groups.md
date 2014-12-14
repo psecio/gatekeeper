@@ -8,8 +8,7 @@ Groups are represented as objects in the Gatekeeper system with the following pr
 - updated
 - users (relational)
 
-Creating a Group
-----------------
+## Creating a Group
 
 Making a new group is as easy as making a new user. One thing to note, the *group name* must be **unique**:
 
