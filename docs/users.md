@@ -116,3 +116,15 @@ foreach ($permissions as $perm) {
 }
 ?>
 ```
+
+## Giving a user a permission
+
+```php
+<?php
+$userId = 1;
+$permissionId = 1;
+if (Gatekeeper::findUserById($userId)->addPermission($permissionId) === true) {
+	echo 'Permission added!';
+}
+?>
+```
