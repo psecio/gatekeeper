@@ -9,7 +9,7 @@ class PermissionCollection extends \Psecio\Gatekeeper\Collection\Mysql
 		$data = array('userId' => $userId);
 		$sql = 'select p.* from permissions p, user_permission up'
 			.' where p.id = up.permission_id'
-			.' and up.userId = :userId';
+			.' and up.user_id = :userId';
 
 		$results = $this->fetch($sql, $data);
 
