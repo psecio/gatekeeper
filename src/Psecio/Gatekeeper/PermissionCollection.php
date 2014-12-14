@@ -4,6 +4,11 @@ namespace Psecio\Gatekeeper;
 
 class PermissionCollection extends \Psecio\Gatekeeper\Collection\Mysql
 {
+	/**
+	 * Find the permissions for a given user ID
+	 *
+	 * @param integer $userId User ID
+	 */
 	public function findByUserId($userId)
 	{
 		$data = array('userId' => $userId);
