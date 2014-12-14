@@ -10,9 +10,10 @@ class CreateGroupTable extends AbstractMigration
     public function up()
     {
         $groups = $this->table('groups');
-        $groups->addColumn('name', 'string', array('limit' => 20))
+        $groups->addColumn('description', 'string', array('limit' => 20))
               ->addColumn('created', 'datetime')
               ->addColumn('updated', 'datetime', array('default' => null))
+              ->addcolumn('name', 'string', array('limit' => 100))
               ->addIndex(array('name'), array('unique' => true))
               ->save();
     }
