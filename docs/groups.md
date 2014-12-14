@@ -59,3 +59,16 @@ if (Gatekeeper::findGroupById(1)->inGroup($userId) === true) {
 }
 ?>
 ```
+
+## Getting the permissions associated with the group
+
+Since groups can have permissions attached, you can fetch those through the `permissions` property much in the same way you can for users:
+
+```php
+<?php
+$permissions = Gatekeeper::findGroupById(1)->permissions;
+foreach ($permissions as $permission) {
+	echo 'Description: '.$permission->description."\n";
+}
+?>
+```

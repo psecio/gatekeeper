@@ -120,6 +120,8 @@ foreach ($permissions as $perm) {
 
 ## Giving a user a permission
 
+You can assign a permission **directly** to a user (not through a group) with the `addPermission` method:
+
 ```php
 <?php
 $userId = 1;
