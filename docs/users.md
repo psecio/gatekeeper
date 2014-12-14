@@ -17,6 +17,7 @@ Users are represented as objects in the code with the following properties:
 - created
 - updated
 - groups (relational)
+- permissions (relational)
 
 You can access this data on a populated user object as you would any other object properties:
 
