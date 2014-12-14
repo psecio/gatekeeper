@@ -2,6 +2,7 @@
 
 Groups are represented as objects in the Gatekeeper system with the following properties:
 
+- description
 - name
 - id
 - created
@@ -15,7 +16,8 @@ Making a new group is as easy as making a new user. One thing to note, the *grou
 ```php
 <?php
 $attrs = array(
-    'name' => 'Group #1'
+    'name' => 'group1',
+    'description' => 'Group #1'
 );
 Gatekeeper::createGroup($attrs);
 ?>
