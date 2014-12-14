@@ -15,15 +15,20 @@ class GroupModel extends \Psecio\Gatekeeper\Model\Mysql
      * @var array
      */
     protected $properties = array(
-        'name' => array(
-            'description' => 'Group Name',
-            'column' => 'name',
+        'description' => array(
+            'description' => 'Group Description',
+            'column' => 'description',
             'type' => 'varchar'
         ),
         'id' => array(
             'description' => 'Group ID',
             'column' => 'id',
             'type' => 'integer'
+        ),
+        'name' => array(
+            'description' => 'Group name',
+            'column' => 'name',
+            'type' => 'varchar'
         ),
         'created' => array(
             'description' => 'Date Created',
