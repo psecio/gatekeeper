@@ -60,6 +60,21 @@ if (Gatekeeper::findGroupById(1)->inGroup($userId) === true) {
 ?>
 ```
 
+## Adding a permission to a group
+
+You can add permissions to groups too. These are related to the groups, not the users directly, so if you get the permissions for a user, these will not show in the list.
+
+```php
+<?php
+$permId = 1;
+Gatekeeper::findGroupById(1)->addPermission($permId);
+
+// Or you can use a PermissionModel object
+$permission = Gatekeeper::findPermissionById(1);
+Gatekeeper::findGroupById(1)->addPermission($permission);
+?>
+```
+
 ## Getting the permissions associated with the group
 
 Since groups can have permissions attached, you can fetch those through the `permissions` property much in the same way you can for users:
