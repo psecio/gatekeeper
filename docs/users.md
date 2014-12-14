@@ -103,3 +103,16 @@ if (Gatekeeper::findUserById(1)->inGroup($groupId) === true) {
 
 ?>
 ```
+
+## Get a list of user permissions
+
+You can use the `permissions` property to get the full set of user permissions. These are the permissions **directly assigned** to the user, not to any groups they may be a part of:
+
+```php
+<?php
+$permissions = Gatekeeper::findUserById(1)->permissions;
+foreach ($permissions as $perm) {
+	echo $perm->description."\n";
+}
+?>
+```
