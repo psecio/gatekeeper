@@ -81,6 +81,15 @@ class UserModel extends \Psecio\Gatekeeper\Model\Mysql
                 'method' => 'findByUserId',
                 'local' => 'id'
             )
+        ),
+        'permissions' => array(
+            'description' => 'Permissions the user has',
+            'type' => 'relation',
+            'relation' => array(
+                'model' => '\\Psecio\\Gatekeeper\\PermissionCollection',
+                'method' => 'findByUserId',
+                'local' => 'id'
+            )
         )
     );
 
