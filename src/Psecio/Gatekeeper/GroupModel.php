@@ -43,6 +43,15 @@ class GroupModel extends \Psecio\Gatekeeper\Model\Mysql
                 'method' => 'findByGroupId',
                 'local' => 'id'
             )
+        ),
+        'permissions' => array(
+            'description' => 'Permissions belonging to this group',
+            'type' => 'relation',
+            'relation' => array(
+                'model' => '\\Psecio\\Gatekeeper\\PermissionCollection',
+                'method' => 'findByGroupId',
+                'local' => 'id'
+            )
         )
     );
 
@@ -64,7 +73,29 @@ class GroupModel extends \Psecio\Gatekeeper\Model\Mysql
             'user_id' => $user
         );
         $groupUser = new UserGroupModel($this->getDb(), $data);
-        $groupUser->save();
+        return $groupUser->save();
+    }
+
+    /**
+     * Add a permission relation for the group
+     *
+     * @param integer|PermissionModel $permission Either a permission ID or PermissionModel
+     */
+    public function addPermission($permission)
+    {
+        if ($this->id === null) {
+            return false;
+        }
+        if ($permission instanceof PermissionModel)
+        {
+            $permission = $permission->id;
+        }
+        $data = array(
+            'permission_id' => $permission,
+            'group_id' => $this->id
+        );
+        $groupPerm = new GroupPermissionModel($this->getDb(), $data);
+        return $groupPerm->save();
     }
 
     /**
