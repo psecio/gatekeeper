@@ -49,7 +49,8 @@ class Gatekeeper
                 'username' => $_SERVER['DB_USER'],
                 'password' => $_SERVER['DB_PASS'],
                 'name' => $_SERVER['DB_NAME'],
-                'type' => (isset($_SERVER['DB_TYPE'])) ? $_SERVER['DB_TYPE'] : 'mysql'
+                'type' => (isset($_SERVER['DB_TYPE'])) ? $_SERVER['DB_TYPE'] : 'mysql',
+                'host' => $_SERVER['DB_HOST']
             );
         } catch (\Exception $e) {
             return false;
