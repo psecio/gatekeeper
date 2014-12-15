@@ -12,18 +12,65 @@ class Gatekeeper
      * Initialize the Gatekeeper instance, set up environment file and PDO connection
      *
      * @param string $envPath Environment file path (defaults to CWD)
+     * @param array $config Configuration settings [optional]
      */
-    public static function init($envPath = null)
+    public static function init($envPath = null, array $config = array())
     {
         $envPath = ($envPath !== null) ? $envPath : getcwd();
-        \Dotenv::load($envPath);
+        $result = self::loadDotEnv($envPath);
 
-        $dbType = (isset($_SERVER['DB_TYPE'])) ? $_SERVER['DB_TYPE'] : 'mysql';
+        // If the .env load failed, use the config given
+        if ($result === false) {
+            if (empty($config)) {
+                throw new \InvalidArgumentException('Configuration values must be defined!');
+            }
+            $result = $config;
+        }
 
+        // Now make the PDO connection
+        $result['type'] = ($result['type'] === null) ? 'mysql' : $result['type'];
         self::$pdo = new \PDO(
-            $dbType.':dbname='.$_SERVER['DB_NAME'].';host='.$_SERVER['DB_HOST'],
-            $_SERVER['DB_USER'], $_SERVER['DB_PASS']
+            $result['type'].':dbname='.$result['name'].';host='.$result['host'],
+            $result['username'], $result['password']
         );
+    }
+
+    /**
+     * Load the variables using the .env handling
+     *
+     * @param string $envPath Path to the .env file
+     * @return array|boolean Array of data if found, false if load fails
+     */
+    protected static function loadDotEnv($envPath)
+    {
+        try {
+            \Dotenv::load($envPath);
+            return array(
+                'username' => $_SERVER['DB_USER'],
+                'password' => $_SERVER['DB_PASS'],
+                'name' => $_SERVER['DB_NAME'],
+                'type' => (isset($_SERVER['DB_TYPE'])) ? $_SERVER['DB_TYPE'] : 'mysql'
+            );
+        } catch (\Exception $e) {
+            return false;
+        }
+    }
+
+    /**
+     * Create and setup a new model instance
+     *
+     * @param string $type Model class name
+     * @throws \InvalidArgumentException If class requested is not valid
+     * @return object Model instance
+     */
+    public static function modelFactory($type)
+    {
+        $class = '\\Psecio\\Gatekeeper\\'.$type;
+        if (!class_exists($class)) {
+            throw new \InvalidArgumentException('Model type "'.$class.'" does not exist!');
+        }
+        $model = new $class(self::$pdo);
+        return $model;
     }
 
     /**
