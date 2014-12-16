@@ -7,6 +7,9 @@ use \Psecio\Gatekeeper\Model\User;
 class Gatekeeper
 {
     private static $pdo;
+    private static $actions = array(
+        'find', 'delete'
+    );
 
     /**
      * Initialize the Gatekeeper instance, set up environment file and PDO connection
@@ -121,12 +124,54 @@ class Gatekeeper
      */
     public static function __callStatic($name, $args)
     {
-        if (substr($name, -4) == 'ById') {
-            return self::handleFindById($name, $args);
-        } elseif (substr($name, 0, 6) === 'create') {
+        // find the action first
+        $action = 'find';
+        foreach (self::$actions as $a) {
+            if (strstr($name, $a) !== false) {
+                $action = $a;
+            }
+        }
+
+        if ($action == 'find') {
+            return self::handleFindBy($name, $args);
+        } elseif ($action == 'create') {
             return self::handleCreate($name, $args);
         }
         return false;
+    }
+
+    /**
+     * Handle the "findBy" calls for data
+     *
+     * @param string $name Function name called
+     * @param array $args Arguments
+     * @throws \Exception\ModelNotFoundException If model type is not found
+     * @throws \Exception If Data could not be found
+     * @return object Model instance
+     */
+    public function handleFindBy($name, $args)
+    {
+        $action = 'find';
+        $name = str_replace($action, '', $name);
+        preg_match('/By(.+)/', $name, $matches);
+
+        $property = lcfirst($matches[1]);
+        $model = str_replace($matches[0], '', $name);
+        $data = array($property => $args[0]);
+
+        $modelNs = '\\Psecio\\Gatekeeper\\'.$model.'Model';
+        if (!class_exists($modelNs)) {
+            throw new Exception\ModelNotFoundException('Model type '.$model.' could not be found');
+        }
+        $instance = new $modelNs(self::$pdo);
+        $instance->$action($data);
+
+        if ($instance->id === null) {
+            $exception = '\\Psecio\\Gatekeeper\\Exception\\'.$model.'NotFoundException';
+            throw new $exception($model.' could not be found for criteria');
+        }
+
+        return $instance;
     }
 
     /**
@@ -141,44 +186,12 @@ class Gatekeeper
     {
         $model = '\\Psecio\\Gatekeeper\\'.str_replace('create', '', $name).'Model';
         if (class_exists($model) === true) {
-            $instance = new $model(self::$pdo, $args[0]);
+            $instance = new $model(self::$pdo, $args);
             $instance->save();
             return $instance;
         } else {
             throw new Exception\ModelNotFoundException('Model type '.$model.' could not be found');
         }
         return false;
-    }
-
-    /**
-     * Handle the "find*ById" calls
-     *
-     * @param string $name Function name
-     * @param array $args Argument set
-     * @throws Exception\ModelNotFoundException If model type is not found
-     * @return mixed Boolean false if method incorrect, model instance if found
-     */
-    public static function handleFindById($name, array $args)
-    {
-        $type = preg_match('/find(.+)ById/', $name, $matches);
-
-        if (isset($matches[1])) {
-            $model = '\\Psecio\\Gatekeeper\\'.$matches[1].'Model';
-            if (class_exists($model)) {
-                $exception = '\\Psecio\\Gatekeeper\\Exception\\'.$matches[1].'NotFoundException';
-                $id = $args[0];
-                $instance = new $model(self::$pdo);
-
-                $result = $instance->findById($id);
-                if ($instance->id === null) {
-                    throw new $exception($matches[1].' could not be found for ID '.$id);
-                }
-                return $instance;
-            } else {
-                throw new Exception\ModelNotFoundException('Model type '.$model.' could not be found');
-            }
-        } else {
-            return false;
-        }
     }
 }
