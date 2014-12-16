@@ -53,3 +53,41 @@ require_once 'vendor/autoload.php';
 Gatekeeper::init();
 ?>
 ```
+
+## Configuration options
+
+You can pass in options to the `init` call if you don't necesarily want to use the `.env` configuration file handling. There's a few options:
+
+```php
+<?php
+// You can specify your own .env path
+Gatekeeper::init('/path/to/directory');
+
+// You can also force the use of your own database configuration
+$config = array(
+    'type' => 'mysql',
+    'username' => 'gatekeeper-user',
+    'password' => 'gatekeeper-pass',
+    'name' => 'gatekeeper',
+    'host' => 'gatekeeper-db.localhost'
+);
+Gatekeeper::init(null, $config);
+?>
+```
+
+## Throttling
+
+By default Gatekeeper will have throttling enabled. This means that, on incorrect login by a user, the information will be logged. When they hit a threshold (defaults to 5) in a certain amount of time (default of 1 minute) they'll be marked as blocked and will not be allowed to log in.
+
+You can disable this feature in one of two ways:
+
+```php
+<?php
+// Either throught the init call
+Gatekeeper::init(null, array('throttle' => false));
+
+// Or through a method call
+Gatekeeper::disableThrottle();
+?>
+```
+
