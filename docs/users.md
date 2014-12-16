@@ -62,6 +62,17 @@ $username = Gatekeeper::findUserById($userId)->username;
 
 The return value is an instance of the `UserModel` with the properties populated with the user data (if it was found). A `UserNotFoundException` will be thrown if the user is not found.
 
+Additionally, you can run a "find by" on any property in the `User` model, not just the ID value:
+
+```php
+<?php
+$user = Gatekeeper::findUserByUsername('ccornutt');
+$user = Gatekeeper::findUserByFirstName('Chris');
+
+// etc...
+?>
+```
+
 ## Activating/Deactivating Users
 
 You can mark a user as active or inactive in the system easily. Inactive users will not be able to log in using the `authenticate` method. Changing the user status is easy:
