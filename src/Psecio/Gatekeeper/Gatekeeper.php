@@ -6,10 +6,25 @@ use \Psecio\Gatekeeper\Model\User;
 
 class Gatekeeper
 {
+    /**
+     * Database (PDO) instance
+     * @var \PDO
+     */
     private static $pdo;
+
+    /**
+     * Allowed actions
+     * @var array
+     */
     private static $actions = array(
         'find', 'delete', 'create'
     );
+
+    /**
+     * Throttling enabled or disabled
+     * @var boolean
+     */
+    private static $throttleStatus = true;
 
     /**
      * Initialize the Gatekeeper instance, set up environment file and PDO connection
@@ -36,6 +51,10 @@ class Gatekeeper
             $result['type'].':dbname='.$result['name'].';host='.$result['host'],
             $result['username'], $result['password']
         );
+
+        if (isset($config['throttle']) && $config['throttle'] === false) {
+            self::disableThrottle();
+        }
     }
 
     /**
@@ -67,13 +86,13 @@ class Gatekeeper
      * @throws \InvalidArgumentException If class requested is not valid
      * @return object Model instance
      */
-    public static function modelFactory($type)
+    public static function modelFactory($type, array $data = array())
     {
         $class = '\\Psecio\\Gatekeeper\\'.$type;
         if (!class_exists($class)) {
             throw new \InvalidArgumentException('Model type "'.$class.'" does not exist!');
         }
-        $model = new $class(self::$pdo);
+        $model = new $class(self::$pdo, $data);
         return $model;
     }
 
@@ -96,7 +115,65 @@ class Gatekeeper
             return false;
         }
 
-        return (password_verify($credentials['password'], $user->password));
+        // Handle some throttle logic, if it's turned on
+        if (self::$throttleStatus === true) {
+            $throttle = self::getUserThrottle($user->id);
+            $throttle->updateAttempts();
+
+            // See if they're blocked
+            if ($throttle->status === ThrottleModel::STATUS_BLOCKED) {
+                $result = $throttle->checkTimeout();
+                if ($result === false) {
+                    return false;
+                }
+            } else {
+                $result = $throttle->checkAttempts();
+                if ($result === false) {
+                    return false;
+                }
+            }
+        }
+
+        // Verify the password!
+        $result = password_verify($credentials['password'], $user->password);
+
+        if (self::$throttleStatus === true && $result === true) {
+            $throttle->allow();
+        }
+
+        return $result;
+    }
+
+    /**
+     * Disable the throttling
+     */
+    public static function disableThrottle()
+    {
+        self::$throttleStatus = false;
+    }
+
+    /**
+     * Get the user throttle information
+     *     If not found, makes a new one
+     *
+     * @param integer $userId User ID
+     * @return ThrottleModel instance
+     */
+    public static function getUserThrottle($userId)
+    {
+        try {
+            $throttle = Gatekeeper::findThrottleByUserId($userId);
+        } catch (Exception\ThrottleNotFoundException $e) {
+            $data = array(
+                'user_id' => $userId,
+                'attempts' => 1,
+                'status' => ThrottleModel::STATUS_ALLOWED,
+                'last_attempt' => date('Y-m-d H:i:s'),
+                'status_change' => date('Y-m-d H:i:s')
+            );
+            $throttle = Gatekeeper::modelFactory('ThrottleModel', $data);
+        }
+        return $throttle;
     }
 
     /**
