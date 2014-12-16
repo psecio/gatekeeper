@@ -73,6 +73,23 @@ $user = Gatekeeper::findUserByFirstName('Chris');
 ?>
 ```
 
+## Deleting Users
+
+You can delete users in much the same way you can find them. It's usually the best idea to use the `ID` (primary key) value if you're wanting to delete a specific user as that will definitely only find one user.
+
+```php
+<?php
+// This will delete the one user by ID
+Gatekeeper::deleteUserById(1);
+
+// If there's more than one "Chris" this will return false
+Gatekeeper::deleteUserByFirstName('Chris');
+
+?>
+```
+
+If you provide details and the system finds more than one record matching it, it will return `false` and not perform the `delete` operation.
+
 ## Activating/Deactivating Users
 
 You can mark a user as active or inactive in the system easily. Inactive users will not be able to log in using the `authenticate` method. Changing the user status is easy:
