@@ -136,6 +136,8 @@ class Gatekeeper
             return self::handleFindBy($name, $args);
         } elseif ($action == 'create') {
             return self::handleCreate($name, $args);
+        } elseif ($action == 'delete') {
+            return self::handleDelete($name, $args);
         }
         return false;
     }
@@ -193,5 +195,46 @@ class Gatekeeper
             throw new Exception\ModelNotFoundException('Model type '.$model.' could not be found');
         }
         return false;
+    }
+
+    /**
+     * Handle the delete requests
+     *
+     * @param string $name Function name called
+     * @param array $args Arguments set
+     * @return boolean Success/fail of delete request
+     */
+    public static function handleDelete($name, array $args)
+    {
+        $model = self::buildModel('delete', $name, $args);
+        return $model->delete();
+    }
+
+    /**
+     * Build the model instance with data given
+     *
+     * @param string $action Action called (ex: "delete" or "create")
+     * @param string $name Function nname
+     * @param array $args Arguments set
+     * @throws \Exception\ModelNotFoundException If model type is not found
+     * @return object Model instance
+     */
+    protected static function buildModel($action = 'find', $name, array $args)
+    {
+        $name = str_replace($action, '', $name);
+        preg_match('/By(.+)/', $name, $matches);
+
+        $property = lcfirst($matches[1]);
+        $model = str_replace($matches[0], '', $name);
+        $data = array($property => $args[0]);
+
+        $modelNs = '\\Psecio\\Gatekeeper\\'.$model.'Model';
+        if (!class_exists($modelNs)) {
+            throw new Exception\ModelNotFoundException('Model type '.$model.' could not be found');
+        }
+
+        $instance = new $modelNs(self::$pdo);
+        $instance->find($data);
+        return $instance;
     }
 }
