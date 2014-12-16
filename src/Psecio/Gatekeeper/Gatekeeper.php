@@ -8,7 +8,7 @@ class Gatekeeper
 {
     private static $pdo;
     private static $actions = array(
-        'find', 'delete'
+        'find', 'delete', 'create'
     );
 
     /**
@@ -186,7 +186,7 @@ class Gatekeeper
     {
         $model = '\\Psecio\\Gatekeeper\\'.str_replace('create', '', $name).'Model';
         if (class_exists($model) === true) {
-            $instance = new $model(self::$pdo, $args);
+            $instance = new $model(self::$pdo, $args[0]);
             $instance->save();
             return $instance;
         } else {
