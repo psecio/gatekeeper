@@ -225,9 +225,14 @@ class Mysql extends \Modler\Model
      */
     public function find(array $where = array())
     {
+        $properties = $this->getProperties();
         list($columns, $bind) = $this->setup($where);
         $update = array();
         foreach ($bind as $column => $name) {
+            // See if we keep to transfer it over to a column name
+            if (array_key_exists($column, $properties)) {
+                $column = $properties[$column]['column'];
+            }
             $update[] = $column.' = '.$name;
         }
 
