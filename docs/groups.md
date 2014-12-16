@@ -35,6 +35,17 @@ $group = Gatekeeper::findGroupById(1);
 
 If the group is not found, a `GroupNotFoundException` will be thrown.
 
+Additionally, you can find `Groups` by other properties:
+
+```php
+<?php
+$group = Gatekeeper::findGroupByName('group1');
+$group = Gatekeeper::findGroupByDescription('Group #1');
+
+// etc....
+?>
+```
+
 ## Getting Group Users
 
 Much like you can easily get the groups the user belongs to, you can also get the members of a group. This will return a collection of user objects:
