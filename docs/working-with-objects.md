@@ -31,9 +31,9 @@ If no records are found given the criteria you provided, one of the "not found" 
 
 **NOTE:** You can find the list of properties on the pages for each of the different types (like `Users` and `Groups`).
 
-## Deleteing
+## Deleting
 
-You can also use common functionality to delete records from the system. This uses a format simialr to the "find by" methods but instead uses a "delete by".
+You can also use common functionality to delete records from the system. This uses a format similar to the "find by" methods but instead uses a "delete by".
 
 ```php
 <?php
