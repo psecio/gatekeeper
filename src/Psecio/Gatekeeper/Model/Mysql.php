@@ -236,7 +236,11 @@ class Mysql extends \Modler\Model
             $update[] = $column.' = '.$name;
         }
 
-        $sql = 'select * from '.$this->getTableName().' where '.implode(' and ', $update);
+        $sql = 'select * from '.$this->getTableName();
+
+        if (!empty($update)) {
+            $sql .= ' where '.implode(' and ', $update);
+        }
         $result = $this->fetch($sql, $where);
 
         if ($result !== false && count($result) == 1) {
