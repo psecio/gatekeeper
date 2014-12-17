@@ -90,6 +90,16 @@ class UserModel extends \Psecio\Gatekeeper\Model\Mysql
                 'method' => 'findByUserId',
                 'local' => 'id'
             )
+        ),
+        'loginAttempts' => array(
+            'description' => 'Number of login attempts by user',
+            'type' => 'relation',
+            'relation' => array(
+                'model' => '\\Psecio\\Gatekeeper\\UserModel',
+                'method' => 'findAttemptsByUser',
+                'local' => 'id',
+                'return' => 'value'
+            )
         )
     );
 
@@ -298,5 +308,21 @@ class UserModel extends \Psecio\Gatekeeper\Model\Mysql
         $throttle->find(array('user_id' => $this->id));
 
         return ($throttle->status === ThrottleModel::STATUS_BLOCKED) ? true : false;
+    }
+
+    /**
+     * Find the number of login attempts for a user
+     *
+     * @param integer $userId User ID [optional]
+     * @return integer Number of login attempts
+     */
+    public function findAttemptsByUser($userId = null)
+    {
+        $userId = ($userId === null) ? $this->id : $userId;
+
+        $throttle = new ThrottleModel($this->getDb());
+        $throttle->find(array('user_id' => $userId));
+
+        return ($throttle->attempts === null) ? 0 : $throttle->attempts;
     }
 }
