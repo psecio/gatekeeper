@@ -1,5 +1,23 @@
 # Installation & Configuration
 
+## Installation
+
+The best way to install Gatekeeper is through Composer (though I suppose you could clone the repo if you want to do it the hard way). Use the following command to add it to your current project:
+
+```
+composer require psecio/gatekeeper
+```
+
+or, if you want to edit the `composer.json` yourself and get specific with the version:
+
+```
+{
+    "require": {
+        "psecio/gatekeeper": "1.0"
+    }
+}
+```
+
 ## Dependencies
 
 *Gatekeeper* makes use of several other PHP dependencies to help reduce code duplication:
