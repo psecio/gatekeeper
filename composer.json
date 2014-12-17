@@ -14,7 +14,7 @@
     ],
     "require":{
         "php":">=5.4.0",
-        "enygma/modler": "1.3",
+        "enygma/modler": "1.4",
         "robmorgan/phinx": "*",
         "ircmaxell/password-compat": "1.0.4",
         "vlucas/phpdotenv": "1.1.0"
