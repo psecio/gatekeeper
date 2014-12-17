@@ -286,4 +286,17 @@ class UserModel extends \Psecio\Gatekeeper\Model\Mysql
         }
         return $res === 0;
     }
+
+    /**
+     * Check to see if a user is banned
+     *
+     * @return boolean User is/is not banned
+     */
+    public function isBanned()
+    {
+        $throttle = new ThrottleModel($this->getDb());
+        $throttle->find(array('user_id' => $this->id));
+
+        return ($throttle->status === ThrottleModel::STATUS_BLOCKED) ? true : false;
+    }
 }
