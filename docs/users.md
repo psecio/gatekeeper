@@ -18,6 +18,7 @@ Users are represented as objects in the code with the following properties:
 - updated
 - groups (relational)
 - permissions (relational)
+- loginAttempts (relational)
 
 You can access this data on a populated user object as you would any other object properties:
 
@@ -134,7 +135,7 @@ You can also get information about the number of times a login has been attempte
 
 ```php
 <?php
-$attempts = atekeeper::findUserById(1)->loginAttempts;
+$attempts = Gatekeeper::findUserById(1)->loginAttempts;
 echo "The user has tried to log in ".$attempts." times.";
 ?>
 ```
