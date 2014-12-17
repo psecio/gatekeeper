@@ -153,6 +153,24 @@ class Gatekeeper
     }
 
     /**
+     * Enable the throttling feature
+     */
+    public static function enableThrottle()
+    {
+        self::$throttleStatus = true;
+    }
+
+    /**
+     * Return the enabled/disabled status of the throttling
+     *
+     * @return boolean Throttle status
+     */
+    public static function throttleStatus()
+    {
+        return self::$throttleStatus;
+    }
+
+    /**
      * Get the user throttle information
      *     If not found, makes a new one
      *

@@ -88,6 +88,19 @@ Gatekeeper::init(null, array('throttle' => false));
 
 // Or through a method call
 Gatekeeper::disableThrottle();
+
+// And to reenable
+Gatekeeper::enableThrottle();
+?>
+```
+
+You can also check the status of the throttling:
+
+```php
+<?php
+if (Gatekeeper::throttleStatus() === true) {
+    echo 'Throttling is enabled!';
+}
 ?>
 ```
 
