@@ -95,7 +95,6 @@ class ThrottleModel extends \Psecio\Gatekeeper\Model\Mysql
     public function allow()
     {
         $this->statusChange = date('Y-m-d H:i:s');
-        $this->attempts = 0;
         $this->status = ThrottleModel::STATUS_ALLOWED;
         return $this->save();
     }
