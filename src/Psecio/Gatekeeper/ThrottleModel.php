@@ -76,6 +76,17 @@ class ThrottleModel extends \Psecio\Gatekeeper\Model\Mysql
     );
 
     /**
+     * Find the throttle information for the given user ID
+     *
+     * @param integer $userId User ID
+     * @return boolean Success/fail of find call
+     */
+    public function findByUserId($userId)
+    {
+        return $this->find(array('user_id' => $userId));
+    }
+
+    /**
      * Update the number of attempts for the current record
      *
      * @return boolean Success/fail of save operation

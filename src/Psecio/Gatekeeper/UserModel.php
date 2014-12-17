@@ -100,6 +100,15 @@ class UserModel extends \Psecio\Gatekeeper\Model\Mysql
                 'local' => 'id',
                 'return' => 'value'
             )
+        ),
+        'throttle' => array(
+            'description' => 'Full throttle information for a user',
+            'type' => 'relation',
+            'relation' => array(
+                'model' => '\\Psecio\\Gatekeeper\\ThrottleModel',
+                'method' => 'findByUserId',
+                'local' => 'id'
+            )
         )
     );
 
