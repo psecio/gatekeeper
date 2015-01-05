@@ -78,7 +78,7 @@ class GroupModel extends \Psecio\Gatekeeper\Model\Mysql
             'user_id' => $user
         );
         $groupUser = new UserGroupModel($this->getDb(), $data);
-        return $groupUser->save();
+        return $this->getDb()->save($groupUser);
     }
 
     /**
@@ -100,7 +100,7 @@ class GroupModel extends \Psecio\Gatekeeper\Model\Mysql
             'group_id' => $this->id
         );
         $groupPerm = new GroupPermissionModel($this->getDb(), $data);
-        return $groupPerm->save();
+        return $this->getDb()->save($groupPerm);
     }
 
     /**

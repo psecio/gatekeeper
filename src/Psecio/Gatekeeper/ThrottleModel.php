@@ -95,7 +95,7 @@ class ThrottleModel extends \Psecio\Gatekeeper\Model\Mysql
     {
         $this->lastAttempt = date('Y-m-d H:i:s');
         $this->attempts = $this->attempts + 1;
-        return $this->save();
+        return $this->getDb()->save($this);
     }
 
     /**
@@ -107,7 +107,7 @@ class ThrottleModel extends \Psecio\Gatekeeper\Model\Mysql
     {
         $this->statusChange = date('Y-m-d H:i:s');
         $this->status = ThrottleModel::STATUS_ALLOWED;
-        return $this->save();
+        return $this->getDb()->save($this);
     }
 
     // See how long it was since the last change (to blocked)
@@ -140,7 +140,7 @@ class ThrottleModel extends \Psecio\Gatekeeper\Model\Mysql
     {
         if ($this->attempts >= $this->allowedAttemts) {
             $this->status = ThrottleModel::STATUS_BLOCKED;
-            $this->save();
+            return $this->getDb()->save($this);
             return false;
         }
         return true;
