@@ -56,6 +56,9 @@ Deleteing user records can be done with the `deleteUserById` method:
 if (Gatekeeper::deleteUserById(1) === true) {
     echo "User removed successfully!";
 }
+
+// Or, if you already have the User model object
+Gatekeeper::deleteUser($user);
 ?>
 ```
 
