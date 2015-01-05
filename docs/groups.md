@@ -37,6 +37,21 @@ foreach ($users as $user) {
 ?>
 ```
 
+## Adding a user to a group
+
+You can add a user to a group by giving the `addUser` method one of two kinds of inputs:
+
+```php
+<?php
+// Either a user ID
+Gatekeeper::findGroupById(1)->addUser(1);
+
+// Or a user model, it will extract the ID
+$user = new UserModel();
+Gatekeeper::findGroupById(1)->addUser($user);
+?>
+```
+
 ## Checking to see if a user is in a group
 
 You can use the `inGroup` method to check and see if a user ID is in a group:
