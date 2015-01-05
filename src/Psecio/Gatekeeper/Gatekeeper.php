@@ -118,7 +118,7 @@ class Gatekeeper
     public static function authenticate(array $credentials, array $config = array())
     {
         $username = $credentials['username'];
-        $user = new UserModel(self::$pdo);
+        $user = new UserModel(self::$datasource);
         $user->findByUsername($username);
 
         // If they're inactive, they can't log in
@@ -345,9 +345,14 @@ class Gatekeeper
         $name = str_replace($action, '', $name);
         preg_match('/By(.+)/', $name, $matches);
 
-        $property = lcfirst($matches[1]);
-        $model = str_replace($matches[0], '', $name);
-        $data = array($property => $args[0]);
+        if (empty($matches) && $args[0] instanceof \Modler\Model) {
+            $model = $name;
+            $data = $args[0]->toArray();
+        } else {
+            $property = lcfirst($matches[1]);
+            $model = str_replace($matches[0], '', $name);
+            $data = array($property => $args[0]);
+        }
 
         $modelNs = '\\Psecio\\Gatekeeper\\'.$model.'Model';
         if (!class_exists($modelNs)) {
