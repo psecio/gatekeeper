@@ -1,0 +1,20 @@
+<phpunit backupGlobals="false"
+         convertErrorsToExceptions="true"
+         convertWarningsToExceptions="true"
+         convertNoticesToExceptions="true"
+         mapTestClassNameToCoveredClassName="true"
+         bootstrap="vendor/autoload.php"
+         strict="false"
+         verbose="true"
+         colors="true">
+    <testsuites>
+        <testsuite name="csrf">
+            <directory>./tests</directory>
+        </testsuite>
+    </testsuites>
+    <filter>
+        <whitelist>
+            <directory suffix=".php">./src</directory>
+        </whitelist>
+    </filter>
+</phpunit>
