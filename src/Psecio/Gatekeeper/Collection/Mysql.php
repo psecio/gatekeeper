@@ -65,46 +65,4 @@ class Mysql extends \Modler\Collection
     {
         return $this->lastError;
     }
-
-    /**
-     * Execute the request (not a fetch)
-     *
-     * @param string $sql SQL statement to execute
-     * @param array $data Data to use in execution
-     * @return boolean Success/fail of the operation
-     */
-    public function execute($sql, array $data)
-    {
-        $sth = $this->getDb()->prepare($sql);
-        $result = $sth->execute($data);
-
-        if ($result === false) {
-            $error = $sth->errorInfo();
-            $this->lastError = 'DB ERROR: ['.$sth->errorCode().'] '.$error[2];
-        }
-        return $result;
-    }
-
-    /**
-     * Fetch the data matching the results of the SQL operation
-     *
-     * @param string $sql SQL statement
-     * @param array $data Data to use in fetch operation
-     * @param boolean $single Only fetch a single record
-     * @return array Fetched data
-     */
-    public function fetch($sql, $data, $single = false)
-    {
-        $sth = $this->getDb()->prepare($sql);
-        $result = $sth->execute($data);
-
-        if ($result === false) {
-            $error = $sth->errorInfo();
-            $this->lastError = 'DB ERROR: ['.$sth->errorCode().'] '.$error[2];
-            return false;
-        }
-
-        $results = $sth->fetchAll(\PDO::FETCH_ASSOC);
-        return ($single === true) ? array_shift($results) : $results;
-    }
 }
