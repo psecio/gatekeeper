@@ -91,8 +91,7 @@ class GroupModel extends \Psecio\Gatekeeper\Model\Mysql
         if ($this->id === null) {
             return false;
         }
-        if ($permission instanceof PermissionModel)
-        {
+        if ($permission instanceof PermissionModel) {
             $permission = $permission->id;
         }
         $data = array(
