@@ -15,12 +15,12 @@ class UserPermissionModel extends \Psecio\Gatekeeper\Model\Mysql
      * @var array
      */
     protected $properties = array(
-        'permission_id' => array(
+        'permissionId' => array(
             'description' => 'Permission Id',
             'column' => 'permission_id',
             'type' => 'integer'
         ),
-        'user_id' => array(
+        'userId' => array(
             'description' => 'User ID',
             'column' => 'user_id',
             'type' => 'integer'
