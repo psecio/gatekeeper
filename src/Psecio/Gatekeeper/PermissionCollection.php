@@ -16,7 +16,7 @@ class PermissionCollection extends \Psecio\Gatekeeper\Collection\Mysql
 			.' where p.id = up.permission_id'
 			.' and up.user_id = :userId';
 
-		$results = $this->fetch($sql, $data);
+		$results = $this->getDb()->fetch($sql, $data);
 
         foreach ($results as $result) {
             $perm = new PermissionModel($this->getDb(), $result);
@@ -36,7 +36,7 @@ class PermissionCollection extends \Psecio\Gatekeeper\Collection\Mysql
 			.' where p.id = gp.permision_id'
 			.' and gp.group_id = :groupId';
 
-		$results = $this->fetch($sql, $data);
+		$results = $this->getDb()->fetch($sql, $data);
 
         foreach ($results as $result) {
             $perm = new PermissionModel($this->getDb(), $result);

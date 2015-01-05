@@ -16,7 +16,7 @@ class GroupCollection extends \Psecio\Gatekeeper\Collection\Mysql
             .' where ug.user_id = :userId'
             .' and ug.group_id = g.id';
 
-        $results = $this->fetch($sql, $data);
+        $results = $this->getDb()->fetch($sql, $data);
 
         foreach ($results as $result) {
             $group = new GroupModel($this->getDb(), $result);

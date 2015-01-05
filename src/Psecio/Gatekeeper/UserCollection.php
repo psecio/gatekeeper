@@ -16,7 +16,7 @@ class UserCollection extends \Psecio\Gatekeeper\Collection\Mysql
             .' where ug.group_id = :groupId'
             .' and ug.user_id = u.id';
 
-        $results = $this->fetch($sql, $data);
+        $results = $this->getDb()->fetch($sql, $data);
 
         foreach ($results as $result) {
             $user = new UserModel($this->getDb(), $result);
