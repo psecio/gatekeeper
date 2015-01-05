@@ -47,6 +47,18 @@ Gatekeeper::register($credentials);
 
 The return value from the `register` call is a *boolean* indicating the pass/fail status of the registration.
 
+## Removing users
+
+Deleteing user records can be done with the `deleteUserById` method:
+
+```php
+<?php
+if (Gatekeeper::deleteUserById(1) === true) {
+    echo "User removed successfully!";
+}
+?>
+```
+
 ## Activating/Deactivating Users
 
 You can mark a user as active or inactive in the system easily. Inactive users will not be able to log in using the `authenticate` method. Changing the user status is easy:
