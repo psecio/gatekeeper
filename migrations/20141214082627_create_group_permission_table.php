@@ -14,6 +14,7 @@ class CreateGroupPermissionTable extends AbstractMigration
               ->addColumn('group_id', 'integer')
               ->addColumn('created', 'datetime')
               ->addColumn('updated', 'datetime', array('default' => null))
+              ->addIndex(array('permission_id', 'group_id'), array('unique' => true))
               ->save();
     }
 
