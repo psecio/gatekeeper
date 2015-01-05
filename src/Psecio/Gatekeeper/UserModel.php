@@ -135,7 +135,9 @@ class UserModel extends \Psecio\Gatekeeper\Model\Mysql
      */
     public function findByUsername($username)
     {
-        return $this->find(array('username' => $username));
+        return $this->getDb()->find(
+            $this, array('username' => $username)
+        );
     }
 
     /**
@@ -275,7 +277,7 @@ class UserModel extends \Psecio\Gatekeeper\Model\Mysql
     public function inGroup($groupId)
     {
         $userGroup = new UserGroupModel($this->getDb());
-        $result = $userGroup->find(array(
+        $result = $this->getDb()->find($userGroup, array(
             'group_id' => $groupId,
             'user_id' => $this->id
         ));
@@ -291,7 +293,7 @@ class UserModel extends \Psecio\Gatekeeper\Model\Mysql
     public function hasPermission($permId)
     {
         $perm = new UserPermissionModel($this->getDb());
-        $result = $perm->find(array(
+        $result = $this->getDb()->find($perm, array(
             'permission_id' => $permId,
             'user_id' => $this->id
         ));
@@ -329,7 +331,7 @@ class UserModel extends \Psecio\Gatekeeper\Model\Mysql
     public function isBanned()
     {
         $throttle = new ThrottleModel($this->getDb());
-        $throttle->find(array('user_id' => $this->id));
+        $throttle = $this->getDb()->find($throttle, array('user_id' => $this->id));
 
         return ($throttle->status === ThrottleModel::STATUS_BLOCKED) ? true : false;
     }
@@ -345,7 +347,7 @@ class UserModel extends \Psecio\Gatekeeper\Model\Mysql
         $userId = ($userId === null) ? $this->id : $userId;
 
         $throttle = new ThrottleModel($this->getDb());
-        $throttle->find(array('user_id' => $userId));
+        $throttle = $this->getDb()->find($throttle, array('user_id' => $userId));
 
         return ($throttle->attempts === null) ? 0 : $throttle->attempts;
     }

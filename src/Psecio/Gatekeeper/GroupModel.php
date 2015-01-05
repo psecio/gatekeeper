@@ -111,7 +111,7 @@ class GroupModel extends \Psecio\Gatekeeper\Model\Mysql
     public function inGroup($userId)
     {
         $userGroup = new UserGroupModel($this->getDb());
-        $result = $userGroup->find(array(
+        $result = $this->getDb()->find($userGroup, array(
             'group_id' => $this->id,
             'user_id' => $userId
         ));
