@@ -149,7 +149,22 @@ class UserModel extends \Psecio\Gatekeeper\Model\Mysql
             'user_id' => $this->id,
             'permission_id' => $permId
         ));
-        $perm->save();
+        return $this->getDb()->save($perm);
+    }
+
+    /**
+     * Add a group to the user
+     *
+     * @param integer $groupId Add the user to a group
+     * @return boolean Success/fail of add
+     */
+    public function addGroup($groupId)
+    {
+        $group = new UserGroupModel($this->getDb(), array(
+            'group_id' => $groupId,
+            'user_id' => $this->id
+        ));
+        return $this->getDb()->save($group);
     }
 
     /**
@@ -164,7 +179,7 @@ class UserModel extends \Psecio\Gatekeeper\Model\Mysql
             return false;
         }
         $this->status = self::STATUS_ACTIVE;
-        return $this->save();
+        return $this->getDb()->save($this);
     }
 
     /**
@@ -179,7 +194,7 @@ class UserModel extends \Psecio\Gatekeeper\Model\Mysql
             return false;
         }
         $this->status = self::STATUS_INACTIVE;
-        return $this->save();
+        return $this->getDb()->save($this);
     }
 
     /**
@@ -199,7 +214,7 @@ class UserModel extends \Psecio\Gatekeeper\Model\Mysql
         $code = substr(bin2hex(openssl_random_pseudo_bytes($length)), 0, $length);
         $this->resetCode = $code;
         $this->resetCodeTimeout = date('Y-m-d H:i:s', strtotime('+1 hour'));
-        $this->save();
+        return $this->getDb()->save($this);
 
         return $code;
     }
@@ -248,7 +263,7 @@ class UserModel extends \Psecio\Gatekeeper\Model\Mysql
         }
         $this->resetCode = null;
         $this->resetCodeTimeout = null;
-        return $this->save();
+        return $this->getDb()->save($this);
     }
 
     /**
