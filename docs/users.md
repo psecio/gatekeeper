@@ -90,6 +90,19 @@ if (Gatekeeper::findUserById(1)->inGroup($groupId) === true) {
 ?>
 ```
 
+## Adding a user to a group
+
+You can add a user to a group by using the group ID:
+
+```php
+<?php
+$groupId = 1;
+if (Gatekeeper::findUserById($userId)->addGroup($groupId) === true) {
+    echo "User added successfullly!";
+}
+?>
+```
+
 ## Get a list of user permissions
 
 You can use the `permissions` property to get the full set of user permissions. These are the permissions **directly assigned** to the user, not to any groups they may be a part of:
