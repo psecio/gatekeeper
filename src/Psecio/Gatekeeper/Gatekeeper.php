@@ -17,8 +17,14 @@ class Gatekeeper
      * @var array
      */
     private static $actions = array(
-        'find', 'delete', 'create'
+        'find', 'delete', 'create', 'save'
     );
+
+    /**
+     * Current data source
+     * @var \Psecio\Gatekeeper\DataSource
+     */
+    private static $datasource;
 
     /**
      * Throttling enabled or disabled
@@ -31,8 +37,9 @@ class Gatekeeper
      *
      * @param string $envPath Environment file path (defaults to CWD)
      * @param array $config Configuration settings [optional]
+     * @param \Psecio\Gatekeeper\DataSource Custom datasource provider
      */
-    public static function init($envPath = null, array $config = array())
+    public static function init($envPath = null, array $config = array(), \Psecio\Gatekeeper\DataSource $datasource = null)
     {
         $envPath = ($envPath !== null) ? $envPath : getcwd();
         $result = self::loadDotEnv($envPath);
@@ -45,12 +52,17 @@ class Gatekeeper
             $result = $config;
         }
 
-        // Now make the PDO connection
-        $result['type'] = ($result['type'] === null) ? 'mysql' : $result['type'];
-        self::$pdo = new \PDO(
-            $result['type'].':dbname='.$result['name'].';host='.$result['host'],
-            $result['username'], $result['password']
-        );
+        if ($datasource === null) {
+            // Now create the data source
+            $dsType = (isset($config['source'])) ? $config['source'] : 'mysql';
+            $dsClass = '\\Psecio\\Gatekeeper\\DataSource\\'.ucwords($dsType);
+            if (!class_exists($dsClass)) {
+                throw new \InvalidArgumentException('Data source type "'.$dsType.'" not valid!');
+            }
+
+            $datasource = new $dsClass($result);
+        }
+        self::$datasource = $datasource;
 
         if (isset($config['throttle']) && $config['throttle'] === false) {
             self::disableThrottle();
@@ -92,7 +104,7 @@ class Gatekeeper
         if (!class_exists($class)) {
             throw new \InvalidArgumentException('Model type "'.$class.'" does not exist!');
         }
-        $model = new $class(self::$pdo, $data);
+        $model = new $class(self::$datasource, $data);
         return $model;
     }
 
@@ -202,8 +214,8 @@ class Gatekeeper
      */
     public static function register(array $userData)
     {
-        $user = new UserModel(self::$pdo, $userData);
-        if ($user->save() === false) {
+        $user = new UserModel(self::$datasource, $userData);
+        if (self::$datasource->save($user)  === false) {
             echo 'ERROR: '.$user->getLastError()."\n";
             return false;
         }
@@ -233,6 +245,8 @@ class Gatekeeper
             return self::handleCreate($name, $args);
         } elseif ($action == 'delete') {
             return self::handleDelete($name, $args);
+        } elseif ($action == 'save') {
+            return self::handleSave($name, $args);
         }
         return false;
     }
@@ -260,8 +274,8 @@ class Gatekeeper
         if (!class_exists($modelNs)) {
             throw new Exception\ModelNotFoundException('Model type '.$model.' could not be found');
         }
-        $instance = new $modelNs(self::$pdo);
-        $instance->$action($data);
+        $instance = new $modelNs(self::$datasource);
+        $instance = self::$datasource->$action($instance, $data);
 
         if ($instance->id === null) {
             $exception = '\\Psecio\\Gatekeeper\\Exception\\'.$model.'NotFoundException';
@@ -283,8 +297,8 @@ class Gatekeeper
     {
         $model = '\\Psecio\\Gatekeeper\\'.str_replace('create', '', $name).'Model';
         if (class_exists($model) === true) {
-            $instance = new $model(self::$pdo, $args[0]);
-            $instance->save();
+            $instance = new $model(self::$datasource, $args[0]);
+            $instance = self::$datasource->save($instance);
             return $instance;
         } else {
             throw new Exception\ModelNotFoundException('Model type '.$model.' could not be found');
@@ -302,7 +316,19 @@ class Gatekeeper
     public static function handleDelete($name, array $args)
     {
         $model = self::buildModel('delete', $name, $args);
-        return $model->delete();
+        return self::$datasource->delete($model);
+    }
+
+    /**
+     * Handle the saving of a model instance
+     *
+     * @param string $name Name of funciton called
+     * @param array $args Arguments set
+     * @return boolean Success/fail of save request
+     */
+    public static function handleSave($name, array $args)
+    {
+        return self::$datasource->save($args[0]);
     }
 
     /**
@@ -328,8 +354,8 @@ class Gatekeeper
             throw new Exception\ModelNotFoundException('Model type '.$model.' could not be found');
         }
 
-        $instance = new $modelNs(self::$pdo);
-        $instance->find($data);
+        $instance = new $modelNs(self::$datasource);
+        $instance = self::$datasource->find($instance, $data);
         return $instance;
     }
 }
