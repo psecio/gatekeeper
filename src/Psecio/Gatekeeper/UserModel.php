@@ -214,7 +214,7 @@ class UserModel extends \Psecio\Gatekeeper\Model\Mysql
         $code = substr(bin2hex(openssl_random_pseudo_bytes($length)), 0, $length);
         $this->resetCode = $code;
         $this->resetCodeTimeout = date('Y-m-d H:i:s', strtotime('+1 hour'));
-        return $this->getDb()->save($this);
+        $this->getDb()->save($this);
 
         return $code;
     }
