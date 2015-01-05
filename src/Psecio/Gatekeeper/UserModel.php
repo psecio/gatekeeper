@@ -143,13 +143,16 @@ class UserModel extends \Psecio\Gatekeeper\Model\Mysql
     /**
      * Attach a permission to a user account
      *
-     * @param integer $permId Permission ID
+     * @param integer|PermissionModel $perm Permission ID or model isntance
      */
-    public function addPermission($permId)
+    public function addPermission($perm)
     {
+        if ($perm instanceof PermissionModel) {
+            $perm = $perm->id;
+        }
         $perm = new UserPermissionModel($this->getDb(), array(
             'user_id' => $this->id,
-            'permission_id' => $permId
+            'permission_id' => $perm
         ));
         return $this->getDb()->save($perm);
     }
@@ -157,13 +160,16 @@ class UserModel extends \Psecio\Gatekeeper\Model\Mysql
     /**
      * Add a group to the user
      *
-     * @param integer $groupId Add the user to a group
+     * @param integer|GroupModel $group Add the user to a group
      * @return boolean Success/fail of add
      */
-    public function addGroup($groupId)
+    public function addGroup($group)
     {
+        if ($group instanceof GroupModel) {
+            $group = $group->id;
+        }
         $group = new UserGroupModel($this->getDb(), array(
-            'group_id' => $groupId,
+            'group_id' => $group,
             'user_id' => $this->id
         ));
         return $this->getDb()->save($group);
