@@ -246,4 +246,86 @@ class UserModelTest extends \PHPUnit_Framework_TestCase
 
         $this->assertFalse($user->activate());
     }
+
+    /**
+     * Test that a group can be added by using a Group ID
+     */
+    public function testAddGroupByIdValid()
+    {
+        $ds = $this->buildMock(true, 'save');
+        $user = new UserModel($ds);
+
+        $this->assertTrue($user->addGroup(1));
+    }
+
+    /**
+     * Test that a group can be added by using a Group model
+     */
+    public function testAddGroupByModelValid()
+    {
+        $ds = $this->buildMock(true, 'save');
+        $user = new UserModel($ds);
+
+        $group = new GroupModel($ds, array('id' => 1234));
+        $this->assertTrue($user->addGroup($group));
+    }
+
+    /**
+     * Test that a permission can be added by ID
+     */
+    public function testAddPermissionByIdValid()
+    {
+        $ds = $this->buildMock(true, 'save');
+        $user = new UserModel($ds);
+        $this->assertTrue($user->addPermission(1));
+    }
+
+    /**
+     * Test that a permission can be added by Permission model instance
+     */
+    public function testAddPermissionByModelValid()
+    {
+        $ds = $this->buildMock(true, 'save');
+        $user = new UserModel($ds);
+        $perm = new PermissionModel($ds, array('id' => 1234));
+
+        $this->assertTrue($user->addPermission($perm));
+    }
+
+    /**
+     * Test the location of a record by username, mocked fetch
+     */
+    public function testFindByUsername()
+    {
+        $username = 'ccornutt';
+        $data = array(
+            array('username' => $username)
+        );
+        $ds = $this->getMockBuilder('\Psecio\Gatekeeper\DataSource\Mysql')
+            ->disableOriginalConstructor()
+            ->setMethods(array('fetch'))
+            ->getMock();
+
+        $ds->method('fetch')
+            ->willReturn($data);
+
+        $user = new UserModel($ds);
+        $user->findByUsername($username);
+
+        $this->assertEquals($user->username, $username);
+    }
+
+    /**
+     * Test that a password needs a rehash
+     *     In this case, it's a plain-text password that needs hashing
+     */
+    public function testPasswordNeedsRehash()
+    {
+        $password = 'test1234';
+        $ds = $this->buildMock(true);
+        $user = new UserModel($ds);
+
+        $postPassword = $user->prePassword($password);
+        $this->assertNotEquals($password, $postPassword);
+    }
 }
