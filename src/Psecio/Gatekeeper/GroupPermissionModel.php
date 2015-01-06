@@ -15,12 +15,12 @@ class GroupPermissionModel extends \Psecio\Gatekeeper\Model\Mysql
      * @var array
      */
     protected $properties = array(
-        'group_id' => array(
+        'groupId' => array(
             'description' => 'Group Id',
             'column' => 'group_id',
             'type' => 'integer'
         ),
-        'permission_id' => array(
+        'permissionId' => array(
             'description' => 'Permission ID',
             'column' => 'permission_id',
             'type' => 'integer'
