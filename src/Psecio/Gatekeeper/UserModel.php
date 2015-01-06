@@ -248,7 +248,7 @@ class UserModel extends \Psecio\Gatekeeper\Model\Mysql
         $timeout = new \DateTime($this->resetCodeTimeout);
         if ($timeout <= new \DateTime()) {
             $this->clearPasswordResetCode();
-            throw new Exception\PasswordResetTimeout();
+            throw new Exception\PasswordResetTimeout('Reset code has timeed out!');
         }
 
         // We made it this far, compare the hashes
@@ -283,11 +283,11 @@ class UserModel extends \Psecio\Gatekeeper\Model\Mysql
     public function inGroup($groupId)
     {
         $userGroup = new UserGroupModel($this->getDb());
-        $result = $this->getDb()->find($userGroup, array(
+        $userGroup = $this->getDb()->find($userGroup, array(
             'group_id' => $groupId,
             'user_id' => $this->id
         ));
-        return ($userGroup->id !== null) ? true : false;
+        return ($userGroup->id !== null && $userGroup->id === $groupId) ? true : false;
     }
 
     /**
@@ -299,11 +299,11 @@ class UserModel extends \Psecio\Gatekeeper\Model\Mysql
     public function hasPermission($permId)
     {
         $perm = new UserPermissionModel($this->getDb());
-        $result = $this->getDb()->find($perm, array(
+        $perm = $this->getDb()->find($perm, array(
             'permission_id' => $permId,
             'user_id' => $this->id
         ));
-        return ($perm->id !== null) ? true : false;
+        return ($perm->id !== null && $perm->id === $permId) ? true : false;
     }
 
     /**
