@@ -2,7 +2,7 @@
 
 namespace Psecio\Gatekeeper\DataSource;
 
-class Stub extends \Psecio\Gatekeeper\Datasource
+class Stub extends \Psecio\Gatekeeper\DataSource
 {
     /**
      * Save the given model
