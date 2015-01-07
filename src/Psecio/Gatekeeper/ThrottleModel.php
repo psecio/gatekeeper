@@ -83,7 +83,9 @@ class ThrottleModel extends \Psecio\Gatekeeper\Model\Mysql
      */
     public function findByUserId($userId)
     {
-        return $this->find(array('user_id' => $userId));
+        return $this->getDb()->find(
+            $this, array('user_id' => $userId)
+        );
     }
 
     /**
@@ -141,7 +143,6 @@ class ThrottleModel extends \Psecio\Gatekeeper\Model\Mysql
         if ($this->attempts >= $this->allowedAttemts) {
             $this->status = ThrottleModel::STATUS_BLOCKED;
             return $this->getDb()->save($this);
-            return false;
         }
         return true;
     }
