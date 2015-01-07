@@ -32,7 +32,7 @@ class PermissionCollection extends \Psecio\Gatekeeper\Collection\Mysql
 	public function findByGroupId($groupId)
 	{
 		$data = array('groupId' => $groupId);
-		$sql = 'select p.* from permissions p, group_permission gp';
+		$sql = 'select p.* from permissions p, group_permission gp'
 			.' where p.id = gp.permision_id'
 			.' and gp.group_id = :groupId';
 
