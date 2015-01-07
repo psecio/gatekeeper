@@ -2,19 +2,8 @@
 
 namespace Psecio\Gatekeeper;
 
-class UserModelTest extends \PHPUnit_Framework_TestCase
+class UserModelTest extends \Psecio\Gatekeeper\Base
 {
-    public function buildMock($return, $type = 'find')
-    {
-        $ds = $this->getMockBuilder('\Psecio\Gatekeeper\DataSource\Stub')
-            ->setConstructorArgs(array(array()))
-            ->getMock();
-        $ds->method($type)
-            ->willReturn($return);
-
-        return $ds;
-    }
-
     /**
      * Test that a 0 is returned when no throttle record is found (null)
      */

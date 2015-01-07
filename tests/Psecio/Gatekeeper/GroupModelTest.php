@@ -2,19 +2,8 @@
 
 namespace Psecio\Gatekeeper;
 
-class GroupModelTest extends \PHPUnit_Framework_TestCase
+class GroupModelTest extends \Psecio\Gatekeeper\Base
 {
-    public function buildMock($return, $type = 'find')
-    {
-        $ds = $this->getMockBuilder('\Psecio\Gatekeeper\DataSource\Stub')
-            ->setConstructorArgs(array(array()))
-            ->getMock();
-        $ds->method($type)
-            ->willReturn($return);
-
-        return $ds;
-    }
-
     /**
      * Test the addition of a user by ID to a group
      */
