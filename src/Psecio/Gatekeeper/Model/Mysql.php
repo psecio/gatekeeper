@@ -78,8 +78,9 @@ class Mysql extends \Modler\Model
                 continue;
             }
             $column = $propertyDetail['column'];
-            if (isset($data[$column])) {
-                $loadData[$propertyName] = $data[$column];
+            if (isset($data[$column]) || isset($data[$propertyName])) {
+                $value = isset($data[$column]) ? $data[$column] : $data[$propertyName];
+                $loadData[$propertyName] = $value;
             }
         }
         parent::load($loadData);
