@@ -10,10 +10,7 @@ class Stub extends \Psecio\Gatekeeper\DataSource
      * @param \Modler\Model $model Model instance
      * @return boolean Success/fail of action
      */
-    public function save(\Modler\Model $model)
-    {
-
-    }
+    public function save(\Modler\Model $model){}
 
     /**
      * Create a new record with model given
@@ -21,10 +18,7 @@ class Stub extends \Psecio\Gatekeeper\DataSource
      * @param \Modler\Model $model Model instance
      * @return boolean Success/fail of action
      */
-    public function create(\Modler\Model $model)
-    {
-
-    }
+    public function create(\Modler\Model $model){}
 
     /**
      * Update the record for the given model
@@ -32,10 +26,7 @@ class Stub extends \Psecio\Gatekeeper\DataSource
      * @param \Modler\Model $model Model instance
      * @return boolean Success/fail of action
      */
-    public function update(\Modler\Model $model)
-    {
-
-    }
+    public function update(\Modler\Model $model){}
 
     /**
      * Delete the record defined by the model data
@@ -43,10 +34,7 @@ class Stub extends \Psecio\Gatekeeper\DataSource
      * @param \Modler\Model $model Model instance
      * @return boolean Success/fail of action
      */
-    public function delete(\Modler\Model $model)
-    {
-
-    }
+    public function delete(\Modler\Model $model){}
 
     /**
      * Find and populate a model based on the model type and where criteria
@@ -55,18 +43,19 @@ class Stub extends \Psecio\Gatekeeper\DataSource
      * @param array $where "Where" data to locate record
      * @return boolean Success/fail of action
      */
-    public function find(\Modler\Model $model, array $where = array())
-    {
-
-    }
+    public function find(\Modler\Model $model, array $where = array()){}
 
     /**
      * Return the last error from action taken on the datasource
      *
      * @return string Error string
      */
-    public function getLastError()
-    {
+    public function getLastError(){}
 
-    }
+    /**
+     * Fetch the data from the source
+     *
+     * @return boolean Success/fail of action
+     */
+    public function fetch(){}
 }
