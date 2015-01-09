@@ -2,7 +2,7 @@
 
 namespace Psecio\Gatekeeper\DataSource;
 
-class Mysql extends \Psecio\Gatekeeper\Datasource
+class Mysql extends \Psecio\Gatekeeper\DataSource
 {
     /**
      * PDO instance
