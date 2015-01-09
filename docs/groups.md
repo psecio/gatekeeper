@@ -9,6 +9,8 @@ Groups are represented as objects in the Gatekeeper system with the following pr
 - updated
 - users (relational)
 
+Gatekeeper also supports hierarchical groups (see below).
+
 ## Creating a Group
 
 Making a new group is as easy as making a new user. One thing to note, the *group name* must be **unique**:
@@ -90,5 +92,27 @@ $permissions = Gatekeeper::findGroupById(1)->permissions;
 foreach ($permissions as $permission) {
 	echo 'Description: '.$permission->description."\n";
 }
+?>
+```
+
+## Hierarchical Groups
+
+Groups can also be added as children of other groups to help make categorizing easier. They can either be added by ID or model instance:
+
+```php
+<?php
+$group = Gatekeeper::findGroupById(1);
+$group->addChild(2);
+// or
+$childGroup = Gatekeeper::findGroupById(2);
+$group->addChild($childGroup);
+?>
+```
+
+You can find the child groups using the `children` property from a group instance:
+
+```
+<?php
+$children = Gatekeeper::findGroupById(1)->children;
 ?>
 ```

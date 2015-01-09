@@ -57,6 +57,15 @@ class GroupModel extends \Psecio\Gatekeeper\Model\Mysql
                 'method' => 'findByGroupId',
                 'local' => 'id'
             )
+        ),
+        'children' => array(
+            'description' => 'Child Groups',
+            'type' => 'relation',
+            'relation' => array(
+                'model' => '\\Psecio\\Gatekeeper\\GroupCollection',
+                'method' => 'findChildrenByGroupId',
+                'local' => 'id'
+            )
         )
     );
 
@@ -116,5 +125,26 @@ class GroupModel extends \Psecio\Gatekeeper\Model\Mysql
             'user_id' => $userId
         ));
         return ($userGroup->id !== null) ? true : false;
+    }
+
+    /**
+     * Add the given group or group ID as a child of the current group
+     *
+     * @param integer|GroupModel $group Group ID or Group model instance
+     * @return boolean Result of save operation
+     */
+    public function addChild($group)
+    {
+        if ($this->id === null) {
+            return false;
+        }
+        if ($group instanceof GroupModel) {
+            $group = $group->id;
+        }
+        $childGroup = new GroupParentModel(
+            $this->getDb(),
+            array('groupId' => $group, 'parentId' => $this->id)
+        );
+        return $this->getDb()->save($childGroup);
     }
 }
