@@ -8,22 +8,32 @@ class Mysql extends \Psecio\Gatekeeper\Datasource
      * PDO instance
      * @var \PDO
      */
-    private $db;
+    protected $db;
 
     /**
      * Create our PDO connection, then call parent
      *
      * @param array $config Configuration options
      */
-    public function __construct(array $config)
+    public function __construct(array $config, \PDO $pdo = null)
     {
-        $pdo = new \PDO(
+        $pdo = ($pdo === null) ? $this->buildPdo($config) : $pdo;
+        $this->setDb($pdo);
+        parent::__construct($config);
+    }
+
+    /**
+     * Build the PDO instance
+     *
+     * @param array $config Configuration options
+     * @return \PDO instance
+     */
+    public function buildPdo(array $config)
+    {
+        return new \PDO(
             'mysql:dbname='.$config['name'].';host='.$config['host'],
             $config['username'], $config['password']
         );
-        $this->setDb($pdo);
-
-        parent::__construct($config);
     }
 
     /**
@@ -39,9 +49,9 @@ class Mysql extends \Psecio\Gatekeeper\Datasource
     /**
      * Set the PDO instance
      *
-     * @param \PDO $db PDO instance
+     * @param object $db PDO instance
      */
-    public function setDb(\PDO $db)
+    public function setDb($db)
     {
         $this->db = $db;
     }
