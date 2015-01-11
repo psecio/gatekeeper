@@ -260,7 +260,7 @@ class Gatekeeper
      * @throws \Exception If Data could not be found
      * @return object Model instance
      */
-    public function handleFindBy($name, $args)
+    public static function handleFindBy($name, $args)
     {
         $action = 'find';
         $name = str_replace($action, '', $name);
