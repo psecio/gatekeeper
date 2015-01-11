@@ -39,6 +39,15 @@ class PermissionModel extends \Psecio\Gatekeeper\Model\Mysql
             'description' => 'Date Updated',
             'column' => 'updated',
             'type' => 'datetime'
+        ),
+        'children' => array(
+            'description' => 'Child Permissions',
+            'type' => 'relation',
+            'relation' => array(
+                'model' => '\\Psecio\\Gatekeeper\\PermissionCollection',
+                'method' => 'findChildrenByPermissionId',
+                'local' => 'id'
+            )
         )
     );
 
