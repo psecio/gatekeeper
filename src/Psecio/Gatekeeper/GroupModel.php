@@ -147,4 +147,27 @@ class GroupModel extends \Psecio\Gatekeeper\Model\Mysql
         );
         return $this->getDb()->save($childGroup);
     }
+
+    /**
+     * Remove a child group either by ID or Group model instance
+     *
+     * @param integer|GroupModel $group Group ID or Group model instance
+     * @return boolean Result of delete operation
+     */
+    public function removeChild($group)
+    {
+        if ($this->id === null) {
+            return false;
+        }
+        if ($group instanceof GroupModel) {
+            $group = $group->id;
+        }
+        $childGroup = new GroupParentModel($this->getDb());
+
+        $childGroup = $this->getDb()->find(
+            $childGroup,
+            array('group_id' => $group, 'parent_id' => $this->id)
+        );
+        return $this->getDb()->delete($childGroup);
+    }
 }
