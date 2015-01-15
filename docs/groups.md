@@ -116,3 +116,17 @@ You can find the child groups using the `children` property from a group instanc
 $children = Gatekeeper::findGroupById(1)->children;
 ?>
 ```
+
+You can also remove child groups similarly:
+
+```
+<?php
+$group = Gatekeeper::findGroupById(1);
+
+// You can remove either by ID
+$group->removeChild(2);
+// or by model instance
+$group2 = Gatekeeper::findGroupById(2);
+$group->removeChild($group2);
+?>
+```
