@@ -93,4 +93,39 @@ class GroupModelTest extends \Psecio\Gatekeeper\Base
 
         $this->assertTrue($group->inGroup(1));
     }
+
+    /**
+     * Test adding a child by group model instance
+     */
+    public function testAddChild()
+    {
+        $ds = $this->getMockBuilder('\Psecio\Gatekeeper\DataSource\Mysql')
+            ->disableOriginalConstructor()
+            ->setMethods(array('save'))
+            ->getMock();
+
+        $ds->method('save')
+            ->willReturn(true);
+
+        $group1 = new GroupModel($ds, array('id' => 1234));
+        $group2 = new GroupModel($ds);
+
+        $this->assertTrue($group1->addChild($group2));
+    }
+
+    /**
+     * Test that false is returned when you try to add a child to a
+     *     group not yet loaded
+     */
+    public function testAddChildNoId()
+    {
+        $ds = $this->getMockBuilder('\Psecio\Gatekeeper\DataSource\Mysql')
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        $group1 = new GroupModel($ds);
+        $group2 = new GroupModel($ds);
+
+        $this->assertFalse($group1->addChild($group2));
+    }
 }
