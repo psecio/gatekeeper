@@ -60,7 +60,12 @@ class Gatekeeper
                 throw new \InvalidArgumentException('Data source type "'.$dsType.'" not valid!');
             }
 
-            $datasource = new $dsClass($result);
+            try {
+                $datasource = new $dsClass($result);
+            } catch (\Exception $e) {
+                throw new \Exception('Error creating data source "'.$dsType.'" ('.$e->getMessage().')');
+            }
+
         }
         self::$datasource = $datasource;
 
