@@ -46,6 +46,27 @@ Gatekeeper::register($credentials);
 ```
 
 The return value from the `register` call is a *boolean* indicating the pass/fail status of the registration.
+Addiitonally, you can also link the user to permissions at create time:
+
+```php
+<?php
+$credentials = array(
+    'username' => 'ccornutt',
+    'password' => 'test1',
+    'email' => 'ccornutt@phpdeveloper.org',
+    'first_name' => 'Chris',
+    'last_name' => 'Cornutt'
+);
+// Use can use permission names
+$credentials['permissions'] = array('perm1', 'perm2');
+// or use IDs
+$credentials['permissions'] = array(1, 2);
+
+Gatekeeper::register($credentials);
+?>
+```
+
+**NOTE:** The permissions by the name/id you use must exist *before* the user, otherwise the link is not created.
 
 ## Removing users
 
