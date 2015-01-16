@@ -68,6 +68,26 @@ Gatekeeper::register($credentials);
 
 **NOTE:** The permissions by the name/id you use must exist *before* the user, otherwise the link is not created.
 
+You can also create groups the same way:
+
+```php
+<?php
+$credentials = array(
+    'username' => 'ccornutt',
+    'password' => 'test1',
+    'email' => 'ccornutt@phpdeveloper.org',
+    'first_name' => 'Chris',
+    'last_name' => 'Cornutt'
+);
+// Use can use permission names
+$credentials['groups'] = array('group1', 'group2');
+// or use IDs
+$credentials['groups'] = array(1, 2);
+
+Gatekeeper::register($credentials);
+?>
+```
+
 ## Removing users
 
 Deleteing user records can be done with the `deleteUserById` method:
