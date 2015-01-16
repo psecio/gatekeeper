@@ -74,13 +74,18 @@ class Mysql extends \Modler\Model
     {
         $loadData = array();
         foreach ($this->getProperties() as $propertyName => $propertyDetail) {
-            if (!isset($propertyDetail['column'])) {
-                continue;
-            }
-            $column = $propertyDetail['column'];
-            if (isset($data[$column]) || isset($data[$propertyName])) {
-                $value = isset($data[$column]) ? $data[$column] : $data[$propertyName];
-                $loadData[$propertyName] = $value;
+            // If it's a normal column
+            if (isset($propertyDetail['column'])) {
+                $column = $propertyDetail['column'];
+                if (isset($data[$column]) || isset($data[$propertyName])) {
+                    $value = isset($data[$column]) ? $data[$column] : $data[$propertyName];
+                    $loadData[$propertyName] = $value;
+                }
+            // Or for relations...
+            } elseif ($propertyDetail['type'] == 'relation') {
+                if (isset($data[$propertyName])) {
+                    $loadData[$propertyName] = $data[$propertyName];
+                }
             }
         }
         parent::load($loadData);
