@@ -77,7 +77,7 @@ class UserModel extends \Psecio\Gatekeeper\Model\Mysql
             'description' => 'Groups the User Belongs to',
             'type' => 'relation',
             'relation' => array(
-                'model' => '\\Psecio\\Gatekeeper\\GroupCollection',
+                'model' => '\\Psecio\\Gatekeeper\\UserGroupCollection',
                 'method' => 'findByUserId',
                 'local' => 'id'
             )
