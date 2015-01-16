@@ -15,12 +15,12 @@ class UserGroupModel extends \Psecio\Gatekeeper\Model\Mysql
      * @var array
      */
     protected $properties = array(
-        'group_id' => array(
+        'groupId' => array(
             'description' => 'Group Id',
             'column' => 'group_id',
             'type' => 'integer'
         ),
-        'user_id' => array(
+        'userId' => array(
             'description' => 'User ID',
             'column' => 'user_id',
             'type' => 'integer'
