@@ -2,7 +2,9 @@
 
 ## Introduction
 
-The **Gatekeeper** library is a simple drop-in library that can be used to manage users, permissions and groups for
+**[Find Gatekeeper on GitHub](https://github.com/psecio/gatekeeper)**
+
+The [Gatekeeper](https://github.com/psecio/gatekeeper) library is a simple drop-in library that can be used to manage users, permissions and groups for
 your application. The goal is to make securing your application as simple as possible while still providing a solid and
 secure foundation to base your user system around.
 
