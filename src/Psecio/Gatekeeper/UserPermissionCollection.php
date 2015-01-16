@@ -43,7 +43,7 @@ class UserPermissionCollection extends \Psecio\Gatekeeper\Collection\Mysql
             }
 
             $sql = 'select id, name from permissions where '.$where;
-            $results = $this->getDb()->fetch($sql, array('name' => $permission));
+            $results = $this->getDb()->fetch($sql, $dbData);
             if (!empty($results) && count($results) == 1) {
                 // exists, make the relation
                 $model = new UserPermissionModel(
