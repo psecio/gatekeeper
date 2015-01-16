@@ -89,13 +89,24 @@ class Mysql extends \Psecio\Gatekeeper\DataSource
      */
     public function create(\Modler\Model $model)
     {
+        $relations = array();
+        $properties = $model->getProperties();
+        $other = array();
         $data = $model->toArray();
+
+        // Remove the ones without a column
+        foreach ($data as $index => $item) {
+            // Check the property to see if it's a relation
+            if ($properties[$index]['type'] == 'relation') {
+                $relations[$index] = $item;
+                unset($data[$index]);
+            }
+        }
+
         $data['created'] = date('Y-m-d H:i:s');
         $data['updated'] = date('Y-m-d H:i:s');
 
         list($columns, $bind) = $this->setup($data);
-        $properties = $model->getProperties();
-
         foreach ($columns as $index => $column) {
             $colName = $properties[$column]['column'];
             $columns[$index] = $colName;
@@ -105,7 +116,14 @@ class Mysql extends \Psecio\Gatekeeper\DataSource
             .' ('.implode(',', $columns).') values ('.implode(',', array_values($bind)).')';
         $result = $this->execute($sql, $data);
         if ($result !== false) {
-            $this->id = $this->getDb()->lastInsertId();
+            $model->id = $this->getDb()->lastInsertId();
+        }
+
+        // Now handle the relations - for each of them, get the model, make it and save it
+        foreach ($relations as $index => $item) {
+            $relation = $properties[$index];
+            $instance = new $relation['relation']['model']($this);
+            $instance->create($model, $item);
         }
 
         return $result;
