@@ -184,10 +184,12 @@ class Mysql extends \Psecio\Gatekeeper\DataSource
      * Find records matching the "where" data given
      *     All "where" options are appended via "and"
      *
+     * @param \Modler\Model $model Model instance
      * @param array $where Data to use in "where" statement
+     * @param boolean $multiple Force return of single/multiple
      * @return array Fetched data
      */
-    public function find(\Modler\Model $model, array $where = array())
+    public function find(\Modler\Model $model, array $where = array(), $multiple = false)
     {
         $properties = $model->getProperties();
         list($columns, $bind) = $this->setup($where);
@@ -207,7 +209,7 @@ class Mysql extends \Psecio\Gatekeeper\DataSource
 
         $result = $this->fetch($sql, $where);
 
-        if ($result !== false && count($result) == 1) {
+        if ($result !== false && count($result) == 1 && $multiple === false) {
             $model->load($result[0]);
             return $model;
         } else {

@@ -327,7 +327,7 @@ class Gatekeeper
         }
         $model = self::modelFactory($model.'Model');
         $collection = new $collectionNs(self::$datasource);
-        $collection = self::$datasource->find($model, $data);
+        $collection = self::$datasource->find($model, $data, true);
 
         return $collection;
     }
