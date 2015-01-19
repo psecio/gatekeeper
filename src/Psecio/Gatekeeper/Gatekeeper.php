@@ -197,8 +197,7 @@ class Gatekeeper
     public static function getUserThrottle($userId)
     {
         try {
-            $throttle = new ThrottleModel(self::$datasource);
-            $throttle = Gatekeeper::findThrottleByUserId($throttle, $userId);
+            $throttle = Gatekeeper::findThrottleByUserId($userId);
         } catch (Exception\ThrottleNotFoundException $e) {
             $data = array(
                 'user_id' => $userId,
