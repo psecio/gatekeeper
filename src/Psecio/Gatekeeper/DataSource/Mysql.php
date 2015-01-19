@@ -200,13 +200,30 @@ class Mysql extends \Psecio\Gatekeeper\DataSource
             $update[] = $column.' = '.$name;
         }
 
-        $sql = 'select * from '.$model->getTableName().' where '.implode(' and ', $update);
+        $sql = 'select * from '.$model->getTableName();
+        if (!empty($update)) {
+            $sql .= ' where '.implode(' and ', $update);
+        }
+
         $result = $this->fetch($sql, $where);
 
         if ($result !== false && count($result) == 1) {
             $model->load($result[0]);
+            return $model;
+        } else {
+            // Make a collection instead
+            $modelClass = get_class($model);
+            $collectionNs = str_replace('Model', 'Collection', $modelClass);
+            if (!class_exists($collectionNs)) {
+                throw new \InvalidArgumentException('Collection "'.$collectionNs.'" is invalid!');
+            }
+            $collection = new $collectionNs($this);
+            foreach ($result as $item) {
+                $itemModel = new $modelClass($this, $item);
+                $collection->add($itemModel);
+            }
+            return $collection;
         }
-        return $model;
     }
 
     /**
