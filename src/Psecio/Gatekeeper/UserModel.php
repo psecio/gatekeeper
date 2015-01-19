@@ -287,7 +287,7 @@ class UserModel extends \Psecio\Gatekeeper\Model\Mysql
             'group_id' => $groupId,
             'user_id' => $this->id
         ));
-        if (!isset($userGroup->id)) {
+        if ($userGroup->id === null) {
             return false;
         }
         return ($userGroup->id !== null && $userGroup->groupId === $groupId) ? true : false;
