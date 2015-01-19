@@ -70,7 +70,7 @@ class UserModelTest extends \Psecio\Gatekeeper\Base
 
     public function testUserInGroup()
     {
-        $return = (object)array('id' => 1234, 'name' => 'group1');
+        $return = (object)array('id' => 1234, 'name' => 'group1', 'groupId' => 1234);
 
         $ds = $this->buildMock($return);
         $user = new UserModel($ds);
