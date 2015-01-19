@@ -75,6 +75,16 @@ class Gatekeeper
     }
 
     /**
+     * Get the current datasource
+     *
+     * @return \Psecio\Gatekeeper\DataSource instance
+     */
+    public static function getDatasource()
+    {
+        return self::$datasource;
+    }
+
+    /**
      * Load the variables using the .env handling
      *
      * @param string $envPath Path to the .env file
