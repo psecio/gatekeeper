@@ -212,7 +212,7 @@ class Mysql extends \Psecio\Gatekeeper\DataSource
         if ($result !== false && count($result) == 1 && $multiple === false) {
             $model->load($result[0]);
             return $model;
-        } else {
+        } elseif (count($result) > 1){
             // Make a collection instead
             $modelClass = get_class($model);
             $collectionNs = str_replace('Model', 'Collection', $modelClass);
@@ -226,6 +226,7 @@ class Mysql extends \Psecio\Gatekeeper\DataSource
             }
             return $collection;
         }
+        return $model;
     }
 
     /**
