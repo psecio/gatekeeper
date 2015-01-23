@@ -186,6 +186,34 @@ if (Gatekeeper::findUserById($userId)->addPermission($permissionId) === true) {
 ?>
 ```
 
+## Using "grant"
+
+There's also a method on the User object that can be used to grant a user access to multiple permissions and groups all at the same time: `grant`. Here's an example:
+
+```php
+<?php
+Gatekeeper::findUserById(1)->grant(array(
+    'permissions' => array(1, 3),
+    'groups' => array(1)
+));
+?>
+```
+
+You can either specify a `permissions` and `groups` values as an array of IDs or you can feed in objects...or a mix of both:
+
+```php
+<?php
+$perm1 = Gatekeeper::findPermissionById(1);
+$group1 = Gatekeeper::findGroupById(1);
+
+Gatekeeper::findUserById(1)->grant(array(
+    'permissions' => array($perm1, 3),
+    'groups' => array($group1)
+));
+?>
+```
+
+
 ## Check if a user is currently banned (throttling)
 
 If the user login has had too many failed attempts, they'll be marked as "banned" in the system. You can find a user's ban status with the `isBanned` check:

@@ -357,4 +357,28 @@ class UserModel extends \Psecio\Gatekeeper\Model\Mysql
 
         return ($throttle->attempts === null) ? 0 : $throttle->attempts;
     }
+
+    public function grant(array $config)
+    {
+        if (isset($config['permissions'])) {
+            foreach ($config['permissions'] as $permission) {
+                $permission = ($permission instanceof PermissionModel) ? $permission->id : $permission;
+                $userPerm = new UserPermissionModel($this->getDb(), array(
+                    'userId' => $this->id,
+                    'permissionId' => $permission
+                ));
+                $this->getDb()->save($userPerm);
+            }
+        }
+        if (isset($config['groups'])) {
+            foreach ($config['groups'] as $group) {
+                $group = ($group instanceof GroupModel) ? $group->id : $group;
+                $userGroup = new UserGroupModel($this->getDb(), array(
+                    'userId' => $this->id,
+                    'groupId' => $group
+                ));
+                $this->getDb()->save($userGroup);
+            }
+        }
+    }
 }
