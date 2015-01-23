@@ -91,7 +91,6 @@ class Mysql extends \Psecio\Gatekeeper\DataSource
     {
         $relations = array();
         $properties = $model->getProperties();
-        $other = array();
         $data = $model->toArray();
 
         // Remove the ones without a column
@@ -132,7 +131,7 @@ class Mysql extends \Psecio\Gatekeeper\DataSource
     /**
      * Update a record
      *
-     * @param array $data Data to use in update
+     * @param \Modler\Model $model Model instance
      * @return boolean Success/fail of operation
      */
     public function update(\Modler\Model $model)
