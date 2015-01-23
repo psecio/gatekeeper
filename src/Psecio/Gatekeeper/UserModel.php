@@ -361,6 +361,11 @@ class UserModel extends \Psecio\Gatekeeper\Model\Mysql
         return ($throttle->attempts === null) ? 0 : $throttle->attempts;
     }
 
+    /**
+     * Grant permissions and groups (multiple) at the same time
+     *
+     * @param array $config Configuration settings (permissions & groups)
+     */
     public function grant(array $config)
     {
         if (isset($config['permissions'])) {
