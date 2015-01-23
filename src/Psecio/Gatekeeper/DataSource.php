@@ -76,7 +76,7 @@ abstract class DataSource
      *
      * @param \Modler\Model $model Model instance
      * @param array $where "Where" data to locate record
-     * @return boolean Success/fail of action
+     * @return object Either a collection or model instance
      */
     public abstract function find(\Modler\Model $model, array $where = array());
 
