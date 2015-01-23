@@ -184,10 +184,12 @@ class Mysql extends \Psecio\Gatekeeper\DataSource
      * Find records matching the "where" data given
      *     All "where" options are appended via "and"
      *
+     * @param \Modler\Model $model Model instance
      * @param array $where Data to use in "where" statement
+     * @param boolean $multiple Force return of single/multiple
      * @return array Fetched data
      */
-    public function find(\Modler\Model $model, array $where = array())
+    public function find(\Modler\Model $model, array $where = array(), $multiple = false)
     {
         $properties = $model->getProperties();
         list($columns, $bind) = $this->setup($where);
@@ -200,11 +202,29 @@ class Mysql extends \Psecio\Gatekeeper\DataSource
             $update[] = $column.' = '.$name;
         }
 
-        $sql = 'select * from '.$model->getTableName().' where '.implode(' and ', $update);
+        $sql = 'select * from '.$model->getTableName();
+        if (!empty($update)) {
+            $sql .= ' where '.implode(' and ', $update);
+        }
+
         $result = $this->fetch($sql, $where);
 
-        if ($result !== false && count($result) == 1) {
+        if ($result !== false && count($result) == 1 && $multiple === false) {
             $model->load($result[0]);
+            return $model;
+        } elseif (count($result) > 1){
+            // Make a collection instead
+            $modelClass = get_class($model);
+            $collectionNs = str_replace('Model', 'Collection', $modelClass);
+            if (!class_exists($collectionNs)) {
+                throw new \InvalidArgumentException('Collection "'.$collectionNs.'" is invalid!');
+            }
+            $collection = new $collectionNs($this);
+            foreach ($result as $item) {
+                $itemModel = new $modelClass($this, $item);
+                $collection->add($itemModel);
+            }
+            return $collection;
         }
         return $model;
     }
