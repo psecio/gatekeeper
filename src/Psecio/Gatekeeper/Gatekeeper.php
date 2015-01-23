@@ -53,24 +53,36 @@ class Gatekeeper
         }
 
         if ($datasource === null) {
-            // Now create the data source
-            $dsType = (isset($config['source'])) ? $config['source'] : 'mysql';
-            $dsClass = '\\Psecio\\Gatekeeper\\DataSource\\'.ucwords($dsType);
-            if (!class_exists($dsClass)) {
-                throw new \InvalidArgumentException('Data source type "'.$dsType.'" not valid!');
-            }
-
-            try {
-                $datasource = new $dsClass($result);
-            } catch (\Exception $e) {
-                throw new \Exception('Error creating data source "'.$dsType.'" ('.$e->getMessage().')');
-            }
-
+            $datasource = self::buildDataSource($config, $result);
         }
         self::$datasource = $datasource;
 
         if (isset($config['throttle']) && $config['throttle'] === false) {
             self::disableThrottle();
+        }
+    }
+
+    /**
+     * Build a datasource object
+     *
+     * @param array $config Configuration settings
+     * @param array $result Environment data
+     * @throws \Exception If data source type is not valid
+     * @return \Psecio\Gatekeeper\DataSource instance
+     */
+    public static function buildDataSource(array $config, $result)
+    {
+        $dsType = (isset($config['source'])) ? $config['source'] : 'mysql';
+        $dsClass = '\\Psecio\\Gatekeeper\\DataSource\\'.ucwords($dsType);
+        if (!class_exists($dsClass)) {
+            throw new \InvalidArgumentException('Data source type "'.$dsType.'" not valid!');
+        }
+
+        try {
+            $datasource = new $dsClass($result);
+            return $datasource;
+        } catch (\Exception $e) {
+            throw new \Exception('Error creating data source "'.$dsType.'" ('.$e->getMessage().')');
         }
     }
 
