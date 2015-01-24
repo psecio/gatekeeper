@@ -368,6 +368,7 @@ class UserModel extends \Psecio\Gatekeeper\Model\Mysql
      */
     public function grant(array $config)
     {
+        $return = true;
         if (isset($config['permissions'])) {
             foreach ($config['permissions'] as $permission) {
                 $permission = ($permission instanceof PermissionModel) ? $permission->id : $permission;
@@ -375,7 +376,10 @@ class UserModel extends \Psecio\Gatekeeper\Model\Mysql
                     'userId' => $this->id,
                     'permissionId' => $permission
                 ));
-                $this->getDb()->save($userPerm);
+                $result = $this->getDb()->save($userPerm);
+                if ($result === false && $return === true) {
+                    $return = false;
+                }
             }
         }
         if (isset($config['groups'])) {
@@ -385,7 +389,10 @@ class UserModel extends \Psecio\Gatekeeper\Model\Mysql
                     'userId' => $this->id,
                     'groupId' => $group
                 ));
-                $this->getDb()->save($userGroup);
+                $result = $this->getDb()->save($userGroup);
+                if ($result === false && $return === true) {
+                    $return = false;
+                }
             }
         }
     }

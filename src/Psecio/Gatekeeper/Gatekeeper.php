@@ -41,6 +41,26 @@ class Gatekeeper
      */
     public static function init($envPath = null, array $config = array(), \Psecio\Gatekeeper\DataSource $datasource = null)
     {
+        $result = self::getConfig($config, $envPath);
+        if ($datasource === null) {
+            $datasource = self::buildDataSource($config, $result);
+        }
+        self::$datasource = $datasource;
+
+        if (isset($config['throttle']) && $config['throttle'] === false) {
+            self::disableThrottle();
+        }
+    }
+
+    /**
+     * Get the configuration either from the config given or .env path
+     *
+     * @param array $config Configuration values
+     * @param string $envPath Path to .env file
+     * @return array Set of configuration values
+     */
+    public static function getConfig(array $config, $envPath = null)
+    {
         $envPath = ($envPath !== null) ? $envPath : getcwd();
         $result = self::loadDotEnv($envPath);
 
@@ -51,15 +71,7 @@ class Gatekeeper
             }
             $result = $config;
         }
-
-        if ($datasource === null) {
-            $datasource = self::buildDataSource($config, $result);
-        }
-        self::$datasource = $datasource;
-
-        if (isset($config['throttle']) && $config['throttle'] === false) {
-            self::disableThrottle();
-        }
+        return $result;
     }
 
     /**
