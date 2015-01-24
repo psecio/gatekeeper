@@ -370,30 +370,63 @@ class UserModel extends \Psecio\Gatekeeper\Model\Mysql
     {
         $return = true;
         if (isset($config['permissions'])) {
-            foreach ($config['permissions'] as $permission) {
-                $permission = ($permission instanceof PermissionModel) ? $permission->id : $permission;
-                $userPerm = new UserPermissionModel($this->getDb(), array(
-                    'userId' => $this->id,
-                    'permissionId' => $permission
-                ));
-                $result = $this->getDb()->save($userPerm);
-                if ($result === false && $return === true) {
+            $result = $this->grantPermissions($config['permissions']);
+            if ($result === false && $return === true) {
                     $return = false;
-                }
             }
         }
         if (isset($config['groups'])) {
-            foreach ($config['groups'] as $group) {
-                $group = ($group instanceof GroupModel) ? $group->id : $group;
-                $userGroup = new UserGroupModel($this->getDb(), array(
-                    'userId' => $this->id,
-                    'groupId' => $group
-                ));
-                $result = $this->getDb()->save($userGroup);
-                if ($result === false && $return === true) {
+            $result = $this->grantGroups($config['groups']);
+            if ($result === false && $return === true) {
                     $return = false;
-                }
             }
         }
+        return $return;
+    }
+
+    /**
+     * Handle granting of multiple permissions
+     *
+     * @param array $permissions Set of permissions (either IDs or objects)
+     * @return boolean Success/fail of all saves
+     */
+    public function grantPermissions(array $permissions)
+    {
+        $return = true;
+        foreach ($permissions as $permission) {
+            $permission = ($permission instanceof PermissionModel) ? $permission->id : $permission;
+            $userPerm = new UserPermissionModel($this->getDb(), array(
+                'userId' => $this->id,
+                'permissionId' => $permission
+            ));
+            $result = $this->getDb()->save($userPerm);
+            if ($result === false && $return === true) {
+                $return = false;
+            }
+        }
+        return $return;
+    }
+
+    /**
+     * Handle granting of multiple groups
+     *
+     * @param array $groups Set of groups (either IDs or objects)
+     * @return boolean Success/fail of all saves
+     */
+    public function grantGroups(array $groups)
+    {
+        $return = true;
+        foreach ($groups as $group) {
+            $group = ($group instanceof GroupModel) ? $group->id : $group;
+            $userGroup = new UserGroupModel($this->getDb(), array(
+                'userId' => $this->id,
+                'groupId' => $group
+            ));
+            $result = $this->getDb()->save($userGroup);
+            if ($result === false && $return === true) {
+                $return = false;
+            }
+        }
+        return $return;
     }
 }
