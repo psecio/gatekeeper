@@ -349,6 +349,21 @@ class UserModelTest extends \Psecio\Gatekeeper\Base
     }
 
     /**
+     * Try to add a set of permissions with a failed return (false)
+     */
+    public function testGrantPermissionsByIdInalid()
+    {
+        $ds = $this->getMockBuilder('\Psecio\Gatekeeper\DataSource\Mysql')
+            ->disableOriginalConstructor()
+            ->setMethods(array('save'))
+            ->getMock();
+
+        $ds->method('save')->willReturn(false);
+        $user = new UserModel($ds);
+        $this->assertFalse($user->grantPermissions(array(1, 2, 3)));
+    }
+
+    /**
      * Test that it understsands how to grant permissions by model instances too
      */
     public function testGrantPermissionsByModelValid()
@@ -384,6 +399,22 @@ class UserModelTest extends \Psecio\Gatekeeper\Base
         $groups = array(1, 2, 3);
         $user = new UserModel($ds);
         $this->assertTrue($user->grantGroups($groups));
+    }
+
+    /**
+     * Test the addition of group accesss by ID with failure
+     */
+    public function testGrantGroupsByIdInvalid()
+    {
+        $ds = $this->getMockBuilder('\Psecio\Gatekeeper\DataSource\Mysql')
+            ->disableOriginalConstructor()
+            ->setMethods(array('save'))
+            ->getMock();
+
+        $ds->method('save')->willReturn(false);
+
+        $user = new UserModel($ds);
+        $this->assertFalse($user->grantGroups(array(1, 2, 3)));
     }
 
     /**
