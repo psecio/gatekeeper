@@ -21,4 +21,30 @@ class UserGroupCollectionTest extends \Psecio\Gatekeeper\Base
         $groups->findByUserId($userId);
         $this->assertCount(2, $groups);
     }
+
+    /**
+     * Test the creation of new collection items based on data given
+     */
+    public function testCreateRecordsFromModelDataById()
+    {
+        $ds = $this->getMockBuilder('\Psecio\Gatekeeper\DataSource\Mysql')
+            ->disableOriginalConstructor()
+            ->setMethods(array('save', 'fetch'))
+            ->getMock();
+
+        $ds->method('save')->willReturn(true);
+
+        $userModel = new UserModel($ds, array('id' => 1));
+        $data = array(array('id' => 1, 'name' => 'Group #1'));
+        $ds->method('fetch')->willReturn($data);
+
+        $groupIdList = array(1, 2, 3);
+
+        $groups = new UserGroupCollection($ds);
+        $groups->create($userModel, $groupIdList);
+
+        $this->assertEquals(
+            count($groups->toArray()), count($groupIdList)
+        );
+    }
 }
