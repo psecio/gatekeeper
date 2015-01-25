@@ -50,7 +50,9 @@ class UserGroupCollection extends \Psecio\Gatekeeper\Collection\Mysql
                     $this->getDb(),
                     array('groupId' => $results[0]['id'], 'userId' => $model->id)
                 );
-                $this->getDb()->save($model);
+                if ($this->getDb()->save($model) === true) {
+                    $this->add($model);
+                }
             }
         }
     }
