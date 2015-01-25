@@ -79,6 +79,19 @@ class UserModelTest extends \Psecio\Gatekeeper\Base
     }
 
     /**
+     * Test that false is returned if the group found is invalid (no ID)
+     */
+    public function testUserInGroupInvalid()
+    {
+        $return = (object)array('id' => null, 'name' => 'group1', 'groupId' => 1234);
+
+        $ds = $this->buildMock($return);
+        $user = new UserModel($ds);
+
+        $this->assertFalse($user->inGroup(1234));
+    }
+
+    /**
      * Test the clearing of the password reset handling
      */
     public function testClearPasswordResetCode()
@@ -316,5 +329,81 @@ class UserModelTest extends \Psecio\Gatekeeper\Base
 
         $postPassword = $user->prePassword($password);
         $this->assertNotEquals($password, $postPassword);
+    }
+
+    /**
+     * Test that a true is returned when you add valid permissions by ID
+     */
+    public function testGrantPermissionsByIdValid()
+    {
+        $ds = $this->getMockBuilder('\Psecio\Gatekeeper\DataSource\Mysql')
+            ->disableOriginalConstructor()
+            ->setMethods(array('save'))
+            ->getMock();
+
+        $ds->method('save')->willReturn(true);
+
+        $perms = array(1, 2, 3);
+        $user = new UserModel($ds);
+        $this->assertTrue($user->grantPermissions($perms));
+    }
+
+    /**
+     * Test that it understsands how to grant permissions by model instances too
+     */
+    public function testGrantPermissionsByModelValid()
+    {
+        $ds = $this->getMockBuilder('\Psecio\Gatekeeper\DataSource\Mysql')
+            ->disableOriginalConstructor()
+            ->setMethods(array('save'))
+            ->getMock();
+
+        $ds->method('save')->willReturn(true);
+
+        $perms = array(
+            new PermissionModel($ds, array('id' => 1)),
+            new PermissionModel($ds, array('id' => 2)),
+            new PermissionModel($ds, array('id' => 3))
+        );
+        $user = new UserModel($ds);
+        $this->assertTrue($user->grantPermissions($perms));
+    }
+
+    /**
+     * Test the addition of group accesss by ID
+     */
+    public function testGrantGroupsByIdValid()
+    {
+        $ds = $this->getMockBuilder('\Psecio\Gatekeeper\DataSource\Mysql')
+            ->disableOriginalConstructor()
+            ->setMethods(array('save'))
+            ->getMock();
+
+        $ds->method('save')->willReturn(true);
+
+        $groups = array(1, 2, 3);
+        $user = new UserModel($ds);
+        $this->assertTrue($user->grantGroups($groups));
+    }
+
+    /**
+     * Test the addition of group accesss by Group model
+     */
+    public function testGrantGroupsByModelValid()
+    {
+        $ds = $this->getMockBuilder('\Psecio\Gatekeeper\DataSource\Mysql')
+            ->disableOriginalConstructor()
+            ->setMethods(array('save'))
+            ->getMock();
+
+        $ds->method('save')->willReturn(true);
+
+        $groups = array(
+            new GroupModel($ds, array('id' => 1)),
+            new GroupModel($ds, array('id' => 2)),
+            new GroupModel($ds, array('id' => 3))
+        );
+        $user = new UserModel($ds);
+        $this->assertTrue($user->grantGroups($groups));
     }
 }
