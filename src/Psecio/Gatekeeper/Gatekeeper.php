@@ -32,6 +32,8 @@ class Gatekeeper
      */
     private static $throttleStatus = true;
 
+    private static $restrictions = array();
+
     /**
      * Initialize the Gatekeeper instance, set up environment file and PDO connection
      *
@@ -50,6 +52,13 @@ class Gatekeeper
         if (isset($config['throttle']) && $config['throttle'] === false) {
             self::disableThrottle();
         }
+
+        self::loadRestrictions();
+    }
+
+    public static function loadRestrictions()
+    {
+
     }
 
     /**
@@ -181,6 +190,15 @@ class Gatekeeper
                 $result = $throttle->checkAttempts();
                 if ($result === false) {
                     return false;
+                }
+            }
+        }
+
+        // Check any restrictions
+        if (!empty(self::$restrictions)) {
+            foreach (self::$restrictions as $restriction) {
+                if ($restriction->evaluate() === false) {
+                    throw new Exception\RestrictionFailedException('Restriction '.get_class($restriction).' failed');
                 }
             }
         }
@@ -443,5 +461,21 @@ class Gatekeeper
         $instance = new $modelNs(self::$datasource);
         $instance = self::$datasource->find($instance, $data);
         return $instance;
+    }
+
+    /**
+     * Create a restriction and add it to be evaluated
+     *
+     * @param string $type Restriction type
+     * @param array $config Restriction configuration
+     */
+    public static function restrict($type, array $config)
+    {
+        $classNs = '\\Psecio\\Gatekeeper\\Restrict\\'.ucwords(strtolower($type));
+        if (!class_exists($classNs)) {
+            throw new \InvalidArgumentException('Restriction type "'.$type.'" is invalid');
+        }
+        $instance = new $classNs($config);
+        self::$restrictions[] = $instance;
     }
 }
