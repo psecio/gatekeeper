@@ -177,21 +177,9 @@ class Gatekeeper
 
         // Handle some throttle logic, if it's turned on
         if (self::$throttleStatus === true) {
-            $throttle = self::getUserThrottle($user->id);
-            $throttle->updateAttempts();
-
-            // See if they're blocked
-            if ($throttle->status === ThrottleModel::STATUS_BLOCKED) {
-                $result = $throttle->checkTimeout();
-                if ($result === false) {
-                    return false;
-                }
-            } else {
-                $result = $throttle->checkAttempts();
-                if ($result === false) {
-                    return false;
-                }
-            }
+            // Set up our default throttle restriction
+            $instance = new \Psecio\Gatekeeper\Restrict\Throttle(array('userId' => $user->id));
+            self::$restrictions[] = $instance;
         }
 
         // Check any restrictions
@@ -207,7 +195,7 @@ class Gatekeeper
         $result = password_verify($credentials['password'], $user->password);
 
         if (self::$throttleStatus === true && $result === true) {
-            $throttle->allow();
+            $instance->model->allow();
         }
 
         return $result;
