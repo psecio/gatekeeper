@@ -52,8 +52,6 @@ class Gatekeeper
         if (isset($config['throttle']) && $config['throttle'] === false) {
             self::disableThrottle();
         }
-
-        self::loadRestrictions();
     }
 
     /**
