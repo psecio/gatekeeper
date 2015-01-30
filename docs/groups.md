@@ -54,6 +54,21 @@ Gatekeeper::findGroupById(1)->addUser($user);
 ?>
 ```
 
+## Removing a user from a group
+
+You can remove a user from a group in much the same way, either by an ID or a User model instance with the `removeUser` method:
+
+```
+<?php
+// Either a user ID
+Gatekeeper::findGroupById(1)->removeUser(1);
+
+// Or a user model, it will extract the ID
+$user = new UserModel();
+Gatekeeper::findGroupById(1)->removeUser($user);
+?>
+```
+
 ## Checking to see if a user is in a group
 
 You can use the `inGroup` method to check and see if a user ID is in a group:
@@ -79,6 +94,21 @@ Gatekeeper::findGroupById(1)->addPermission($permId);
 // Or you can use a PermissionModel object
 $permission = Gatekeeper::findPermissionById(1);
 Gatekeeper::findGroupById(1)->addPermission($permission);
+?>
+```
+
+## Removing a permission from a group
+
+A permission can be removed from a group in the same way a user can, just with the `removePermission` method:
+
+```
+<?php
+$permId = 1;
+Gatekeeper::findGroupById(1)->removePermission($permId);
+
+// Or you can use a PermissionModel object
+$permission = Gatekeeper::findPermissionById(1);
+Gatekeeper::findGroupById(1)->removePermission($permission);
 ?>
 ```
 

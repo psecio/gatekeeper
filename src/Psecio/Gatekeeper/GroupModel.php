@@ -91,9 +91,32 @@ class GroupModel extends \Psecio\Gatekeeper\Model\Mysql
     }
 
     /**
+     * Remove a user from a group
+     *
+     * @param integer|UserModel $user User ID or model instance
+     * @return boolean Success/fail of removal
+     */
+    public function removeUser($user)
+    {
+        if ($this->id === null) {
+            return false;
+        }
+        if ($user instanceof UserModel) {
+            $user = $user->id;
+        }
+        $data = array(
+            'group_id' => $this->id,
+            'user_id' => $user
+        );
+        $groupUser = new UserGroupModel($this->getDb(), $data);
+        return $this->getDb()->delete($groupUser);
+    }
+
+    /**
      * Add a permission relation for the group
      *
      * @param integer|PermissionModel $permission Either a permission ID or PermissionModel
+     * @return boolean Success/fail of removal
      */
     public function addPermission($permission)
     {
@@ -109,6 +132,28 @@ class GroupModel extends \Psecio\Gatekeeper\Model\Mysql
         );
         $groupPerm = new GroupPermissionModel($this->getDb(), $data);
         return $this->getDb()->save($groupPerm);
+    }
+
+    /**
+     * Remove a permission from a group
+     *
+     * @param integer|PermissionModel $permission Permission model or ID
+     * @return boolean Success/fail of removal
+     */
+    public function removePermission($permission)
+    {
+        if ($this->id === null) {
+            return false;
+        }
+        if ($permission instanceof PermissionModel) {
+            $permission = $permission->id;
+        }
+        $data = array(
+            'permission_id' => $permission,
+            'group_id' => $this->id
+        );
+        $groupPerm = new GroupPermissionModel($this->getDb(), $data);
+        return $this->getDb()->delete($groupPerm);
     }
 
     /**
