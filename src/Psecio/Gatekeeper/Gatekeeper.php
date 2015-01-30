@@ -56,11 +56,6 @@ class Gatekeeper
         self::loadRestrictions();
     }
 
-    public static function loadRestrictions()
-    {
-
-    }
-
     /**
      * Get the configuration either from the config given or .env path
      *
@@ -115,6 +110,16 @@ class Gatekeeper
     public static function getDatasource()
     {
         return self::$datasource;
+    }
+
+    /**
+     * Set the current data source to the one given
+     *
+     * @param \Psecio\Gatekeeper\DataSource $ds Data source instance
+     */
+    public static function setDatasource($ds)
+    {
+        self::$datasource = $ds;
     }
 
     /**
