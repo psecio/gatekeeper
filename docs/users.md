@@ -159,6 +159,19 @@ if (Gatekeeper::findUserById($userId)->addGroup($groupId) === true) {
 ?>
 ```
 
+## Revoking access to a group
+
+You can also remove a user from a group by revoking their access:
+
+```php
+<?php
+$groupId = 1;
+if (Gatekeeper::findUserById($userId)->revokeGroup($groupId) === true) {
+    echo "User removed from group successfully!";
+}
+?>
+```
+
 ## Get a list of user permissions
 
 You can use the `permissions` property to get the full set of user permissions. These are the permissions **directly assigned** to the user, not to any groups they may be a part of:
@@ -182,6 +195,20 @@ $userId = 1;
 $permissionId = 1;
 if (Gatekeeper::findUserById($userId)->addPermission($permissionId) === true) {
 	echo 'Permission added!';
+}
+?>
+```
+
+## Revoking a permission
+
+You can remove a permission from a user by revoking it:
+
+```
+<?php
+$userId = 1;
+$permissionId = 1;
+if (Gatekeeper::findUserById($userId)->revokePermission($permissionId) === true) {
+    echo 'Permission revoked!';
 }
 ?>
 ```
