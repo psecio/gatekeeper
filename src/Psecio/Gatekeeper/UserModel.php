@@ -158,6 +158,24 @@ class UserModel extends \Psecio\Gatekeeper\Model\Mysql
     }
 
     /**
+     * Revoke a user permission
+     *
+     * @param integer|PermissionModel $perm Permission ID or model instance
+     * @return boolean Success/fail of delete
+     */
+    public function revokePermission($perm)
+    {
+        if ($perm instanceof PermissionModel) {
+            $perm = $perm->id;
+        }
+        $perm = new UserPermissionModel($this->getDb(), array(
+            'user_id' => $this->id,
+            'permission_id' => $perm
+        ));
+        return $this->getDb()->delete($perm);
+    }
+
+    /**
      * Add a group to the user
      *
      * @param integer|GroupModel $group Add the user to a group
@@ -173,6 +191,24 @@ class UserModel extends \Psecio\Gatekeeper\Model\Mysql
             'user_id' => $this->id
         ));
         return $this->getDb()->save($group);
+    }
+
+    /**
+     * Revoke access to a group for a user
+     *
+     * @param integer|GroupModel $group ID or model of group to remove
+     * @return boolean
+     */
+    public function revokeGroup($group)
+    {
+        if ($group instanceof GroupModel) {
+            $group = $group->id;
+        }
+        $group = new UserGroupModel($this->getDb(), array(
+            'group_id' => $group,
+            'user_id' => $this->id
+        ));
+        return $this->getDb()->delete($group);
     }
 
     /**
