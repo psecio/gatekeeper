@@ -32,6 +32,10 @@ class Gatekeeper
      */
     private static $throttleStatus = true;
 
+    /**
+     * Current set of restrictions
+     * @var array
+     */
     private static $restrictions = array();
 
     /**
@@ -118,6 +122,16 @@ class Gatekeeper
     public static function setDatasource($ds)
     {
         self::$datasource = $ds;
+    }
+
+    /**
+     * Get the current list of restrictions
+     *
+     * @return array Set of restrictions
+     */
+    public static function getRestrictions()
+    {
+        return self::$restrictions;
     }
 
     /**
