@@ -128,4 +128,54 @@ class GroupModelTest extends \Psecio\Gatekeeper\Base
 
         $this->assertFalse($group1->addChild($group2));
     }
+
+    /**
+     * Remove a valid child of the group by ID
+     */
+    public function testRemoveChildByIdValid()
+    {
+        $ds = $this->getMockBuilder('\Psecio\Gatekeeper\DataSource\Stub')
+            ->disableOriginalConstructor()
+            ->setMethods(array('find', 'delete'))
+            ->getMock();
+
+        $group = new GroupModel($ds, array('id' => 1234));
+        $ds->method('find')->willReturn($group);
+        $ds->method('delete')->willReturn(true);
+
+        $this->assertTrue($group->removeChild(1));
+    }
+
+    /**
+     * Remove a valid child of the group by model instance
+     */
+    public function testRemoveChildByModelValid()
+    {
+        $ds = $this->getMockBuilder('\Psecio\Gatekeeper\DataSource\Stub')
+            ->disableOriginalConstructor()
+            ->setMethods(array('find', 'delete'))
+            ->getMock();
+
+        $group1 = new GroupModel($ds, array('id' => 1234));
+        $group2 = new GroupModel($ds, array('id' => 4321));
+
+        $ds->method('find')->willReturn($group1);
+        $ds->method('delete')->willReturn(true);
+
+        $this->assertTrue($group1->removeChild($group2));
+    }
+
+    /**
+     * Test the false return of tyring to remove a child when no ID
+     *     is set on the parent group
+     */
+    public function testRemoveChildNoId()
+    {
+        $ds = $this->getMockBuilder('\Psecio\Gatekeeper\DataSource\Mysql')
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        $group = new GroupModel($ds);
+        $this->assertFalse($group->removeChild(1));
+    }
 }
