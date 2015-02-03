@@ -15,6 +15,20 @@ class GatekeeperTest extends \Psecio\Gatekeeper\Base
     }
 
     /**
+     * Test the getter/setter for datasources
+     */
+    public function testGetSetDatasource()
+    {
+        $ds = $this->getMockBuilder('\Psecio\Gatekeeper\DataSource\Stub')
+            ->disableOriginalConstructor()
+            ->setMethods(array('find', 'delete'))
+            ->getMock();
+
+        Gatekeeper::setDatasource($ds);
+        $this->assertEquals(Gatekeeper::getDatasource(), $ds);
+    }
+
+    /**
      * Test the enable/disable of throttling
      */
     public function testEnableDisableThrottle()
@@ -52,5 +66,26 @@ class GatekeeperTest extends \Psecio\Gatekeeper\Base
 
         $result = $gk::getUserThrottle($userId);
         $this->assertEquals(42, $result->userId);
+    }
+
+    /**
+     * Test that a restriction is correctly made
+     */
+    public function testCreateRestriction()
+    {
+        Gatekeeper::restrict('ip', array());
+        $restrict = Gatekeeper::getRestrictions();
+        $this->assertCount(1, $restrict);
+        $this->assertTrue($restrict[0] instanceof \Psecio\Gatekeeper\Restrict\Ip);
+    }
+
+    /**
+     * Test the creation of an invalid (not found) restriction
+     *
+     * @expectedException \InvalidArgumentException
+     */
+    public function testCreateInvalidRestriction()
+    {
+        Gatekeeper::restrict('foobar', array());
     }
 }
