@@ -10,9 +10,8 @@ class CreateAuthTokenTable extends AbstractMigration
     public function up()
     {
         $tokens = $this->table('auth_tokens');
-        $tokens->addColumn('token', 'string', array('limit' => 32))
-              ->addColumn('verifier', 'string', array('limit' => 100))
-              ->addColumn('user_id', 'string', array('limit' => 100))
+        $tokens->addColumn('token', 'string', array('limit' => 100))
+              ->addColumn('user_id', 'integer')
               ->addColumn('expires', 'datetime')
               ->addColumn('created', 'datetime')
               ->addColumn('updated', 'datetime', array('default' => null))
