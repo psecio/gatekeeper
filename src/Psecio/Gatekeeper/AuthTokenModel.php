@@ -35,7 +35,16 @@ class AuthTokenModel extends \Psecio\Gatekeeper\Model\Mysql
             'column' => 'user_id',
             'type' => 'integer'
         ),
-        'created' => array(
+        'user' => array(
+            'description' => 'User related to token',
+            'type' => 'relation',
+            'relation' => array(
+                'model' => '\\Psecio\\Gatekeeper\\UserModel',
+                'method' => 'findByUserId',
+                'local' => 'userId'
+            )
+        ),
+        'expires' => array(
             'description' => 'Date Token Expires',
             'column' => 'expires',
             'type' => 'datetime'
