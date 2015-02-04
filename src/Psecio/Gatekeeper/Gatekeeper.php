@@ -491,12 +491,15 @@ class Gatekeeper
     /**
      * Enable and set up the "Remember Me" cookie token handling for the given user
      *
-     * @param \Psecio\Gatekeeper\UserModel $user User model instance
+     * @param \Psecio\Gatekeeper\UserModel|string $user User model instance
      * @param  array $config Set of configuration settings
      * @return boolean Success/fail of sesssion setup
      */
-    public static function rememberMe(UserModel $user, array $config = array())
+    public static function rememberMe($user, array $config = array())
     {
+        if (is_string($user)) {
+            $user = Gatekeeper::findByUsername($user);
+        }
         $data = array_merge($_COOKIE, $config);
         $remember = new Session\RememberMe(self::$datasource, $data, $user);
         return $remember->setup();
