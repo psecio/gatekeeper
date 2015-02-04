@@ -53,3 +53,21 @@ if (Gatekeeper::rememberMe($user, $config) === true) {
 ```
 
 The `interval` format here is any supported by the [PHP DateTime handling](http://php.net/manual/en/datetime.formats.php) in the constructor.
+
+#### Remember Me & Authentication
+
+In addition to the more manual handling of the "remember me" functionality above, you can also have the `authenicate` method kick off the process when the user successfully authenticates with a second optional parameter:
+
+```
+<?php
+$credentials = array(
+    'username' => 'ccornutt',
+    'password' => 'valid-password'
+);
+if (Gatekeeper::authenticate($credentials, true) == true) {
+    echo 'valid!';
+}
+?>
+```
+
+The only difference here is that second parameter, the `true`, that is a switch to turn on the "remember" handling. By default this is disabled, so if you want to use this automatically, you'll need to enable it here. With that enabled, you can then use the `checkRememberMe` method mentioned above to get the user that matches the token.
