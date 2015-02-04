@@ -177,10 +177,10 @@ class Gatekeeper
      * Authenticate a user given the username/password credentials
      *
      * @param array $credentials Credential information (must include "username" and "password")
-     * @param array $config Configuration options [optional]
+     * @param boolean $rememeber Flag to activate the "remember me" functionality
      * @return boolean Pass/fail of authentication
      */
-    public static function authenticate(array $credentials, array $config = array())
+    public static function authenticate(array $credentials, $remember = false)
     {
         $username = $credentials['username'];
         $user = new UserModel(self::$datasource);
@@ -213,6 +213,10 @@ class Gatekeeper
 
         if (self::$throttleStatus === true && $result === true) {
             $instance->model->allow();
+
+            if ($remember === true) {
+                self::rememberMe($user);
+            }
         }
 
         return $result;
@@ -482,5 +486,30 @@ class Gatekeeper
         }
         $instance = new $classNs($config);
         self::$restrictions[] = $instance;
+    }
+
+    /**
+     * Enable and set up the "Remember Me" cookie token handling for the given user
+     *
+     * @param \Psecio\Gatekeeper\UserModel $user User model instance
+     * @param  array $config Set of configuration settings
+     * @return boolean Success/fail of sesssion setup
+     */
+    public static function rememberMe(UserModel $user, array $config = array())
+    {
+        $data = array_merge($_COOKIE, $config);
+        $remember = new Session\RememberMe(self::$datasource, $data, $user);
+        return $remember->setup();
+    }
+
+    /**
+     * Check the "Remember Me" token information (if it exists)
+     *
+     * @return boolean|\Psecio\Gatekeeper\UserModel Success/fail of token validation or User model instance
+     */
+    public static function checkRememberMe()
+    {
+        $remember = new Session\RememberMe(self::$datasource, $_COOKIE);
+        return $remember->verify();
     }
 }
