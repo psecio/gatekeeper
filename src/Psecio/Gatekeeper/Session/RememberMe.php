@@ -5,12 +5,6 @@ namespace Psecio\Gatekeeper\Session;
 class RememberMe
 {
     /**
-     * Auth token name
-     * @var string
-     */
-    private $authName = 'gkauth';
-
-    /**
      * Token name
      * @var string
      */
@@ -76,9 +70,12 @@ class RememberMe
         if ($userToken->id !== null || $this->isExpired($userToken)) {
             return false;
         }
-        list($token, $auth) = $this->generateTokens();
-        $this->saveToken($token, $auth, $user);
-        $this->setCookies($token, $auth);
+        $token = $this->generateToken();
+        $tokenModel = $this->saveToken($token, $user);
+        if ($tokenModel === false) {
+            return false;
+        }
+        $this->setCookies($tokenModel, $token);
 
         return true;
     }
@@ -96,21 +93,23 @@ class RememberMe
         $domain = $_SERVER['HTTP_HOST'];
         $https = (isset($_SERVER['HTTPS'])) ? true : false;
 
-        if (!isset($this->data[$this->tokenName]) || !isset($this->data[$this->authName])) {
+        if (!isset($this->data[$this->tokenName])) {
             return false;
         }
 
-        $token = $this->getByToken($this->data[$this->tokenName]);
+        $tokenParts = explode(':', $this->data[$this->tokenName]);
+        $token = $this->getByToken($tokenParts[1]);
         if ($token === false) {
             return false;
         }
+
         $user = $token->user;
+        $userToken = $token->token;
 
         // Remove the token (a new one will be made later)
         $this->datasource->delete($token);
 
-        // Verify the "auth"
-        if (password_verify($this->data[$this->authName], $token->verifier) === false) {
+        if ($this->data[$this->tokenName] !== $token->id.':'.$userToken) {
             return false;
         }
 
@@ -121,13 +120,13 @@ class RememberMe
     /**
      * Get the token information searching on given token string
      *
-     * @param string $token Token string for search
+     * @param string $tokenValue Token string for search
      * @return boolean|\Psecio\Gatekeeper\AuthTokenModel Instance if no query errors
      */
-    public function getByToken($token)
+    public function getByToken($tokenValue)
     {
         $token = new \Psecio\Gatekeeper\AuthTokenModel($this->datasource);
-        $result = $this->datasource->find($token, array('token' => $this->data['gktoken']));
+        $result = $this->datasource->find($token, array('token' => $tokenValue));
         return $result;
     }
 
@@ -166,20 +165,19 @@ class RememberMe
      * Save the new token to the data source
      *
      * @param string $token Token string
-     * @param string $auth Auth token string
      * @param \Psecio\Gatekeeper\UserModel $user User model instance
-     * @return boolean Success/fail of token creation
+     * @return boolean|\Psecio\Gatekeeper\AuthTokenModel Success/fail of token creation or AuthTokenModel instance
      */
-    public function saveToken($token, $auth, \Psecio\Gatekeeper\UserModel $user)
+    public function saveToken($token, \Psecio\Gatekeeper\UserModel $user)
     {
         $expires = new \DateTime($this->expireInterval);
         $tokenModel = new \Psecio\Gatekeeper\AuthTokenModel($this->datasource, array(
-            'token' => $token,
-            'verifier' => password_hash($auth, PASSWORD_DEFAULT),
+            'token' => hash('sha256', $token),
             'userId' => $user->id,
             'expires' => $expires->format('Y-m-d H:i:s')
         ));
-        return $this->datasource->save($tokenModel);
+        $result = $this->datasource->save($tokenModel);
+        return ($result === false) ? false : $tokenModel;
     }
 
     /**
@@ -199,39 +197,34 @@ class RememberMe
     }
 
     /**
-     * Generate the token values
+     * Generate the token value
      *
      * @return array Set of two token values (main and auth)
      */
-    public function generateTokens()
+    public function generateToken()
     {
         $factory = new \RandomLib\Factory;
         $generator = $factory->getMediumStrengthGenerator();
 
-        return array(
-            base64_encode($generator->generate(24)),
-            base64_encode($generator->generate(24))
-        );
+        return base64_encode($generator->generate(24));
     }
 
     /**
      * Set the cookies with the main and auth tokens
      *
-     * @param string $token Main token hash
-     * @param string $auth Auth token hash
+     * @param \Psecio\Gatekeeper\AuthTokenModel $tokenModel Auth token model instance
+     * @param string $token Token hash
      * @param boolean $https Enable/disable HTTPS setting on cookies [optional]
      * @param string $domain Domain value to set cookies on
      */
-    public function setCookies($token, $auth, $https = false, $domain = null)
+    public function setCookies(\Psecio\Gatekeeper\AuthTokenModel $tokenModel, $token, $https = false, $domain = null)
     {
         if ($domain === null && isset($_SERVER['HTTP_HOST'])) {
             $domain = $_SERVER['HTTP_HOST'];
         }
 
+        $tokenValue = $tokenModel->id.':'.hash('sha256', $token);
         $expires = new \DateTime($this->expireInterval);
-        $cookie1 = setcookie('gktoken', $token, $expires->format('U'), '/', $domain, $https, true);
-        $cookie2 = setcookie('gkauth', $auth, $expires->format('U'), '/', $domain, $https, true);
-
-        return ($cookie1 === true && $cookie2 === true) ? true : false;
+        return setcookie($this->tokenName, $tokenValue, $expires->format('U'), '/', $domain, $https, true);
     }
 }
