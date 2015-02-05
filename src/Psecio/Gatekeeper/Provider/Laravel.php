@@ -7,6 +7,9 @@ use Illuminate\Auth\UserInterface;
 use Illuminate\Auth\UserProviderInterface;
 use Psecio\Gatekeeper\Gatekeeper;
 
+/**
+ * This provider is for only Laravel 4.x based applications
+ */
 class Laravel implements UserProviderInterface
 {
     /**
