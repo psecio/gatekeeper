@@ -2,6 +2,8 @@
 
 ## Laravel
 
+**NOTE:** The current Laravel support is for 4.x based versions.
+
 A Laravel authentication provider is included with the Gatekeeper package in `Psecio\Gatekeeper\Provider\Laravel`.
 It's easy to add into your Laravel application and seamlessly works with the framework's `Auth` handling.
 
