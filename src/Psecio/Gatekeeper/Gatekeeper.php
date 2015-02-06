@@ -177,7 +177,7 @@ class Gatekeeper
      * Authenticate a user given the username/password credentials
      *
      * @param array $credentials Credential information (must include "username" and "password")
-     * @param boolean $rememeber Flag to activate the "remember me" functionality
+     * @param boolean $remember Flag to activate the "remember me" functionality
      * @return boolean Pass/fail of authentication
      */
     public static function authenticate(array $credentials, $remember = false)

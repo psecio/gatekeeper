@@ -84,22 +84,20 @@ class RememberMe
      * Verify the token if it exists
      *     Removes the old token and sets up a new one if valid
      *
-     * @param string $token Token value
-     * @param string $auth Auth value
+     * @param \Psecio\Gatekeeper\AuthTokenModel $token Token model instance
      * @return boolean Pass/fail result of the validation
      */
-    public function verify($token = null, $auth = null)
+    public function verify(\Psecio\Gatekeeper\AuthTokenModel $token = null)
     {
-        // See if we have our cookies
-        $domain = $_SERVER['HTTP_HOST'];
-        $https = (isset($_SERVER['HTTPS'])) ? true : false;
-
         if (!isset($this->data[$this->tokenName])) {
             return false;
         }
 
-        $tokenParts = explode(':', $this->data[$this->tokenName]);
-        $token = $this->getById($tokenParts[0]);
+        if ($token === null) {
+            $tokenParts = explode(':', $this->data[$this->tokenName]);
+            $token = $this->getById($tokenParts[0]);
+        }
+
         if ($token === false) {
             return false;
         }
