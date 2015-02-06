@@ -81,7 +81,8 @@ class RememberMe
     }
 
     /**
-     * Verify the tokens if they exist
+     * Verify the token if it exists
+     *     Removes the old token and sets up a new one if valid
      *
      * @param string $token Token value
      * @param string $auth Auth value
@@ -109,7 +110,7 @@ class RememberMe
         // Remove the token (a new one will be made later)
         $this->datasource->delete($token);
 
-        if ($this->data[$this->tokenName] !== $token->id.':'.$userToken) {
+        if ($this->hash_equals($this->data[$this->tokenName], $token->id.':'.$userToken) === false) {
             return false;
         }
 
@@ -226,5 +227,24 @@ class RememberMe
         $tokenValue = $tokenModel->id.':'.hash('sha256', $token);
         $expires = new \DateTime($this->expireInterval);
         return setcookie($this->tokenName, $tokenValue, $expires->format('U'), '/', $domain, $https, true);
+    }
+
+    /**
+     * Polyfill PHP 5.6.0's hash_equals() feature
+     */
+    public function hash_equals($a, $b)
+    {
+        if (\function_exists('hash_equals')) {
+            return \hash_equals($a, $b);
+        }
+        if (\strlen($a) !== \strlen($b)) {
+            return false;
+        }
+        $res = 0;
+        $len = \strlen($a);
+        for ($i = 0; $i < $len; ++$i) {
+            $res |= \ord($a[$i]) ^ \ord($b[$i]);
+        }
+        return $res === 0;
     }
 }
