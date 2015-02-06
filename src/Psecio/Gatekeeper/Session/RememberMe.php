@@ -99,7 +99,7 @@ class RememberMe
         }
 
         $tokenParts = explode(':', $this->data[$this->tokenName]);
-        $token = $this->getByToken($tokenParts[1]);
+        $token = $this->getById($tokenParts[0]);
         if ($token === false) {
             return false;
         }
@@ -110,7 +110,7 @@ class RememberMe
         // Remove the token (a new one will be made later)
         $this->datasource->delete($token);
 
-        if ($this->hash_equals($this->data[$this->tokenName], $token->id.':'.$userToken) === false) {
+        if ($this->hash_equals($this->data[$this->tokenName], $token->id.':'.hash('sha256', $userToken)) === false) {
             return false;
         }
 
@@ -128,6 +128,19 @@ class RememberMe
     {
         $token = new \Psecio\Gatekeeper\AuthTokenModel($this->datasource);
         $result = $this->datasource->find($token, array('token' => $tokenValue));
+        return $result;
+    }
+
+    /**
+     * Get a token by its unique ID
+     *
+     * @param integer $tokenId Token ID
+     * @return boolean|\Psecio\Gatekeeper\AuthTokenModel instance
+     */
+    public function getById($tokenId)
+    {
+        $token = new \Psecio\Gatekeeper\AuthTokenModel($this->datasource);
+        $result = $this->datasource->find($token, array('id' => $tokenId));
         return $result;
     }
 
@@ -173,7 +186,7 @@ class RememberMe
     {
         $expires = new \DateTime($this->expireInterval);
         $tokenModel = new \Psecio\Gatekeeper\AuthTokenModel($this->datasource, array(
-            'token' => hash('sha256', $token),
+            'token' => $token,
             'userId' => $user->id,
             'expires' => $expires->format('Y-m-d H:i:s')
         ));
