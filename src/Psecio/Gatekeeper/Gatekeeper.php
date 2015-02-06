@@ -498,8 +498,9 @@ class Gatekeeper
     public static function rememberMe($user, array $config = array())
     {
         if (is_string($user)) {
-            $user = Gatekeeper::findByUsername($user);
+            $user = Gatekeeper::findUserByUsername($user);
         }
+
         $data = array_merge($_COOKIE, $config);
         $remember = new Session\RememberMe(self::$datasource, $data, $user);
         return $remember->setup();
