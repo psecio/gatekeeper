@@ -141,6 +141,19 @@ class UserModel extends \Psecio\Gatekeeper\Model\Mysql
     }
 
     /**
+     * Find a user by their given ID
+     *
+     * @param integer $userId User ID
+     * @return boolean Success/fail of find operation
+     */
+    public function findByUserId($userId)
+    {
+        return $this->getDb()->find(
+            $this, array('id' => $userId)
+        );
+    }
+
+    /**
      * Attach a permission to a user account
      *
      * @param integer|PermissionModel $perm Permission ID or model isntance
