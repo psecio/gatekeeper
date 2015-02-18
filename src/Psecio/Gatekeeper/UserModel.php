@@ -477,6 +477,11 @@ class UserModel extends \Psecio\Gatekeeper\Model\Mysql
             throw new \InvalidArgumentException('Invalid question/answer data provided.');
         }
 
+        // Ensure that the answer isn't the same as the user's password
+        if (password_verify($data['answer'], $this->password) === true) {
+            throw new \InvalidArgumentException('Security question answer cannot be the same as password.');
+        }
+
         $question = new SecurityQuestionModel($this->getDb(), array(
             'question' => $data['question'],
             'answer' => $data['answer'],
