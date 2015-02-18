@@ -310,7 +310,7 @@ class UserModel extends \Psecio\Gatekeeper\Model\Mysql
         }
 
         // We made it this far, compare the hashes
-        $result = ($this->hash_equals($this->resetCode, $resetCode));
+        $result = (Gatekeeper::hash_equals($this->resetCode, $resetCode));
         if ($result === true) {
             $this->clearPasswordResetCode();
         }
@@ -365,29 +365,6 @@ class UserModel extends \Psecio\Gatekeeper\Model\Mysql
             'user_id' => $this->id
         ));
         return ($perm->id !== null && $perm->id === $permId) ? true : false;
-    }
-
-    /**
-     * Safer way to evaluate if hashes equal
-     *
-     * @param string $hash1 Hash #1
-     * @param string $hash2 Hash #1
-     * @return boolean Pass/fail on hash equality
-     */
-    public function hash_equals($hash1, $hash2)
-    {
-        if (\function_exists('hash_equals')) {
-            return \hash_equals($hash1, $hash2);
-        }
-        if (\strlen($hash1) !== \strlen($hash2)) {
-            return false;
-        }
-        $res = 0;
-        $len = \strlen($hash1);
-        for ($i = 0; $i < $len; ++$i) {
-            $res |= \ord($hash1[$i]) ^ \ord($hash2[$i]);
-        }
-        return $res === 0;
     }
 
     /**
