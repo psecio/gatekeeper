@@ -88,4 +88,22 @@ class GatekeeperTest extends \Psecio\Gatekeeper\Base
     {
         Gatekeeper::restrict('foobar', array());
     }
+
+    /**
+     * Test the hash equality checking
+     */
+    public function testHashEqualsValid()
+    {
+        $hash = sha1(mt_rand());
+        $this->assertTrue(Gatekeeper::hash_equals($hash, $hash));
+    }
+
+    /**
+     * Test that false is returned when the hashes are different lengths
+     */
+    public function testHashEqualsDifferentLength()
+    {
+        $hash = sha1(mt_rand());
+        $this->assertFalse(Gatekeeper::hash_equals($hash, md5(mt_rand())));
+    }
 }

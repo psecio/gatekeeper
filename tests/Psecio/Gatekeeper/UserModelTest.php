@@ -32,30 +32,6 @@ class UserModelTest extends \Psecio\Gatekeeper\Base
     }
 
     /**
-     * Test the hash equality checking
-     */
-    public function testHashEqualsValid()
-    {
-        $hash = sha1(mt_rand());
-        $ds = $this->buildMock(null);
-        $user = new UserModel($ds);
-
-        $this->assertTrue($user->hash_equals($hash, $hash));
-    }
-
-    /**
-     * Test that false is returned when the hashes are different lengths
-     */
-    public function testHashEqualsDifferentLength()
-    {
-        $hash = sha1(mt_rand());
-        $ds = $this->buildMock(null);
-        $user = new UserModel($ds);
-
-        $this->assertFalse($user->hash_equals($hash, md5(mt_rand())));
-    }
-
-    /**
      * Test that the user does have the permission
      */
     public function testUserHasPermission()
