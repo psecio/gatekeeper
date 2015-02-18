@@ -413,4 +413,121 @@ class UserModelTest extends \Psecio\Gatekeeper\Base
         $user = new UserModel($ds);
         $this->assertTrue($user->grantGroups($groups));
     }
+
+    /**
+     * Test using the generic "grant" method to grant both permissions and groups
+     */
+    public function testGrantGroupsAndPermissionsAllValid()
+    {
+        $permissions = array(1, 2, 3);
+        $groups = array(1, 2, 3);
+
+        $user = $this->getMockBuilder('\Psecio\Gatekeeper\UserModel')
+            ->disableOriginalConstructor()
+            ->setMethods(array('grantPermissions', 'grantGroups'))
+            ->getMock();
+
+        $user->method('grantPermissions')->willReturn(true);
+        $user->method('grantGroups')->willReturn(true);
+
+        $result = $user->grant(array(
+            'permissions' => $permissions,
+            'groups' => $groups
+        ));
+        $this->assertTrue($result);
+    }
+
+    /**
+     * Test the addition of groups, but with a failure in adding
+     */
+    public function testGrantGroupsInvalid()
+    {
+                $permissions = array(1, 2, 3);
+        $groups = array(1, 2, 3);
+
+        $user = $this->getMockBuilder('\Psecio\Gatekeeper\UserModel')
+            ->disableOriginalConstructor()
+            ->setMethods(array('grantPermissions', 'grantGroups'))
+            ->getMock();
+
+        $user->method('grantPermissions')->willReturn(true);
+        $user->method('grantGroups')->willReturn(false);
+
+        $result = $user->grant(array(
+            'permissions' => $permissions,
+            'groups' => $groups
+        ));
+        $this->assertFalse($result);
+    }
+
+    /**
+     * Test the addition of permissions, but with a failure in adding
+     */
+    public function testGrantPermissionsInvalid()
+    {
+                $permissions = array(1, 2, 3);
+        $groups = array(1, 2, 3);
+
+        $user = $this->getMockBuilder('\Psecio\Gatekeeper\UserModel')
+            ->disableOriginalConstructor()
+            ->setMethods(array('grantPermissions', 'grantGroups'))
+            ->getMock();
+
+        $user->method('grantPermissions')->willReturn(false);
+        $user->method('grantGroups')->willReturn(true);
+
+        $result = $user->grant(array(
+            'permissions' => $permissions,
+            'groups' => $groups
+        ));
+        $this->assertFalse($result);
+    }
+
+    /**
+     * Test the addition of a security question (valid)
+     */
+    public function testAddSecurityQuestionValid()
+    {
+        $ds = $this->buildMock(true, 'save');
+
+        $user = new UserModel($ds);
+        $result = $user->addSecurityQuestion(array(
+            'question' => 'Question 1',
+            'answer' => 'Answer 1'
+        ));
+        $this->assertTrue($result);
+    }
+
+    /**
+     * Testing the addition of the security question with
+     *     no data being provided
+     *
+     * @expectedException \InvalidArgumentException
+     */
+    public function testAddSecurityQuestionNoData()
+    {
+        $ds = $this->buildMock(true, 'save');
+
+        $user = new UserModel($ds);
+        $result = $user->addSecurityQuestion(array());
+    }
+
+    /**
+     * Test that an exception is thrown when the password is the
+     *     same as the security question
+     *
+     * @expectedException \InvalidArgumentException
+     */
+    public function testAddSecurityQuestionSameAsPassword()
+    {
+        $ds = $this->buildMock(true, 'save');
+
+        $passwordHash = password_hash('mypass', PASSWORD_DEFAULT);
+        $user = new UserModel($ds, array('password' => $passwordHash));
+        $result = $user->addSecurityQuestion(array(
+            'question' => 'Question #1',
+            'answer' => 'mypass'
+        ));
+        var_export($result);
+    }
 }
