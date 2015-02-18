@@ -464,4 +464,24 @@ class UserModel extends \Psecio\Gatekeeper\Model\Mysql
         }
         return $return;
     }
+
+    /**
+     * Add a new security question to the current user
+     *
+     * @param array $data Security question data
+     * @return boolean Result of save operation
+     */
+    public function addSecurityQuestion(array $data)
+    {
+        if (!isset($data['question']) || !isset($data['answer'])) {
+            throw new \InvalidArgumentException('Invalid question/answer data provided.');
+        }
+
+        $question = new SecurityQuestionModel($this->getDb(), array(
+            'question' => $data['question'],
+            'answer' => $data['answer'],
+            'userId' => $this->id
+        ));
+        return $this->getDb()->save($question);
+    }
 }
