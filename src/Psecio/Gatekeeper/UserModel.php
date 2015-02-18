@@ -109,6 +109,15 @@ class UserModel extends \Psecio\Gatekeeper\Model\Mysql
                 'method' => 'findByUserId',
                 'local' => 'id'
             )
+        ),
+        'securityQuestions' => array(
+            'description' => 'Security questions for the user',
+            'type' => 'relation',
+            'relation' => array(
+                'model' => '\\Psecio\\Gatekeeper\\SecurityQuestionCollection',
+                'method' => 'findByUserId',
+                'local' => 'id'
+            )
         )
     );
 
