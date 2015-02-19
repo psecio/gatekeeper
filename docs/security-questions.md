@@ -41,7 +41,7 @@ $questions = $user->securityQuestions;
 
 ## Validating the answer given
 
-You can use the `validateAnswer` method on the `SecurityQuestionModel` object to verify the answer to the given question. For example, we can pull the questions and check to be sure the answer to the first one is correct:
+You can use the `verifyAnswer` method on the `SecurityQuestionModel` object to verify the answer to the given question. For example, we can pull the questions and check to be sure the answer to the first one is correct:
 
 ```php
 <?php
