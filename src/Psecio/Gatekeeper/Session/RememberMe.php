@@ -57,6 +57,30 @@ class RememberMe
     }
 
     /**
+     * Get the current data for the evaluation
+     */
+    public function getData()
+    {
+        return $this->data;
+    }
+
+    /**
+     * Get the current user for evaluation
+     */
+    public function getUser()
+    {
+        return $this->user;
+    }
+
+    /**
+     * Get the current expiration interval
+     */
+    public function getExpireInterval()
+    {
+        return $this->expireInterval;
+    }
+
+    /**
      * Setup the "remember me" session and cookies
      *
      * @param \Psecio\Gatekeeper\UserModel|null $user User model instance [optional]
