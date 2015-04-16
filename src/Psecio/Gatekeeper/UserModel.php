@@ -299,7 +299,6 @@ class UserModel extends \Psecio\Gatekeeper\Model\Mysql
         }
         if ($this->resetCode === null) {
             throw new Exception\PasswordResetInvalid('No reset code defined for user '.$this->username);
-            return false;
         }
 
         // Verify the timeout
@@ -407,13 +406,13 @@ class UserModel extends \Psecio\Gatekeeper\Model\Mysql
         if (isset($config['permissions'])) {
             $result = $this->grantPermissions($config['permissions']);
             if ($result === false && $return === true) {
-                    $return = false;
+                $return = false;
             }
         }
         if (isset($config['groups'])) {
             $result = $this->grantGroups($config['groups']);
             if ($result === false && $return === true) {
-                    $return = false;
+                $return = false;
             }
         }
         return $return;

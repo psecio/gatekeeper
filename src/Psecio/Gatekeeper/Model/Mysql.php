@@ -68,9 +68,10 @@ class Mysql extends \Modler\Model
      * Load the given data into the current model
      *
      * @param array $data Property data
+     * @param boolean $enforceGuard Enforce guarded properties
      * @return boolean True when complete
      */
-    public function load(array $data)
+    public function load(array $data, $enforceGuard = true)
     {
         $loadData = array();
         foreach ($this->getProperties() as $propertyName => $propertyDetail) {
@@ -88,7 +89,7 @@ class Mysql extends \Modler\Model
                 }
             }
         }
-        parent::load($loadData);
+        parent::load($loadData, $enforceGuard);
         return true;
     }
 }

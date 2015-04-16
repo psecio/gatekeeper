@@ -43,7 +43,7 @@ class Gatekeeper
      *
      * @param string $envPath Environment file path (defaults to CWD)
      * @param array $config Configuration settings [optional]
-     * @param \Psecio\Gatekeeper\DataSource Custom datasource provider
+     * @param \Psecio\Gatekeeper\DataSource $datasource Custom datasource provider
      */
     public static function init($envPath = null, array $config = array(), \Psecio\Gatekeeper\DataSource $datasource = null)
     {
@@ -213,7 +213,6 @@ class Gatekeeper
         // If they're inactive, they can't log in
         if ($user->status === UserModel::STATUS_INACTIVE) {
             throw new Exception\UserInactiveException('User "'.$username.'" is inactive and cannot log in.');
-            return false;
         }
 
         // Handle some throttle logic, if it's turned on
@@ -516,7 +515,7 @@ class Gatekeeper
      * Enable and set up the "Remember Me" cookie token handling for the given user
      *
      * @param \Psecio\Gatekeeper\UserModel|string $user User model instance
-     * @param  array $config Set of configuration settings
+     * @param array $config Set of configuration settings
      * @return boolean Success/fail of sesssion setup
      */
     public static function rememberMe($user, array $config = array())

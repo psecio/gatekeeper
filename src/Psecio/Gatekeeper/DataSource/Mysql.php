@@ -14,6 +14,7 @@ class Mysql extends \Psecio\Gatekeeper\DataSource
      * Create our PDO connection, then call parent
      *
      * @param array $config Configuration options
+     * @param \PDO $pdo PDO instance
      */
     public function __construct(array $config, \PDO $pdo = null)
     {
@@ -49,7 +50,7 @@ class Mysql extends \Psecio\Gatekeeper\DataSource
     /**
      * Set the PDO instance
      *
-     * @param object $db PDO instance
+     * @param \PDO $db PDO instance
      */
     public function setDb($db)
     {
@@ -176,7 +177,6 @@ class Mysql extends \Psecio\Gatekeeper\DataSource
 
         $sql = 'delete from '.$model->getTableName().' where '.implode(' and ', $update);
         return $this->execute($sql, $model->toArray());
-
     }
 
     /**
@@ -253,7 +253,7 @@ class Mysql extends \Psecio\Gatekeeper\DataSource
      * @param string $sql SQL statement
      * @param array $data Data to use in fetch operation
      * @param boolean $single Only fetch a single record
-     * @return array Fetched data
+     * @return array|boolean Fetched data or boolean false on error
      */
     public function fetch($sql, $data, $single = false)
     {
