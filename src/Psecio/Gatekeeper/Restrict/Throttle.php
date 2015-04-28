@@ -30,5 +30,7 @@ class Throttle extends \Psecio\Gatekeeper\Restriction
                 return false;
             }
         }
+
+	return true;
     }
 }

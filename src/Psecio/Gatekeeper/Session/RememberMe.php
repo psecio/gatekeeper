@@ -235,7 +235,7 @@ class RememberMe
     /**
      * Generate the token value
      *
-     * @return array Set of two token values (main and auth)
+     * @return string Token hash
      */
     public function generateToken()
     {

@@ -7,7 +7,7 @@ class UserCollection extends \Psecio\Gatekeeper\Collection\Mysql
     /**
      * Find the users belonging to the given group
      *
-     * @param integer $group Group ID
+     * @param integer $groupId Group ID
      */
     public function findByGroupId($groupId)
     {
