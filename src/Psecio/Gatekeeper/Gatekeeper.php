@@ -39,6 +39,12 @@ class Gatekeeper
     private static $restrictions = array();
 
     /**
+     * Current configuration options
+     * @var array
+     */
+    private static $config = array();
+
+    /**
      * Initialize the Gatekeeper instance, set up environment file and PDO connection
      *
      * @param string $envPath Environment file path (defaults to CWD)
@@ -47,7 +53,7 @@ class Gatekeeper
      */
     public static function init($envPath = null, array $config = array(), \Psecio\Gatekeeper\DataSource $datasource = null)
     {
-        $result = self::getConfig($config, $envPath);
+        $result = self::loadConfig($config, $envPath);
         if ($datasource === null) {
             $datasource = self::buildDataSource($config, $result);
         }
@@ -65,7 +71,7 @@ class Gatekeeper
      * @param string $envPath Path to .env file
      * @return array Set of configuration values
      */
-    public static function getConfig(array $config, $envPath = null)
+    public static function loadConfig(array $config, $envPath = null)
     {
         $envPath = ($envPath !== null) ? $envPath : getcwd();
         $result = self::loadDotEnv($envPath);
@@ -77,7 +83,36 @@ class Gatekeeper
             }
             $result = $config;
         }
+        self::setConfig($result);
         return $result;
+    }
+
+    /**
+     * Set the current configuration options
+     *
+     * @param array $config Set of configuration settings
+     */
+    public static function setConfig(array $config)
+    {
+        self::$config = $config;
+    }
+
+    /**
+     * Get the current configuration information
+     *     If an index is given, it tries to find it. If found,
+     *     returns just that value. If not, returns null. Otherwise
+     *     returns all config values
+     *
+     * @param string $index Index to locate [optional]
+     * @return mixed Single value if index found, otherwise array of all
+     */
+    public static function getConfig($index = null)
+    {
+        if ($index !== null) {
+            return (isset(self::$config[$index])) ? self::$config[$index] : null;
+        } else {
+            return self::$config;
+        }
     }
 
     /**
@@ -144,13 +179,17 @@ class Gatekeeper
     {
         try {
             \Dotenv::load($envPath);
-            return array(
+            $config = array(
                 'username' => $_SERVER['DB_USER'],
                 'password' => $_SERVER['DB_PASS'],
                 'name' => $_SERVER['DB_NAME'],
                 'type' => (isset($_SERVER['DB_TYPE'])) ? $_SERVER['DB_TYPE'] : 'mysql',
                 'host' => $_SERVER['DB_HOST']
             );
+            if (isset($_SERVER['DB_PREFIX'])) {
+                $config['prefix'] = $_SERVER['DB_PREFIX'];
+            }
+            return $config;
         } catch (\Exception $e) {
             return false;
         }
