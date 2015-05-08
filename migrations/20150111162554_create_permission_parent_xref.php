@@ -1,15 +1,15 @@
 <?php
 
-use Phinx\Migration\AbstractMigration;
-
-class CreatePermissionParentXref extends AbstractMigration
+class CreatePermissionParentXref extends \Psecio\Gatekeeper\PhinxMigration
 {
+    protected $tableName = 'permission_parent';
+
     /**
      * Migrate Up.
      */
     public function up()
     {
-        $permissionXref = $this->table('permission_parent');
+        $permissionXref = $this->table($this->getTableName());
         $permissionXref->addColumn('permission_id', 'integer')
               ->addColumn('parent_id', 'integer')
               ->addColumn('created', 'datetime')
@@ -22,6 +22,6 @@ class CreatePermissionParentXref extends AbstractMigration
      */
     public function down()
     {
-        $this->dropTable('permission_parent');
+        $this->dropTable($this->getTableName());
     }
 }

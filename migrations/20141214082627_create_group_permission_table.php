@@ -1,15 +1,15 @@
 <?php
 
-use Phinx\Migration\AbstractMigration;
-
-class CreateGroupPermissionTable extends AbstractMigration
+class CreateGroupPermissionTable extends \Psecio\Gatekeeper\PhinxMigration
 {
+    protected $tableName = 'group_permission';
+
     /**
      * Migrate Up.
      */
     public function up()
     {
-        $permissions = $this->table('group_permission');
+        $permissions = $this->table($this->getTableName());
         $permissions->addColumn('permission_id', 'integer')
               ->addColumn('group_id', 'integer')
               ->addColumn('created', 'datetime')
@@ -23,6 +23,6 @@ class CreateGroupPermissionTable extends AbstractMigration
      */
     public function down()
     {
-        $this->dropTable('group_permission');
+        $this->dropTable($this->getTableName());
     }
 }

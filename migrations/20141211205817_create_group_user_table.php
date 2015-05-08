@@ -1,15 +1,15 @@
 <?php
 
-use Phinx\Migration\AbstractMigration;
-
-class CreateGroupUserTable extends AbstractMigration
+class CreateGroupUserTable extends \Psecio\Gatekeeper\PhinxMigration
 {
+    protected $tableName = 'user_group';
+
     /**
      * Migrate Up.
      */
     public function up()
     {
-        $groups = $this->table('user_group');
+        $groups = $this->table($this->getTableName());
         $groups->addColumn('group_id', 'integer')
               ->addColumn('user_id', 'integer')
               ->addColumn('created', 'datetime')
@@ -23,6 +23,6 @@ class CreateGroupUserTable extends AbstractMigration
      */
     public function down()
     {
-        $this->dropTable('user_group');
+        $this->dropTable($this->getTableName());
     }
 }

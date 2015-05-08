@@ -1,15 +1,16 @@
 <?php
 
-use Phinx\Migration\AbstractMigration;
-
-class CreateUserTable extends AbstractMigration
+class CreateUserTable extends \Psecio\Gatekeeper\PhinxMigration
 {
+    protected $tableName = 'users';
+
     /**
      * Migrate Up, create the user table
      */
     public function up()
     {
-        $users = $this->table('users');
+        $tableName = $this->getTableName();
+        $users = $this->table($tableName);
         $users->addColumn('username', 'string', array('limit' => 20))
               ->addColumn('password', 'string', array('limit' => 100))
               ->addColumn('email', 'string', array('limit' => 100))
@@ -22,8 +23,8 @@ class CreateUserTable extends AbstractMigration
               ->save();
 
         // Manually add these as there seems to be a bug in Phinx...
-        $this->execute('alter table users add password_reset_code VARCHAR(100)');
-        $this->execute('alter table users add password_reset_code_timeout DATETIME');
+        $this->execute('alter table '.$tableName.' add password_reset_code VARCHAR(100)');
+        $this->execute('alter table '.$tableName.' add password_reset_code_timeout DATETIME');
     }
 
     /**
@@ -31,6 +32,6 @@ class CreateUserTable extends AbstractMigration
      */
     public function down()
     {
-        $this->dropTable('users');
+        $this->dropTable($this->getTableName());
     }
 }

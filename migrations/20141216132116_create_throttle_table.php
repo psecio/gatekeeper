@@ -1,15 +1,15 @@
 <?php
 
-use Phinx\Migration\AbstractMigration;
-
-class CreateThrottleTable extends AbstractMigration
+class CreateThrottleTable extends \Psecio\Gatekeeper\PhinxMigration
 {
+    protected $tableName = 'throttle';
+
     /**
      * Migrate Up.
      */
     public function up()
     {
-        $throttle = $this->table('throttle');
+        $throttle = $this->table($this->getTableName());
         $throttle->addColumn('user_id', 'integer')
               ->addColumn('attempts', 'integer')
               ->addColumn('status', 'string')
@@ -25,6 +25,6 @@ class CreateThrottleTable extends AbstractMigration
      */
     public function down()
     {
-        $this->dropTable('throttle');
+        $this->dropTable($this->getTableName());
     }
 }

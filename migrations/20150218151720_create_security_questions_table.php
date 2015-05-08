@@ -1,15 +1,15 @@
 <?php
 
-use Phinx\Migration\AbstractMigration;
-
-class CreateSecurityQuestionsTable extends AbstractMigration
+class CreateSecurityQuestionsTable extends \Psecio\Gatekeeper\PhinxMigration
 {
+    protected $tableName = 'security_questions';
+
     /**
      * Migrate Up.
      */
     public function up()
     {
-        $tokens = $this->table('security_questions');
+        $tokens = $this->table($this->getTableName());
         $tokens->addColumn('question', 'string')
             ->addColumn('answer', 'string', array('limit' => 100))
             ->addColumn('user_id', 'integer')
@@ -23,6 +23,6 @@ class CreateSecurityQuestionsTable extends AbstractMigration
      */
     public function down()
     {
-        $this->dropTable('security_questions');
+        $this->dropTable($this->getTableName());
     }
 }

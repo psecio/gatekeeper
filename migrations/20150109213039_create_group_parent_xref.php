@@ -1,15 +1,15 @@
 <?php
 
-use Phinx\Migration\AbstractMigration;
-
-class CreateGroupParentXref extends AbstractMigration
+class CreateGroupParentXref extends \Psecio\Gatekeeper\PhinxMigration
 {
+    protected $tableName = 'group_parent';
+
     /**
      * Migrate Up.
      */
     public function up()
     {
-        $groupXref = $this->table('group_parent');
+        $groupXref = $this->table($this->getTableName());
         $groupXref->addColumn('group_id', 'integer')
               ->addColumn('parent_id', 'integer')
               ->addColumn('created', 'datetime')
@@ -22,6 +22,6 @@ class CreateGroupParentXref extends AbstractMigration
      */
     public function down()
     {
-        $this->dropTable('group_parent');
+        $this->dropTable($this->getTableName());
     }
 }

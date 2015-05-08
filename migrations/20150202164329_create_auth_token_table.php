@@ -1,15 +1,15 @@
 <?php
 
-use Phinx\Migration\AbstractMigration;
-
-class CreateAuthTokenTable extends AbstractMigration
+class CreateAuthTokenTable extends \Psecio\Gatekeeper\PhinxMigration
 {
+    protected $tableName = 'auth_tokens';
+
     /**
      * Migrate Up.
      */
     public function up()
     {
-        $tokens = $this->table('auth_tokens');
+        $tokens = $this->table($this->getTableName());
         $tokens->addColumn('token', 'string', array('limit' => 100))
               ->addColumn('user_id', 'integer')
               ->addColumn('expires', 'datetime')
@@ -23,6 +23,6 @@ class CreateAuthTokenTable extends AbstractMigration
      */
     public function down()
     {
-        $this->dropTable('auth_tokens');
+        $this->dropTable($this->getTableName());
     }
 }
