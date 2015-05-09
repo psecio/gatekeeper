@@ -49,7 +49,9 @@ class Mysql extends \Modler\Model
      */
     public function getTableName()
     {
-        return $this->tableName;
+        $dbConfig = $this->db->config;
+        return (isset($dbConfig['prefix']))
+            ? $dbConfig['prefix'].'_'.$this->tableName : $this->tableName;
     }
 
     /**
