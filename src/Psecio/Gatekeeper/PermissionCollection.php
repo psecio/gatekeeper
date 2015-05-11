@@ -11,8 +11,9 @@ class PermissionCollection extends \Psecio\Gatekeeper\Collection\Mysql
      */
     public function findByGroupId($groupId)
     {
+        $prefix = $this->getPrefix();
         $data = array('groupId' => $groupId);
-        $sql = 'select p.* from permissions p, group_permission gp'
+        $sql = 'select p.* from '.$prefix.'permissions p, '.$prefix.'group_permission gp'
                 .' where p.id = gp.permision_id'
                 .' and gp.group_id = :groupId';
 
@@ -31,8 +32,9 @@ class PermissionCollection extends \Psecio\Gatekeeper\Collection\Mysql
      */
     public function findChildrenByPermissionId($permId)
     {
+        $prefix = $this->getPrefix();
         $data = array('permId' => $permId);
-        $sql = 'select p.* from permissions p, permission_parent pp'
+        $sql = 'select p.* from '.$prefix.'permissions p, '.$prefix.'permission_parent pp'
                 .' where p.id = pp.permission_id'
                 .' and p.parent_id = :permId';
 

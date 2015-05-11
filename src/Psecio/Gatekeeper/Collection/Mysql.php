@@ -58,6 +58,12 @@ class Mysql extends \Modler\Collection
             ? $dbConfig['prefix'].'_'.$this->tableName : $this->tableName;
     }
 
+    public function getPrefix()
+    {
+        $dbConfig = $this->db->config;
+        return (isset($dbConfig['prefix'])) ? $dbConfig['prefix'].'_' : '';
+    }
+
     /**
      * Get the last error from the database requests
      *

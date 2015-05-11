@@ -11,8 +11,9 @@ class GroupCollection extends \Psecio\Gatekeeper\Collection\Mysql
      */
     public function findChildrenByGroupId($groupId)
     {
+        $prefix = $this->getPrefix();
         $data = array('groupId' => $groupId);
-        $sql = 'select g.* from groups g, group_parent gp'
+        $sql = 'select g.* from '.$prefix.'groups g, '.$prefix.'group_parent gp'
             .' where g.id = gp.group_id'
             .' and gp.parent_id = :groupId';
 

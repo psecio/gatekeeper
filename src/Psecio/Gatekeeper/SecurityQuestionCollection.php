@@ -12,7 +12,7 @@ class SecurityQuestionCollection extends \Psecio\Gatekeeper\Collection\Mysql
 	public function findByUserId($userId)
 	{
 		$data = array('userId' => $userId);
-		$sql = 'select * from security_questions where user_id = :userId';
+		$sql = 'select * from '.$this->getPrefix().'security_questions where user_id = :userId';
 
 		$results = $this->getDb()->fetch($sql, $data);
 

@@ -11,8 +11,9 @@ class UserGroupCollection extends \Psecio\Gatekeeper\Collection\Mysql
      */
     public function findByUserId($userId)
     {
+        $prefix = $this->getPrefix();
         $data = array('userId' => $userId);
-        $sql = 'select g.* from groups g, user_group ug'
+        $sql = 'select g.* from '.$prefix.'groups g, '.$prefix.'user_group ug'
             .' where ug.user_id = :userId'
             .' and ug.group_id = g.id';
 
@@ -42,7 +43,7 @@ class UserGroupCollection extends \Psecio\Gatekeeper\Collection\Mysql
                 $dbData = array('name' => $group);
             }
 
-            $sql = 'select id, name from groups where '.$where;
+            $sql = 'select id, name from '.$this->getPrefix().'groups where '.$where;
             $results = $this->getDb()->fetch($sql, $dbData);
             if (!empty($results) && count($results) == 1) {
                 // exists, make the relation

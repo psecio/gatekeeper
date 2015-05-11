@@ -11,8 +11,9 @@ class UserCollection extends \Psecio\Gatekeeper\Collection\Mysql
      */
     public function findByGroupId($groupId)
     {
+        $prefix = $this->getPrefix();
         $data = array('groupId' => $groupId);
-        $sql = 'select u.* from users u, user_group ug'
+        $sql = 'select u.* from '.$prefix.'users u, '.$prefix.'user_group ug'
             .' where ug.group_id = :groupId'
             .' and ug.user_id = u.id';
 

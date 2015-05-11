@@ -11,8 +11,9 @@ class UserPermissionCollection extends \Psecio\Gatekeeper\Collection\Mysql
      */
     public function findByUserId($userId)
     {
+        $prefix = $this->getPrefix();
         $data = array('userId' => $userId);
-        $sql = 'select p.* from permissions p, user_permission up'
+        $sql = 'select p.* from '.$prefix.'permissions p, '.$prefix.'user_permission up'
             .' where p.id = up.permission_id'
             .' and up.user_id = :userId';
 
@@ -42,7 +43,7 @@ class UserPermissionCollection extends \Psecio\Gatekeeper\Collection\Mysql
                 $dbData = array('name' => $permission);
             }
 
-            $sql = 'select id, name from permissions where '.$where;
+            $sql = 'select id, name from '.$this->getPrefix().'permissions where '.$where;
             $results = $this->getDb()->fetch($sql, $dbData);
             if (!empty($results) && count($results) == 1) {
                 // exists, make the relation
