@@ -2,3 +2,24 @@ site_name: Gatekeeper
 theme: readthedocs
 repo_url: http://github.com/psecio/gatekeeper
 site_url: http://gatekeeper-auth.readthedocs.org
+pages:
+- 'index.md'
+- 'installation-and-configuration.md'
+- 'working-with-objects.md'
+- 'restrictions.md'
+- 'password-reset.md'
+- 'security-questions.md'
+- 'providers.md'
+- 'authentication/general.md'
+- 'authentication/remember-me.md'
+- 'users/general.md'
+- 'users/CRUD.md'
+- 'users/status.md'
+- 'users/permissions.md'
+- 'users/throttle.md'
+- 'permissions/general.md'
+- 'permissions/CRUD.md'
+- 'permissions/children.md'
+- 'groups/CRUD.md'
+- 'groups/user.md'
+- 'index.md'

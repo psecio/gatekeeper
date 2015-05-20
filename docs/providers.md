@@ -1,6 +1,6 @@
 # Providers
 
-## Laravel
+## Laravel 4
 
 **NOTE:** The current Laravel support is for 4.x based versions.
 

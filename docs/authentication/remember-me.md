@@ -1,19 +1,3 @@
-# Authentication
-
-One of the main features of the library is validating a `username` and `password` combination against a current user record. Is it achieved with the `authenticate` method:
-
-```php
-<?php
-$credentials = array(
-    'username' => 'ccornutt',
-    'password' => 'valid-password'
-);
-if (Gatekeeper::authenticate($credentials) == true) {
-    echo 'valid!';
-}
-?>
-```
-
 ## Remember Me
 
 In most applications there's a concept of session lasting longer than just one login. It's common to see apps allowing a "Remember Me" kind of handling and Gatekeeper includes this functionality in a simple, easy to use way. There's two functions in the main `Gatekeeper` class that take care of the hard work for you:
@@ -54,7 +38,7 @@ if (Gatekeeper::rememberMe($user, $config) === true) {
 
 The `interval` format here is any supported by the [PHP DateTime handling](http://php.net/manual/en/datetime.formats.php) in the constructor.
 
-#### Remember Me & Authentication
+## Remember Me & Authentication
 
 In addition to the more manual handling of the "remember me" functionality above, you can also have the `authenicate` method kick off the process when the user successfully authenticates with a second optional parameter:
 
