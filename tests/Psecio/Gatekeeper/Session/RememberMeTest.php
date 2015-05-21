@@ -2,6 +2,8 @@
 
 namespace Psecio\Gatekeeper\Session;
 
+use \Psecio\Gatekeeper\Provider\Modler\Model\User as UserModel;
+
 class RememberMeTest extends \Psecio\Gatekeeper\Base
 {
 	private function buildRememberMe($ds, array $methods = array())
@@ -23,7 +25,7 @@ class RememberMeTest extends \Psecio\Gatekeeper\Base
 		$return = true;
 		$ds = $this->buildMock($return);
 		$data = array('interval' => 86400);
-		$user = new \Psecio\Gatekeeper\UserModel($ds, array(
+		$user = new UserModel($ds, array(
 			'id' => 1234
 		));
 
@@ -41,7 +43,7 @@ class RememberMeTest extends \Psecio\Gatekeeper\Base
 	{
 		$ds = $this->buildMock(true);
 		$data = array('interval' => '+1 day');
-		$user = new \Psecio\Gatekeeper\UserModel($ds, array('id' => 1234));
+		$user = new UserModel($ds, array('id' => 1234));
 		$token = new \Psecio\Gatekeeper\AuthTokenModel($ds);
 
 		$rm = $this->getMockBuilder('\Psecio\Gatekeeper\Session\RememberMe')
@@ -69,7 +71,7 @@ class RememberMeTest extends \Psecio\Gatekeeper\Base
 		$token = new \Psecio\Gatekeeper\AuthTokenModel($ds, array(
 			'expires' => '-1 day'
 		));
-		$user = new \Psecio\Gatekeeper\UserModel($ds, array('id' => 1234));
+		$user = new UserModel($ds, array('id' => 1234));
 
         $rm->method('saveToken')->willReturn($token);
         $rm->method('getUserToken')->willReturn($token);
@@ -88,7 +90,7 @@ class RememberMeTest extends \Psecio\Gatekeeper\Base
 		$rm = $this->buildRememberMe(
 			$ds, array('saveToken', 'getUserToken')
 		);
-		$user = new \Psecio\Gatekeeper\UserModel($ds, array('id' => 1234));
+		$user = new UserModel($ds, array('id' => 1234));
 		$token = new \Psecio\Gatekeeper\AuthTokenModel($ds, array(
 			'expires' => '+1 day'
 		));
@@ -136,7 +138,7 @@ class RememberMeTest extends \Psecio\Gatekeeper\Base
 	 */
 	public function testGetTokenByUser()
 	{
-		$user = new \Psecio\Gatekeeper\UserModel($this->buildMock(true), array('id' => 1234));
+		$user = new UserModel($this->buildMock(true), array('id' => 1234));
 		$token = new \Psecio\Gatekeeper\AuthTokenModel($this->buildMock(true), array(
 			'expires' => '+1 day',
 			'userId' => $user->id
@@ -156,7 +158,7 @@ class RememberMeTest extends \Psecio\Gatekeeper\Base
 	public function testSaveTokenValue()
 	{
 		$tokenString = 1234;
-		$user = new \Psecio\Gatekeeper\UserModel($this->buildMock(true), array('id' => 1234));
+		$user = new UserModel($this->buildMock(true), array('id' => 1234));
 		$token = new \Psecio\Gatekeeper\AuthTokenModel($this->buildMock(true), array(
 			'expires' => date('Y-m-d H:i:s', time() + 86400),
 			'token' => $tokenString,

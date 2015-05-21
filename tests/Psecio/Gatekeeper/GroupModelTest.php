@@ -2,6 +2,8 @@
 
 namespace Psecio\Gatekeeper;
 
+use \Psecio\Gatekeeper\Provider\Modler\Model\User as UserModel;
+
 class GroupModelTest extends \Psecio\Gatekeeper\Base
 {
     /**
