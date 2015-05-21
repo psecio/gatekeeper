@@ -45,6 +45,16 @@ class Gatekeeper
     private static $config = array();
 
     /**
+     * List of current providers (defaults to Modler versions)
+     * @var array
+     */
+    private static $providers = array(
+        'User' => '\\Psecio\\Gatekeeper\\Provider\\Modler\\Model\\User',
+        'Throttle' => '\\Psecio\\Gatekeeper\\Provider\\Modler\\Model\\Throttle',
+        'UserGroup' => '\\Psecio\\Gatekeeper\\Provider\\Modler\\Model\\UserGroup'
+    );
+
+    /**
      * Initialize the Gatekeeper instance, set up environment file and PDO connection
      *
      * @param string $envPath Environment file path (defaults to CWD)
@@ -113,6 +123,15 @@ class Gatekeeper
         } else {
             return self::$config;
         }
+    }
+
+    public static function getProvider($type)
+    {
+        return (isset(self::$providers[$type])) ? self::$providers[$type] : null;
+    }
+    public static function setProvider($type, $className)
+    {
+        self::$providers[$type] = $className;
     }
 
     /**
@@ -246,11 +265,12 @@ class Gatekeeper
     public static function authenticate(array $credentials, $remember = false)
     {
         $username = $credentials['username'];
-        $user = new UserModel(self::$datasource);
+        $provider = self::getProvider('User');
+        $user = new $provider(self::$datasource);
         $user->findByUsername($username);
 
         // If they're inactive, they can't log in
-        if ($user->status === UserModel::STATUS_INACTIVE) {
+        if ($user->status === $provider::STATUS_INACTIVE) {
             throw new Exception\UserInactiveException('User "'.$username.'" is inactive and cannot log in.');
         }
 
@@ -417,9 +437,14 @@ class Gatekeeper
         $model = str_replace($matches[0], '', $name);
         $data = array($property => $args[0]);
 
-        $modelNs = '\\Psecio\\Gatekeeper\\'.$model.'Model';
+        $modelNs = self::getProvider($model);
         if (!class_exists($modelNs)) {
-            throw new Exception\ModelNotFoundException('Model type '.$model.' could not be found');
+            // @todo
+            // Fallback on the Modler for now...remove later when migration is done
+            $modelNs = '\\Psecio\\Gatekeeper\\'.$model.'Model';
+            if (!class_exists($modelNs)) {
+                throw new Exception\ModelNotFoundException('Model type '.$model.' could not be found');
+            }
         }
         $instance = new $modelNs(self::$datasource);
         $instance = self::$datasource->find($instance, $data);
