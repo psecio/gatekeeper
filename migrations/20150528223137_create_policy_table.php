@@ -17,6 +17,8 @@ class CreatePolicyTable extends \Psecio\Gatekeeper\PhinxMigration
             ->addColumn('created', 'datetime')
             ->addColumn('updated', 'datetime', array('default' => null))
             ->save();
+
+        $this->execute('create unique index policy_name on '.$this->getPrefix().'policies(name)');
     }
 
     /**
