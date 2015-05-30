@@ -18,7 +18,8 @@
         "robmorgan/phinx": "*",
         "ircmaxell/password-compat": "1.0.4",
         "ircmaxell/random-lib": "1.1.0",
-        "vlucas/phpdotenv": "1.1.0"
+        "vlucas/phpdotenv": "1.1.0",
+        "symfony/expression-language": "2.5.*@dev"
     },
     "require-dev": {
         "phpunit/phpunit": "4.1.4"

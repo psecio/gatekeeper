@@ -578,4 +578,17 @@ class Gatekeeper
         $remember = new Session\RememberMe(self::$datasource, $_COOKIE);
         return $remember->verify();
     }
+
+    /**
+     * Evaluate the policy (found by name) against the data provided
+     *
+     * @param string $name Name of the policy
+     * @param mixed $data Data to use in evaluation (single object or array)
+     * @return boolean Pass/fail status of evaluation
+     */
+    public static function evaluatePolicy($name, $data)
+    {
+        $policy = Gatekeeper::findPolicyByName($name);
+        return $policy->evaluate($data);
+    }
 }
