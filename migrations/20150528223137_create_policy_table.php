@@ -14,6 +14,7 @@ class CreatePolicyTable extends \Psecio\Gatekeeper\PhinxMigration
         $tokens = $this->table($this->getTableName());
         $tokens->addColumn('expression', 'string')
             ->addColumn('name', 'string')
+            ->addColumn('description', 'text')
             ->addColumn('created', 'datetime')
             ->addColumn('updated', 'datetime', array('default' => null))
             ->save();
