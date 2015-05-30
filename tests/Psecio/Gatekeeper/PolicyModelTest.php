@@ -91,4 +91,33 @@ class PolicyModelTest extends \Psecio\Gatekeeper\Base
 
 		$this->policy->evaluate([]);
 	}
+
+	/**
+	 * Test the expression matching when a method is involved
+	 * 	In this case, get a User's groups list and return just
+	 *  the names to see if a group exists/doesn't exist
+	 */
+	public function testPolicyEvaluateObjectWithFunction()
+	{
+        $ds = $this->buildMock(true);
+		$groups = new GroupCollection($ds);
+		$group = new GroupModel($ds, ['name' => 'group1']);
+		$groups->add($group);
+
+		$ds = $this->getMockBuilder('\Psecio\Gatekeeper\DataSource\Stub')
+            ->setConstructorArgs(array(array()))
+            ->getMock();
+		$ds->method('fetch')
+			->willReturn($groups->toArray(true));
+
+		$user = new UserModel($ds, ['username' => 'ccornutt42']);
+
+		// "group1" does exist
+		$this->policy->load(['expression' => '"group1" in user.groups.getName()']);
+		$this->assertTrue($this->policy->evaluate($user));
+
+		// "group2" does not exist
+		$this->policy->load(['expression' => '"group2" in user.groups.getName()']);
+		$this->assertFalse($this->policy->evaluate($user));
+	}
 }
