@@ -589,6 +589,6 @@ class Gatekeeper
     public static function evaluatePolicy($name, $data)
     {
         $policy = Gatekeeper::findPolicyByName($name);
-        return $policy->evaluate($data, $policy->expression);
+        return $policy->evaluate($data);
     }
 }
