@@ -35,7 +35,17 @@ class PolicyModel extends \Psecio\Gatekeeper\Model\Mysql
         	'description' => 'Policy Name',
         	'column' => 'name',
         	'type' => 'string'
-        )
+        ),
+        'created' => array(
+            'description' => 'Date Created',
+            'column' => 'created',
+            'type' => 'datetime'
+        ),
+        'updated' => array(
+            'description' => 'Date Updated',
+            'column' => 'updated',
+            'type' => 'datetime'
+        ),
     );
 
     public function evaluate($data, $expression = null)
