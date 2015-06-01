@@ -25,7 +25,7 @@ or, if you want to edit the `composer.json` yourself and get specific with the v
 - [Modler](http://github.com/enygma/modler)
 - [Phinx](http://github.com/robmorgan/phinx)
 - [password_compat](http://github.com/ircmaxell/password-compat)
-- [phpdotenv](http://github.com/rvlucas/phpdotenv)
+- [phpdotenv](http://github.com/vlucas/phpdotenv)
 
 ## Setup
 
