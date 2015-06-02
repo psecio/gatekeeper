@@ -85,3 +85,28 @@ if ($policy->evaluate($user) === true) {
 ?>
 ```
 
+## Using Closures as Policies
+
+You can also use the same structure of you'd like to define policies as closures, letting you do a bit more programmatic evaluation of the data provided. The same rules apply above to how they're evaluated, you just define them differently:
+
+```php
+<?php
+
+Gatekeeper::createPolicy([
+	'name' => 'eval-closure',
+	'description' => 'Using a closure to validate policy',
+	'expression' => function($data) {
+		return ($data->username === 'ccornutt');
+	};
+]);
+
+if (Gatekeeper::evaluatePolicy('eval-closure', $user) === true) {
+	echo "Sweet success!";
+}
+?>
+```
+
+Here we've define the check for a `username` match as a closure and run an evaluation on it.
+
+> **NOTE:** Any checks that happen to have the same name as a policy that lives in the database will be overridden by a closure-based check (which may be advantageous depending on your needs).
+

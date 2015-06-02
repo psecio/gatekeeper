@@ -45,6 +45,12 @@ class Gatekeeper
     private static $config = array();
 
     /**
+     * Current set of policies (callback versions)
+     * @var array
+     */
+    private static $policies = array();
+
+    /**
      * Initialize the Gatekeeper instance, set up environment file and PDO connection
      *
      * @param string $envPath Environment file path (defaults to CWD)
@@ -588,7 +594,31 @@ class Gatekeeper
      */
     public static function evaluatePolicy($name, $data)
     {
-        $policy = Gatekeeper::findPolicyByName($name);
-        return $policy->evaluate($data);
+        // See if it's a closure policy first
+        if (array_key_exists($name, self::$policies)) {
+            $policy = self::$policies[$name];
+            $result = $policy($data);
+            return (!is_bool($result)) ? false : $result;
+        } else {
+            $policy = Gatekeeper::findPolicyByName($name);
+            return $policy->evaluate($data);
+        }
+    }
+
+    /**
+     * Allow for the creation of a policy as a callback too
+     *
+     * @param array $policy Policy settings
+     * @return boolean Success/fail of policy creation
+     */
+    public static function createPolicy(array $policy)
+    {
+        if (is_callable($policy['expression'])) {
+            $name = $policy['name'];
+            self::$policies[$name] = $policy['expression'];
+            return true;
+        } else {
+            return self::handleCreate('createPolicy', array($policy));
+        }
     }
 }
