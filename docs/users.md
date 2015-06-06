@@ -183,6 +183,21 @@ if (Gatekeeper::findUserById($userId)->revokeGroup($groupId) === true) {
 ?>
 ```
 
+## Checking to see if a user has a permission
+
+You can check the user's immediate permissions (not the ones on groups they belong to) with the `hasPermission` method:
+
+```php
+<?php
+$permissionId = 1;
+if (Gatekeeper::findUserById($userId)->hasPermission($permissionId) === true) {
+    echo "They've got it!";
+}
+?>
+```
+
+You'll need to have the `id` value for the permission you want to check and provide that as the parameter in the call.
+
 ## Get a list of user permissions
 
 You can use the `permissions` property to get the full set of user permissions. These are the permissions **directly assigned** to the user, not to any groups they may be a part of:
