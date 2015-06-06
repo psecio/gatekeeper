@@ -11,6 +11,17 @@ Groups are represented as objects in the Gatekeeper system with the following pr
 
 Gatekeeper also supports hierarchical groups (see below).
 
+## Getting All Groups
+
+You can use the `findGroupss` method on the `Gatekeeper` class to get a list (returnes a `GroupCollection`) of the current groups:
+
+```php
+$groups = Gatekeeper::findGroups();
+
+// You can then slice it up how you need, like getting the first three
+$shortGroupList = $groups->slice(1, 3);
+```
+
 ## Creating a Group
 
 Making a new group is as easy as making a new user. One thing to note, the *group name* must be **unique**:

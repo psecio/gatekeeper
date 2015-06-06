@@ -28,6 +28,17 @@ echo 'Full name: '.$user->firstName.' '.$user->lastName."\n";
 ?>
 ```
 
+## Getting All Users
+
+You can use the `findUsers` method on the `Gatekeeper` class to get a list (returnes a `UserCollection`) of the current users:
+
+```php
+$users = Gatekeeper::findUsers();
+
+// You can then slice it up how you need, like getting the first three
+$shortUserList = $users->slice(1, 3);
+```
+
 ## Creating Users
 
 To create a user, you only need to provide the user details to the `register` method:
