@@ -28,6 +28,17 @@ echo 'Full name: '.$user->firstName.' '.$user->lastName."\n";
 ?>
 ```
 
+## Getting All Users
+
+You can use the `findUsers` method on the `Gatekeeper` class to get a list (returnes a `UserCollection`) of the current users:
+
+```php
+$users = Gatekeeper::findUsers();
+
+// You can then slice it up how you need, like getting the first three
+$shortUserList = $users->slice(1, 3);
+```
+
 ## Creating Users
 
 To create a user, you only need to provide the user details to the `register` method:
@@ -171,6 +182,21 @@ if (Gatekeeper::findUserById($userId)->revokeGroup($groupId) === true) {
 }
 ?>
 ```
+
+## Checking to see if a user has a permission
+
+You can check the user's immediate permissions (not the ones on groups they belong to) with the `hasPermission` method:
+
+```php
+<?php
+$permissionId = 1;
+if (Gatekeeper::findUserById($userId)->hasPermission($permissionId) === true) {
+    echo "They've got it!";
+}
+?>
+```
+
+You'll need to have the `id` value for the permission you want to check and provide that as the parameter in the call.
 
 ## Get a list of user permissions
 

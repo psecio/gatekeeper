@@ -19,9 +19,11 @@ class PermissionCollection extends \Psecio\Gatekeeper\Collection\Mysql
 
         $results = $this->getDb()->fetch($sql, $data);
 
-        foreach ($results as $result) {
-            $perm = new PermissionModel($this->getDb(), $result);
-            $this->add($perm);
+        if ($results !== false) {
+            foreach ($results as $result) {
+                $perm = new PermissionModel($this->getDb(), $result);
+                $this->add($perm);
+            }
         }
     }
 
