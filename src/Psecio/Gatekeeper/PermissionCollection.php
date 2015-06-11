@@ -14,7 +14,7 @@ class PermissionCollection extends \Psecio\Gatekeeper\Collection\Mysql
         $prefix = $this->getPrefix();
         $data = array('groupId' => $groupId);
         $sql = 'select p.* from '.$prefix.'permissions p, '.$prefix.'group_permission gp'
-                .' where p.id = gp.permision_id'
+                .' where p.id = gp.permission_id'
                 .' and gp.group_id = :groupId';
 
         $results = $this->getDb()->fetch($sql, $data);
