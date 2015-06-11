@@ -54,6 +54,8 @@ if (Gatekeeper::rememberMe($user, $config) === true) {
 
 The `interval` format here is any supported by the [PHP DateTime handling](http://php.net/manual/en/datetime.formats.php) in the constructor.
 
+> **NOTE:** As the "remember me" handling uses cookies to store the token, use of this feature should happen before any other content is output to the page. This is a limitation with how cookies must be set (as headers).
+
 #### Remember Me & Authentication
 
 In addition to the more manual handling of the "remember me" functionality above, you can also have the `authenicate` method kick off the process when the user successfully authenticates with a second optional parameter:
