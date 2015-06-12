@@ -1,6 +1,7 @@
 <?php
 
 namespace Psecio\Gatekeeper\Handler;
+use Psecio\Gatekeeper\Gatekeeper as g;
 
 class FindBy extends \Psecio\Gatekeeper\Handler
 {
@@ -35,9 +36,9 @@ class FindBy extends \Psecio\Gatekeeper\Handler
         preg_match('/By(.+)/', $name, $matches);
 
         if (empty($matches) && strtolower(substr($name, -1)) === 's') {
-            return self::handleFindByMultiple($name, $args, $matches);
+            return $this->handleFindByMultiple($name, $args, $matches);
         } else {
-            return self::handleFindBySingle($name, $args, $matches);
+            return $this->handleFindBySingle($name, $args, $matches);
         }
 
         return $instance;
@@ -88,7 +89,7 @@ class FindBy extends \Psecio\Gatekeeper\Handler
         if (!class_exists($collectionNs)) {
             throw new Exception\ModelNotFoundException('Collection type '.$model.' could not be found');
         }
-        $model = self::modelFactory($model.'Model');
+        $model = g::modelFactory($model.'Model');
         $collection = new $collectionNs($this->getDb());
         $collection = $this->getDb()->find($model, $data, true);
 
