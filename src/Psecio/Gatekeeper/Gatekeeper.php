@@ -50,6 +50,8 @@ class Gatekeeper
      */
     private static $policies = array();
 
+    private static $logger = null;
+
     /**
      * Initialize the Gatekeeper instance, set up environment file and PDO connection
      *
@@ -57,7 +59,12 @@ class Gatekeeper
      * @param array $config Configuration settings [optional]
      * @param \Psecio\Gatekeeper\DataSource $datasource Custom datasource provider
      */
-    public static function init($envPath = null, array $config = array(), \Psecio\Gatekeeper\DataSource $datasource = null)
+    public static function init(
+        $envPath = null,
+        array $config = array(),
+        \Psecio\Gatekeeper\DataSource $datasource = null,
+        $logger = null
+    )
     {
         $result = self::loadConfig($config, $envPath);
         if ($datasource === null) {
@@ -68,6 +75,7 @@ class Gatekeeper
         if (isset($config['throttle']) && $config['throttle'] === false) {
             self::disableThrottle();
         }
+        self::setLogger($logger);
     }
 
     /**
@@ -119,6 +127,36 @@ class Gatekeeper
         } else {
             return self::$config;
         }
+    }
+
+    /**
+     * Set the current logger interface
+     *     If the logger value is null, a Monolog instance will be created
+     *
+     * @param \Psr\Log\LoggerInterface|null $logger PSR logger or null
+     */
+    public static function setLogger(\Psr\Log\LoggerInterface $logger = null)
+    {
+        if ($logger === null) {
+            // make a monolog logger that logs to /tmp by default
+            if (class_exists('\Monolog\Logger') === true) {
+                $logger = new \Monolog\Logger('gatekeeper');
+                $logger->pushHandler(
+                    new \Monolog\Handler\StreamHandler('/tmp/gatekeeper.log')
+                );
+            }
+        }
+        self::$logger = $logger;
+    }
+
+    /**
+     * Get the current logger instance
+     *
+     * @return \Psr\Log\LoggerInterface object
+     */
+    public static function getLogger()
+    {
+        return self::$logger;
     }
 
     /**
@@ -255,8 +293,11 @@ class Gatekeeper
         $user = new UserModel(self::$datasource);
         $user->findByUsername($username);
 
+        self::getLogger()->info('Authenticating user.', array('username' => $username));
+
         // If they're inactive, they can't log in
         if ($user->status === UserModel::STATUS_INACTIVE) {
+            self::getLogger()->error('User is inactive and cannot login.', array('username' => $username));
             throw new Exception\UserInactiveException('User "'.$username.'" is inactive and cannot log in.');
         }
 
@@ -271,7 +312,8 @@ class Gatekeeper
         if (!empty(self::$restrictions)) {
             foreach (self::$restrictions as $restriction) {
                 if ($restriction->evaluate() === false) {
-                    throw new Exception\RestrictionFailedException('Restriction '.get_class($restriction).' failed');
+                    self::getLogger()->error('Restriction failed.', array('restriction' => get_class($restriction)));
+                    throw new Exception\RestrictionFailedException('Restriction '.get_class($restriction).' failed.');
                 }
             }
         }
@@ -280,9 +322,12 @@ class Gatekeeper
         $result = password_verify($credentials['password'], $user->password);
 
         if (self::$throttleStatus === true && $result === true) {
+            self::getLogger()->info('User login verified.', array('username' => $username));
             $instance->model->allow();
+            $user->updateLastLogin();
 
             if ($remember === true) {
+                self::getLogger()->info('Activating remember me.', array('username' => $username));
                 self::rememberMe($user);
             }
         }
