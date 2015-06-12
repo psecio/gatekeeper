@@ -419,137 +419,15 @@ class Gatekeeper
         }
 
         if ($action == 'find') {
-            return self::handleFindBy($name, $args);
+            $action = new \Psecio\Gatekeeper\Handler\FindBy($name, $args, self::$datasource);
         } elseif ($action == 'create') {
-            return self::handleCreate($name, $args);
+            $action = new \Psecio\Gatekeeper\Handler\Create($name, $args, self::$datasource);
         } elseif ($action == 'delete') {
-            return self::handleDelete($name, $args);
+            $action = new \Psecio\Gatekeeper\Handler\Delete($name, $args, self::$datasource);
         } elseif ($action == 'save') {
-            return self::handleSave($name, $args);
+            $action = new \Psecio\Gatekeeper\Handler\Save($name, $args, self::$datasource);
         }
-        return false;
-    }
-
-    /**
-     * Handle the "findBy" calls for data
-     *
-     * @param string $name Function name called
-     * @param array $args Arguments
-     * @throws \Exception\ModelNotFoundException If model type is not found
-     * @throws \Exception If Data could not be found
-     * @return object Model instance
-     */
-    public static function handleFindBy($name, $args)
-    {
-        $action = 'find';
-        $name = str_replace($action, '', $name);
-        preg_match('/By(.+)/', $name, $matches);
-
-        if (empty($matches) && strtolower(substr($name, -1)) === 's') {
-            return self::handleFindByMultiple($name, $args, $matches);
-        } else {
-            return self::handleFindBySingle($name, $args, $matches);
-        }
-
-        return $instance;
-    }
-
-    /**
-     * Handle the "find by" when a single record is requested
-     *
-     * @param string $name Name of function called
-     * @param array $args Arguments list
-     * @param array $matches Matches from regex
-     * @return \Modler\Collection collection
-     */
-    public static function handleFindBySingle($name, $args, $matches)
-    {
-        $property = lcfirst($matches[1]);
-        $model = str_replace($matches[0], '', $name);
-        $data = array($property => $args[0]);
-
-        $modelNs = '\\Psecio\\Gatekeeper\\'.$model.'Model';
-        if (!class_exists($modelNs)) {
-            throw new Exception\ModelNotFoundException('Model type '.$model.' could not be found');
-        }
-        $instance = new $modelNs(self::$datasource);
-        $instance = self::$datasource->find($instance, $data);
-
-        if ($instance->id === null) {
-            $exception = '\\Psecio\\Gatekeeper\\Exception\\'.$model.'NotFoundException';
-            throw new $exception($model.' could not be found for criteria');
-        }
-
-        return $instance;
-    }
-
-    /**
-     * Handle the "find by" when multiple are requested
-     *
-     * @param string $name Name of function called
-     * @param array $args Arguments list
-     * @param array $matches Matches from regex
-     * @return \Modler\Collection collection
-     */
-    public static function handleFindByMultiple($name, $args, $matches)
-    {
-        $data = (isset($args[0])) ? $args[0] : array();
-        $model = substr($name, 0, strlen($name) - 1);
-        $collectionNs = '\\Psecio\\Gatekeeper\\'.$model.'Collection';
-        if (!class_exists($collectionNs)) {
-            throw new Exception\ModelNotFoundException('Collection type '.$model.' could not be found');
-        }
-        $model = self::modelFactory($model.'Model');
-        $collection = new $collectionNs(self::$datasource);
-        $collection = self::$datasource->find($model, $data, true);
-
-        return $collection;
-    }
-
-    /**
-     * Handle the calls to create a new instance
-     *
-     * @param string $name Function name
-     * @param array $args Argument set
-     * @throws Exception\ModelNotFoundException If model type is not found
-     * @return mixed Boolean false if method incorrect, model instance if created
-     */
-    public static function handleCreate($name, array $args)
-    {
-        $model = '\\Psecio\\Gatekeeper\\'.str_replace('create', '', $name).'Model';
-        if (class_exists($model) === true) {
-            $instance = new $model(self::$datasource, $args[0]);
-            $instance = self::$datasource->save($instance);
-            return $instance;
-        } else {
-            throw new Exception\ModelNotFoundException('Model type '.$model.' could not be found');
-        }
-        return false;
-    }
-
-    /**
-     * Handle the delete requests
-     *
-     * @param string $name Function name called
-     * @param array $args Arguments set
-     * @return boolean Success/fail of delete request
-     */
-    public static function handleDelete($name, array $args)
-    {
-        $model = self::buildModel('delete', $name, $args);
-        return self::$datasource->delete($model);
-    }
-
-    /**
-     * Handle the saving of a model instance
-     *
-     * @param string $name Name of funciton called
-     * @param array $args Arguments set
-     * @return boolean Success/fail of save request
-     */
-    public static function handleSave($name, array $args)
-    {
-        return self::$datasource->save($args[0]);
+        return $action->execute();
     }
 
     /**
@@ -561,7 +439,7 @@ class Gatekeeper
      * @throws \Exception\ModelNotFoundException If model type is not found
      * @return object Model instance
      */
-    protected static function buildModel($action = 'find', $name, array $args)
+    public static function buildModel($action = 'find', $name, array $args)
     {
         $name = str_replace($action, '', $name);
         preg_match('/By(.+)/', $name, $matches);
