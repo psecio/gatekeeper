@@ -17,6 +17,12 @@ class Mysql extends \Modler\Collection
     private $lastError = '';
 
     /**
+     * Current database table name
+     * @var string
+     */
+    protected $tableName;
+
+    /**
      * Init the collection and set up the database instance
      *
      * @param object $db Database instance
