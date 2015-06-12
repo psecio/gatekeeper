@@ -3,6 +3,16 @@
 namespace Psecio\Gatekeeper;
 use Symfony\Component\ExpressionLanguage\ExpressionLanguage;
 
+/**
+ * Policy class
+ *
+ * @property string $id
+ * @property string $expression
+ * @property string $description
+ * @property string $name
+ * @property string $created
+ * @property string $updated
+ */
 class PolicyModel extends \Psecio\Gatekeeper\Model\Mysql
 {
     /**

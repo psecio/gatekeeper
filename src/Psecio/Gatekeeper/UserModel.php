@@ -2,6 +2,22 @@
 
 namespace Psecio\Gatekeeper;
 
+/**
+ * User class
+ *
+ * @property string $username
+ * @property string $password
+ * @property string $email
+ * @property string $firstName
+ * @property string $lastName
+ * @property string $created
+ * @property string $updated
+ * @property string $status
+ * @property string $id
+ * @property string $resetCode
+ * @property string $resetCodeTimeout
+ * @property string $lastLogin
+ */
 class UserModel extends \Psecio\Gatekeeper\Model\Mysql
 {
     const STATUS_ACTIVE = 'active';

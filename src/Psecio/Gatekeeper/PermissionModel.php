@@ -2,6 +2,15 @@
 
 namespace Psecio\Gatekeeper;
 
+/**
+ * Permission class
+ *
+ * @property string $name
+ * @property string $description
+ * @property string $id
+ * @property string $created
+ * @property string $updated
+ */
 class PermissionModel extends \Psecio\Gatekeeper\Model\Mysql
 {
     /**
