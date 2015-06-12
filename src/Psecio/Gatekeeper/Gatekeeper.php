@@ -323,7 +323,12 @@ class Gatekeeper
 
         if (self::$throttleStatus === true && $result === true) {
             self::getLogger()->info('User login verified.', array('username' => $username));
-            $instance->model->allow();
+
+            // If throttling is enabled, set the user back to allow
+            if (isset($instance)) {
+                $instance->model->allow();
+            }
+
             $user->updateLastLogin();
 
             if ($remember === true) {
