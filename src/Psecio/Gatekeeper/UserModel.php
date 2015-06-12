@@ -73,6 +73,11 @@ class UserModel extends \Psecio\Gatekeeper\Model\Mysql
             'column' => 'password_reset_code_timeout',
             'type' => 'datetime'
         ),
+        'lastLogin' => array(
+            'description' => 'Date and Time of Last Login',
+            'column' => 'last_login',
+            'type' => 'datetime'
+        ),
         'groups' => array(
             'description' => 'Groups the User Belongs to',
             'type' => 'relation',
@@ -487,5 +492,18 @@ class UserModel extends \Psecio\Gatekeeper\Model\Mysql
             'userId' => $this->id
         ));
         return $this->getDb()->save($question);
+    }
+
+    /**
+     * Update the last login time for the current user
+     *
+     * @param integer $time Unix timestamp [optional]
+     * @return boolean Success/fail of update
+     */
+    public function updateLastLogin($time = null)
+    {
+        $time = ($time !== null) ? $time : time();
+        $this->lastLogin = date('Y-m-d H:i:s', $time);
+        return $this->getDb()->save($this);
     }
 }
