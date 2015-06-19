@@ -1,0 +1,36 @@
+<?php
+require_once 'vendor/autoload.php';
+
+use \Psecio\Gatekeeper\Gatekeeper as g;
+
+// Replace this path with the location of your
+// Gatekeeper .env configuration file
+g::init('/path/to/.env');
+
+if (isset($_POST['login'])) {
+	// ProTip: do validation here!
+	$credentials = array(
+		'username' => $_POST['username'],
+		'password' => $_POST['password']
+	);
+	if (g::authenticate($credentials) === true) {
+		echo 'Login successful!';
+	} else {
+		echo 'Login failed!';
+	}
+}
+
+?>
+<html>
+	<head>
+		<title></title>
+	</head>
+	<body>
+		<form action="/login" method="POST">
+		<b>Username:</b> <input type="text" name="username" size="20" maxlength="20"/><br/>
+		<b>Password:</b> <input type="password" name="password" size="20"/><br/>
+		<br/>
+		<input type="submit" name="login" value="Login"/>
+		</form>
+	</body>
+</html>
