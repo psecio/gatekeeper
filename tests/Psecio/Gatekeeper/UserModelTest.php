@@ -4,6 +4,30 @@ namespace Psecio\Gatekeeper;
 
 class UserModelTest extends \Psecio\Gatekeeper\Base
 {
+    private $permissions = array(1, 2, 3);
+    private $groups = array(1, 2, 3);
+
+
+    private function buildPermissionGroupUserMock()
+    {
+        $user = $this->getMockBuilder('\Psecio\Gatekeeper\UserModel')
+            ->disableOriginalConstructor()
+            ->setMethods(array('grantPermissions', 'grantGroups'))
+            ->getMock();
+
+        return $user;
+    }
+
+    private function buildMysqlDataSourceMock($method = 'save')
+    {
+        $ds = $this->getMockBuilder('\Psecio\Gatekeeper\DataSource\Mysql')
+            ->disableOriginalConstructor()
+            ->setMethods(array($method))
+            ->getMock();
+
+        return $ds;
+    }
+
     /**
      * Test that a 0 is returned when no throttle record is found (null)
      */
@@ -279,11 +303,7 @@ class UserModelTest extends \Psecio\Gatekeeper\Base
         $data = array(
             array('username' => $username)
         );
-        $ds = $this->getMockBuilder('\Psecio\Gatekeeper\DataSource\Mysql')
-            ->disableOriginalConstructor()
-            ->setMethods(array('fetch'))
-            ->getMock();
-
+        $ds = $this->buildMysqlDataSourceMock('fetch');
         $ds->method('fetch')
             ->willReturn($data);
 
@@ -312,11 +332,7 @@ class UserModelTest extends \Psecio\Gatekeeper\Base
      */
     public function testGrantPermissionsByIdValid()
     {
-        $ds = $this->getMockBuilder('\Psecio\Gatekeeper\DataSource\Mysql')
-            ->disableOriginalConstructor()
-            ->setMethods(array('save'))
-            ->getMock();
-
+        $ds = $this->buildMysqlDataSourceMock();
         $ds->method('save')->willReturn(true);
 
         $perms = array(1, 2, 3);
@@ -329,11 +345,7 @@ class UserModelTest extends \Psecio\Gatekeeper\Base
      */
     public function testGrantPermissionsByIdInalid()
     {
-        $ds = $this->getMockBuilder('\Psecio\Gatekeeper\DataSource\Mysql')
-            ->disableOriginalConstructor()
-            ->setMethods(array('save'))
-            ->getMock();
-
+        $ds = $this->buildMysqlDataSourceMock();
         $ds->method('save')->willReturn(false);
         $user = new UserModel($ds);
         $this->assertFalse($user->grantPermissions(array(1, 2, 3)));
@@ -344,11 +356,7 @@ class UserModelTest extends \Psecio\Gatekeeper\Base
      */
     public function testGrantPermissionsByModelValid()
     {
-        $ds = $this->getMockBuilder('\Psecio\Gatekeeper\DataSource\Mysql')
-            ->disableOriginalConstructor()
-            ->setMethods(array('save'))
-            ->getMock();
-
+        $ds = $this->buildMysqlDataSourceMock();
         $ds->method('save')->willReturn(true);
 
         $perms = array(
@@ -365,11 +373,7 @@ class UserModelTest extends \Psecio\Gatekeeper\Base
      */
     public function testGrantGroupsByIdValid()
     {
-        $ds = $this->getMockBuilder('\Psecio\Gatekeeper\DataSource\Mysql')
-            ->disableOriginalConstructor()
-            ->setMethods(array('save'))
-            ->getMock();
-
+        $ds = $this->buildMysqlDataSourceMock();
         $ds->method('save')->willReturn(true);
 
         $groups = array(1, 2, 3);
@@ -382,11 +386,7 @@ class UserModelTest extends \Psecio\Gatekeeper\Base
      */
     public function testGrantGroupsByIdInvalid()
     {
-        $ds = $this->getMockBuilder('\Psecio\Gatekeeper\DataSource\Mysql')
-            ->disableOriginalConstructor()
-            ->setMethods(array('save'))
-            ->getMock();
-
+        $ds = $this->buildMysqlDataSourceMock();
         $ds->method('save')->willReturn(false);
 
         $user = new UserModel($ds);
@@ -398,11 +398,7 @@ class UserModelTest extends \Psecio\Gatekeeper\Base
      */
     public function testGrantGroupsByModelValid()
     {
-        $ds = $this->getMockBuilder('\Psecio\Gatekeeper\DataSource\Mysql')
-            ->disableOriginalConstructor()
-            ->setMethods(array('save'))
-            ->getMock();
-
+        $ds = $this->buildMysqlDataSourceMock();
         $ds->method('save')->willReturn(true);
 
         $groups = array(
@@ -419,20 +415,13 @@ class UserModelTest extends \Psecio\Gatekeeper\Base
      */
     public function testGrantGroupsAndPermissionsAllValid()
     {
-        $permissions = array(1, 2, 3);
-        $groups = array(1, 2, 3);
-
-        $user = $this->getMockBuilder('\Psecio\Gatekeeper\UserModel')
-            ->disableOriginalConstructor()
-            ->setMethods(array('grantPermissions', 'grantGroups'))
-            ->getMock();
-
+        $user = $this->buildPermissionGroupUserMock();
         $user->method('grantPermissions')->willReturn(true);
         $user->method('grantGroups')->willReturn(true);
 
         $result = $user->grant(array(
-            'permissions' => $permissions,
-            'groups' => $groups
+            'permissions' => $this->permissions,
+            'groups' => $this->groups
         ));
         $this->assertTrue($result);
     }
@@ -442,20 +431,13 @@ class UserModelTest extends \Psecio\Gatekeeper\Base
      */
     public function testGrantGroupsInvalid()
     {
-                $permissions = array(1, 2, 3);
-        $groups = array(1, 2, 3);
-
-        $user = $this->getMockBuilder('\Psecio\Gatekeeper\UserModel')
-            ->disableOriginalConstructor()
-            ->setMethods(array('grantPermissions', 'grantGroups'))
-            ->getMock();
-
+        $user = $this->buildPermissionGroupUserMock();
         $user->method('grantPermissions')->willReturn(true);
         $user->method('grantGroups')->willReturn(false);
 
         $result = $user->grant(array(
-            'permissions' => $permissions,
-            'groups' => $groups
+            'permissions' => $this->permissions,
+            'groups' => $this->groups
         ));
         $this->assertFalse($result);
     }
@@ -465,20 +447,13 @@ class UserModelTest extends \Psecio\Gatekeeper\Base
      */
     public function testGrantPermissionsInvalid()
     {
-                $permissions = array(1, 2, 3);
-        $groups = array(1, 2, 3);
-
-        $user = $this->getMockBuilder('\Psecio\Gatekeeper\UserModel')
-            ->disableOriginalConstructor()
-            ->setMethods(array('grantPermissions', 'grantGroups'))
-            ->getMock();
-
+        $user = $this->buildPermissionGroupUserMock();
         $user->method('grantPermissions')->willReturn(false);
         $user->method('grantGroups')->willReturn(true);
 
         $result = $user->grant(array(
-            'permissions' => $permissions,
-            'groups' => $groups
+            'permissions' => $this->permissions,
+            'groups' => $this->groups
         ));
         $this->assertFalse($result);
     }
@@ -528,6 +503,5 @@ class UserModelTest extends \Psecio\Gatekeeper\Base
             'question' => 'Question #1',
             'answer' => 'mypass'
         ));
-        var_export($result);
     }
 }
