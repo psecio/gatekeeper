@@ -220,4 +220,14 @@ class GroupModel extends \Psecio\Gatekeeper\Model\Mysql
         );
         return $this->getDb()->delete($childGroup);
     }
+
+    /**
+     * Check to see if the group is expired
+     *
+     * @return boolean Expired/Not expired result
+     */
+    public function isExpired()
+    {
+        return (is_null($this->expire) || (!is_null($this->expire) && $this->expire >= time()));
+    }
 }

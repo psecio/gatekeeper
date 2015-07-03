@@ -36,6 +36,30 @@ Gatekeeper::createGroup($attrs);
 ?>
 ```
 
+You can also create a group with an expiration timeout, allowing users in that group only a certain timeframe for their access. You use the `expires` value on the creation to set this with a Unix timestamp:
+
+```php
+<?php
+$attrs = array(
+    'name' => 'group1',
+    'description' => 'Group #1',
+    'expires' => strtotime('+1 day')
+);
+Gatekeeper::createGroup($attrs);
+?>
+```
+
+You can then check to see if a group has expired with the `isExpired` method:
+
+```php
+<?php
+if (Gatekeeper::findGroupById(1)-isExpired() === true) {
+	echo 'Group expired!';
+}
+
+?>
+```
+
 ## Getting Group Users
 
 Much like you can easily get the groups the user belongs to, you can also get the members of a group. This will return a collection of user objects:
