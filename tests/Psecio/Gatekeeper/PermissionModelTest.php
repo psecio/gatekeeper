@@ -87,4 +87,32 @@ class PermissionModelTest extends \Psecio\Gatekeeper\Base
         $perm = new PermissionModel($ds);
         $this->assertFalse($perm->removeChild(1));
     }
+
+    /**
+     * Test that a permission is not expired
+     */
+    public function testPermissionNotExpired()
+    {
+        $ds = $this->buildMock(true);
+        $perm = new PermissionModel($ds, [
+            'id' => 1234,
+            'expire' => strtotime('+1 day')
+        ]);
+
+        $this->assertFalse($perm->isExpired());
+    }
+
+    /**
+     * Test that a permission is marked as expired
+     */
+    public function testPermissionIsExpired()
+    {
+        $ds = $this->buildMock(true);
+        $perm = new PermissionModel($ds, [
+            'id' => 1234,
+            'expire' => strtotime('-1 day')
+        ]);
+
+        $this->assertTrue($perm->isExpired());
+    }
 }

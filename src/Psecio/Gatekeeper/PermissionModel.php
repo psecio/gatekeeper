@@ -116,6 +116,6 @@ class PermissionModel extends \Psecio\Gatekeeper\Model\Mysql
      */
     public function isExpired()
     {
-        return ($this->expire !== null && $this->expire >= time());
+        return ($this->expire !== null && $this->expire <= time());
     }
 }
