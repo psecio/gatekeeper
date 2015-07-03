@@ -48,6 +48,16 @@ if ($permission->isExpired() === true) {
 ?>
 ```
 
+You can also update the expiration time directly when you have a permission object in hand:
+
+```php
+<?php
+$permission = Gatekeeper::findPermissionById(1);
+$permission->expire = strtotime('+1 month');
+$permission->save();
+?>
+```
+
 ## Adding Child Permissions
 
 Much like groups, permissions also support the concept of children. Adding a permission as a child to a parent is easy and can be done in one of two ways:
