@@ -429,18 +429,19 @@ class UserModel extends \Psecio\Gatekeeper\Model\Mysql
      * Grant permissions and groups (multiple) at the same time
      *
      * @param array $config Configuration settings (permissions & groups)
+     * @param integer $expire Expiration time for the settings
      */
-    public function grant(array $config)
+    public function grant(array $config, $expire = null)
     {
         $return = true;
         if (isset($config['permissions'])) {
-            $result = $this->grantPermissions($config['permissions']);
+            $result = $this->grantPermissions($config['permissions'], $expire);
             if ($result === false && $return === true) {
                 $return = false;
             }
         }
         if (isset($config['groups'])) {
-            $result = $this->grantGroups($config['groups']);
+            $result = $this->grantGroups($config['groups'], $expire);
             if ($result === false && $return === true) {
                 $return = false;
             }
@@ -452,17 +453,22 @@ class UserModel extends \Psecio\Gatekeeper\Model\Mysql
      * Handle granting of multiple permissions
      *
      * @param array $permissions Set of permissions (either IDs or objects)
+     * @param integer $expire EXpiration (unix timestamp) for the permissions
      * @return boolean Success/fail of all saves
      */
-    public function grantPermissions(array $permissions)
+    public function grantPermissions(array $permissions, $expire = null)
     {
         $return = true;
         foreach ($permissions as $permission) {
             $permission = ($permission instanceof PermissionModel) ? $permission->id : $permission;
-            $userPerm = new UserPermissionModel($this->getDb(), array(
+            $data = [
                 'userId' => $this->id,
                 'permissionId' => $permission
-            ));
+            ];
+            if ($expire !== null && is_int($expire)) {
+                $data['expire'] = $expire;
+            }
+            $userPerm = new UserPermissionModel($this->getDb(), $data);
             $result = $this->getDb()->save($userPerm);
             if ($result === false && $return === true) {
                 $return = false;
@@ -475,17 +481,22 @@ class UserModel extends \Psecio\Gatekeeper\Model\Mysql
      * Handle granting of multiple groups
      *
      * @param array $groups Set of groups (either IDs or objects)
+     * @param integer $expire EXpiration (unix timestamp) for the permissions
      * @return boolean Success/fail of all saves
      */
-    public function grantGroups(array $groups)
+    public function grantGroups(array $groups, $expire = null)
     {
         $return = true;
         foreach ($groups as $group) {
             $group = ($group instanceof GroupModel) ? $group->id : $group;
-            $userGroup = new UserGroupModel($this->getDb(), array(
+            $data = [
                 'userId' => $this->id,
                 'groupId' => $group
-            ));
+            ];
+            if ($expire !== null && is_int($expire)) {
+                $data['expire'] = $expire;
+            }
+            $userGroup = new UserGroupModel($this->getDb(), $data);
             $result = $this->getDb()->save($userGroup);
             if ($result === false && $return === true) {
                 $return = false;

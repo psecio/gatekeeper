@@ -285,6 +285,20 @@ Gatekeeper::findUserById(1)->grant(array(
 ?>
 ```
 
+Additionally, much like manually adding groups and permissions for a user, you can also set an expiration time:
+
+```php
+<?php
+$perm1 = Gatekeeper::findPermissionById(1);
+$group1 = Gatekeeper::findGroupById(1);
+$expireTime = strtotime('+1 day');
+
+Gatekeeper::findUserById(1)->grant(array(
+    'permissions' => array($perm1, 3),
+    'groups' => array($group1)
+), $expireTime);
+?>
+```
 
 ## Check if a user is currently banned (throttling)
 
