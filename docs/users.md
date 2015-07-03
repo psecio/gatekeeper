@@ -225,6 +225,16 @@ if (Gatekeeper::findUserById($userId)->addPermission($permissionId) === true) {
 ?>
 ```
 
+You can also provide an optional second parameter with an expiration time if you only want to allow the user the permission for a limited about of time. This parameter should be in the form of a Unix timestamp:
+
+```php
+<?php
+Gatekeeper::findUserById(1)->addPermission($permissionId, strtotime('+1 day'));
+?>
+```
+
+When fetching a user's permission list (like with `$user->permissions`) it will only return the non-expired or permanent permissions.
+
 ## Revoking a permission
 
 You can remove a permission from a user by revoking it:

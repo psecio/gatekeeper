@@ -30,6 +30,11 @@ class UserPermissionModel extends \Psecio\Gatekeeper\Model\Mysql
             'column' => 'id',
             'type' => 'integer'
         ),
+        'expire' => array(
+            'description' => 'Expiration Date',
+            'column' => 'expire',
+            'type' => 'datetime'
+        ),
         'created' => array(
             'description' => 'Date Created',
             'column' => 'created',

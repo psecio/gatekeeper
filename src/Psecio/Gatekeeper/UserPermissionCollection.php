@@ -15,7 +15,8 @@ class UserPermissionCollection extends \Psecio\Gatekeeper\Collection\Mysql
         $data = array('userId' => $userId);
         $sql = 'select p.* from '.$prefix.'permissions p, '.$prefix.'user_permission up'
             .' where p.id = up.permission_id'
-            .' and up.user_id = :userId';
+            .' and up.user_id = :userId'
+            .' and (up.expire >= UNIX_TIMESTAMP(NOW()) or up.expire is null)';
 
         $results = $this->getDb()->fetch($sql, $data);
 

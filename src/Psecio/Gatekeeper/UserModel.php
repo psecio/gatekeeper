@@ -187,16 +187,21 @@ class UserModel extends \Psecio\Gatekeeper\Model\Mysql
      * Attach a permission to a user account
      *
      * @param integer|PermissionModel $perm Permission ID or model isntance
+     * @param integer $expire Expiration time of the permission relationship
      */
-    public function addPermission($perm)
+    public function addPermission($perm, $expire = null)
     {
         if ($perm instanceof PermissionModel) {
             $perm = $perm->id;
         }
-        $perm = new UserPermissionModel($this->getDb(), array(
+        $data = [
             'user_id' => $this->id,
             'permission_id' => $perm
-        ));
+        ];
+        if ($expire !== null && is_int($expire)) {
+            $data['expire'] = $expire;
+        }
+        $perm = new UserPermissionModel($this->getDb(), $data);
         return $this->getDb()->save($perm);
     }
 
