@@ -25,6 +25,29 @@ if (Gatekeeper::createPermission($perm) === true) {
 ?>
 ```
 
+You can also set an expiration date on your permissions using the `expire` property:
+
+```php
+<?php
+$perm = [
+	'name' => 'perm1',
+	'description' => 'Permission #1',
+	'expire' => strtotime('+1 day')
+];
+?>
+```
+
+These values are stored as Unix timestamps on the permission records themselves. This will cause the permission to exire, **not** the permission to no longer be allowed for a user (that's in the user-to-permission relationship). You can also check to see if a permission is expired with the `isExpired` method:
+
+```php
+<?php
+$permission = Gatekeeper::findPermissionById(1);
+if ($permission->isExpired() === true) {
+	echo 'Oh noes, the permission expired!';
+}
+?>
+```
+
 ## Adding Child Permissions
 
 Much like groups, permissions also support the concept of children. Adding a permission as a child to a parent is easy and can be done in one of two ways:
@@ -41,7 +64,7 @@ $permission->addChild($permission);
 ?>
 ```
 
-### Removing Child Permissions
+## Removing Child Permissions
 
 You can also remove child permissions in a similar way:
 

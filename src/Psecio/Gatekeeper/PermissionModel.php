@@ -49,6 +49,11 @@ class PermissionModel extends \Psecio\Gatekeeper\Model\Mysql
             'column' => 'updated',
             'type' => 'datetime'
         ),
+        'expire' => array(
+            'description' => 'Expiration Date',
+            'column' => 'expire',
+            'type' => 'datetime'
+        ),
         'children' => array(
             'description' => 'Child Permissions',
             'type' => 'relation',
@@ -102,5 +107,15 @@ class PermissionModel extends \Psecio\Gatekeeper\Model\Mysql
             array('permission_id' => $permission, 'parent_id' => $this->id)
         );
         return $this->getDb()->delete($childPermission);
+    }
+
+    /**
+     * Test if the permission is expired
+     *
+     * @return boolean Expired/not expired
+     */
+    public function isExpired()
+    {
+        return ($this->expire !== null && $this->expire >= time());
     }
 }
