@@ -228,6 +228,6 @@ class GroupModel extends \Psecio\Gatekeeper\Model\Mysql
      */
     public function isExpired()
     {
-        return (is_null($this->expire) || (!is_null($this->expire) && $this->expire >= time()));
+        return ($this->expire !== null && $this->expire <= time());
     }
 }

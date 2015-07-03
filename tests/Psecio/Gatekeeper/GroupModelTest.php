@@ -178,4 +178,32 @@ class GroupModelTest extends \Psecio\Gatekeeper\Base
         $group = new GroupModel($ds);
         $this->assertFalse($group->removeChild(1));
     }
+
+        /**
+     * Test that a group is not expired
+     */
+    public function testGroupNotExpired()
+    {
+        $ds = $this->buildMock(true);
+        $group = new GroupModel($ds, [
+            'id' => 1234,
+            'expire' => strtotime('+1 day')
+        ]);
+
+        $this->assertFalse($group->isExpired());
+    }
+
+    /**
+     * Test that a group is marked as expired
+     */
+    public function testGroupIsExpired()
+    {
+        $ds = $this->buildMock(true);
+        $group = new GroupModel($ds, [
+            'id' => 1234,
+            'expire' => strtotime('-1 day')
+        ]);
+
+        $this->assertTrue($group->isExpired());
+    }
 }
