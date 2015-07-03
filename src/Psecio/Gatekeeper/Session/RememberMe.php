@@ -132,7 +132,7 @@ class RememberMe
         // Remove the token (a new one will be made later)
         $this->datasource->delete($token);
 
-        if (\Psecio\Gatekeeper::hash_equals($this->data[$this->tokenName], $token->id.':'.hash('sha256', $userToken)) === false) {
+        if (\Psecio\Gatekeeper\Gatekeeper::hash_equals($this->data[$this->tokenName], $token->id.':'.hash('sha256', $userToken)) === false) {
             return false;
         }
 
@@ -256,7 +256,7 @@ class RememberMe
     public function setCookies(\Psecio\Gatekeeper\AuthTokenModel $tokenModel, $token, $https = false, $domain = null)
     {
         if ($domain === null && isset($_SERVER['HTTP_HOST'])) {
-            $domain = $_SERVER['HTTP_HOST'];
+            $domain = ($_SERVER['HTTP_HOST'] != 'localhost') ? $_SERVER['HTTP_HOST'] : false;
         }
 
         $tokenValue = $tokenModel->id.':'.hash('sha256', $token);
