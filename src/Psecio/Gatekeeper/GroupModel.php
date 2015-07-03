@@ -30,6 +30,11 @@ class GroupModel extends \Psecio\Gatekeeper\Model\Mysql
             'column' => 'name',
             'type' => 'varchar'
         ),
+        'expire' => array(
+            'description' => 'Expiration Date',
+            'column' => 'expire',
+            'type' => 'datetime'
+        ),
         'created' => array(
             'description' => 'Date Created',
             'column' => 'created',

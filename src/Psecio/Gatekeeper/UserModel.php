@@ -229,15 +229,19 @@ class UserModel extends \Psecio\Gatekeeper\Model\Mysql
      * @param integer|GroupModel $group Add the user to a group
      * @return boolean Success/fail of add
      */
-    public function addGroup($group)
+    public function addGroup($group, $expire = null)
     {
         if ($group instanceof GroupModel) {
             $group = $group->id;
         }
-        $group = new UserGroupModel($this->getDb(), array(
+        $data = [
             'group_id' => $group,
             'user_id' => $this->id
-        ));
+        ];
+        if ($expire !== null && is_int($expire)) {
+            $data['expire'] = $expire;
+        }
+        $group = new UserGroupModel($this->getDb(), $data);
         return $this->getDb()->save($group);
     }
 

@@ -30,7 +30,7 @@ echo 'Full name: '.$user->firstName.' '.$user->lastName."\n";
 
 ## Getting All Users
 
-You can use the `findUsers` method on the `Gatekeeper` class to get a list (returnes a `UserCollection`) of the current users:
+You can use the `findUsers` method on the `Gatekeeper` class to get a list (returns a `UserCollection`) of the current users:
 
 ```php
 $users = Gatekeeper::findUsers();
@@ -57,7 +57,7 @@ Gatekeeper::register($credentials);
 ```
 
 The return value from the `register` call is a *boolean* indicating the pass/fail status of the registration.
-Addiitonally, you can also link the user to permissions at create time:
+Additionally, you can also link the user to permissions at create time:
 
 ```php
 <?php
@@ -101,7 +101,7 @@ Gatekeeper::register($credentials);
 
 ## Removing users
 
-Deleteing user records can be done with the `deleteUserById` method:
+Deleting user records can be done with the `deleteUserById` method:
 
 ```php
 <?php
@@ -165,9 +165,18 @@ You can add a user to a group by using the group ID:
 <?php
 $groupId = 1;
 if (Gatekeeper::findUserById($userId)->addGroup($groupId) === true) {
-    echo "User added successfullly!";
+    echo "User added successfully!";
 }
 ?>
+```
+
+You can also grant the group to a user with an expiration time, giving them permissions until a certain time. You set the expiration as a second value on the `addGroup` method by passing in a Unix timestamp:
+
+```php
+<?php
+if (Gatekeeper::findUserById(1)->addGroup(1, strtotime('+1 day')) === true) {
+    echo "User added successfully!";
+}
 ```
 
 ## Revoking access to a group
