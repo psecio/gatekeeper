@@ -18,7 +18,7 @@ class PolicyCollection extends \Psecio\Gatekeeper\Collection\Mysql
 		$results = $this->getDb()->fetch($sql);
 
         foreach ($results as $result) {
-            $policy = new PolicyMoel($this->getDb(), $result);
+            $policy = new PolicyModel($this->getDb(), $result);
             $this->add($policy);
         }
 	}
