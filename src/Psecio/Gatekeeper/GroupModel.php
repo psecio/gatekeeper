@@ -118,6 +118,29 @@ class GroupModel extends \Psecio\Gatekeeper\Model\Mysql
     }
 
     /**
+     * Check to see if the group has a permission
+     *
+     * @param integer|PermissionModel $permission Either a permission ID or PermissionModel
+     * @return boolean Permission found/not found
+     */
+    public function hasPermission($permission)
+    {
+        if ($this->id === null) {
+            return false;
+        }
+        if ($permission instanceof PermissionModel) {
+            $permission = $permission->id;
+        }
+
+        $perm = new GroupPermissionModel($this->getDb());
+        $perm = $this->getDb()->find($perm, array(
+            'permission_id' => $permission,
+            'group_id' => $this->id
+        ));
+        return ($perm->id !== null && $perm->permissionId == $permission) ? true : false;
+    }
+
+    /**
      * Add a permission relation for the group
      *
      * @param integer|PermissionModel $permission Either a permission ID or PermissionModel
