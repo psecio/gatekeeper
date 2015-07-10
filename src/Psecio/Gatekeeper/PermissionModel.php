@@ -54,6 +54,15 @@ class PermissionModel extends \Psecio\Gatekeeper\Model\Mysql
             'column' => 'expire',
             'type' => 'datetime'
         ),
+        'groups' => array(
+            'description' => 'Groups the permission belongs to',
+            'type' => 'relation',
+            'relation' => array(
+                'model' => '\\Psecio\\Gatekeeper\\GroupCollection',
+                'method' => 'findGroupsByPermissionId',
+                'local' => 'id'
+            )
+        ),
         'children' => array(
             'description' => 'Child Permissions',
             'type' => 'relation',
