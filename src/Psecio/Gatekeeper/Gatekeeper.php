@@ -214,6 +214,14 @@ class Gatekeeper
     }
 
     /**
+     * Clear out the current restrictions
+     */
+    public static function clearRestrictions()
+    {
+        self::$restrictions = [];
+    }
+
+    /**
      * Load the variables using the .env handling
      *
      * @param string $envPath Path to the .env file
