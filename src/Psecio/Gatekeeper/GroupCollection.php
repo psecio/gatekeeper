@@ -24,4 +24,25 @@ class GroupCollection extends \Psecio\Gatekeeper\Collection\Mysql
             $this->add($group);
         }
     }
+
+    /**
+     * Find the groups that a permission belongs to
+     *
+     * @param integer $permId Permission ID
+     */
+    public function findGroupsByPermissionId($permId)
+    {
+        $prefix = $this->getPrefix();
+        $data = array('permId' => $permId);
+        $sql = 'select g.* from '.$prefix.'groups g, '.$prefix.'group_permission gp'
+            .' where gp.permission_id = :permId'
+            .' and gp.group_id = g.id';
+
+        $results = $this->getDb()->fetch($sql, $data);
+
+        foreach ($results as $result) {
+            $group = new GroupModel($this->getDb(), $result);
+            $this->add($group);
+        }
+    }
 }
