@@ -504,4 +504,22 @@ class UserModelTest extends \Psecio\Gatekeeper\Base
             'answer' => 'mypass'
         ));
     }
+
+    /**
+     * Test finding a user by ID
+     */
+    public function testFindUserById()
+    {
+        $userId = 1234;
+
+        $ds = $this->buildMock(true);
+        $user = new UserModel($ds, ['id' => $userId, 'username' => 'testuser1']);
+
+        $ds = $this->buildMock($user, 'find');
+        $user = new UserModel($ds);
+
+        $result = $user->findByUserId($userId);
+        $this->assertTrue($result->id === $userId);
+        $this->assertTrue($result->username === 'testuser1');
+    }
 }
