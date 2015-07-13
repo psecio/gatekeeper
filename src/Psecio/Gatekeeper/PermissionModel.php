@@ -63,6 +63,15 @@ class PermissionModel extends \Psecio\Gatekeeper\Model\Mysql
                 'local' => 'id'
             )
         ),
+        'users' => array(
+            'description' => 'Users that have the permission',
+            'type' => 'relation',
+            'relation' => array(
+                'model' => '\\Psecio\\Gatekeeper\\UserCollection',
+                'method' => 'findUsersByPermissionId',
+                'local' => 'id'
+            )
+        ),
         'children' => array(
             'description' => 'Child Permissions',
             'type' => 'relation',
