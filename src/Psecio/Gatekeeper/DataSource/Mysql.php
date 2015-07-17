@@ -32,7 +32,7 @@ class Mysql extends \Psecio\Gatekeeper\DataSource
     public function buildPdo(array $config)
     {
         return new \PDO(
-            'mysql:dbname='.$config['name'].';host='.$config['host'],
+            'mysql:dbname='.$config['name'].';host='.$config['host'].';charset=utf8',
             $config['username'], $config['password']
         );
     }
