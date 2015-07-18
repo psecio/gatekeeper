@@ -410,6 +410,20 @@ class Gatekeeper
         if (self::$datasource->save($user)  === false) {
             return false;
         }
+        // Add groups if they're given
+        if (isset($userData['groups'])) {
+            foreach ($userData['groups'] as $group) {
+                $group = (is_int($group)) ? self::findGroupById($group) : self::findGroupByName($group);
+                $user->addGroup($group);
+            }
+        }
+        // Add permissions if they're given
+        if (isset($userData['permissions'])) {
+            foreach ($userData['permissions'] as $perm) {
+                $perm = (is_int($perm)) ? self::findPermissionById($perm) : self::findPermissionByName($perm);
+                $user->addPermission($perm);
+            }
+        }
         return $user;
     }
 
