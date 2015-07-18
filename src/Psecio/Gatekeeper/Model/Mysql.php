@@ -94,4 +94,15 @@ class Mysql extends \Modler\Model
         parent::load($loadData, $enforceGuard);
         return true;
     }
+
+    /**
+     * Save the current model instance (gets datasource and calls save)
+     *
+     * @return boolean Success/fail result of save
+     */
+    public function save()
+    {
+        $ds = \Psecio\Gatekeeper\Gatekeeper::getDatasource();
+        return $ds->save($this);
+    }
 }
