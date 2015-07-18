@@ -66,8 +66,7 @@ class FindBy extends \Psecio\Gatekeeper\Handler
         $instance = $this->getDb()->find($instance, $data);
 
         if ($instance->id === null) {
-            $exception = '\\Psecio\\Gatekeeper\\Exception\\'.$model.'NotFoundException';
-            throw new $exception($model.' could not be found for criteria');
+            return false;
         }
 
         return $instance;
