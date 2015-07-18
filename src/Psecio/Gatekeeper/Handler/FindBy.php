@@ -60,7 +60,7 @@ class FindBy extends \Psecio\Gatekeeper\Handler
 
         $modelNs = '\\Psecio\\Gatekeeper\\'.$model.'Model';
         if (!class_exists($modelNs)) {
-            throw new Exception\ModelNotFoundException('Model type '.$model.' could not be found');
+            throw new \Psecio\Gatekepper\Exception\ModelNotFoundException('Model type '.$model.' could not be found');
         }
         $instance = new $modelNs($this->getDb());
         $instance = $this->getDb()->find($instance, $data);
@@ -87,7 +87,7 @@ class FindBy extends \Psecio\Gatekeeper\Handler
         $model = substr($name, 0, strlen($name) - 1);
         $collectionNs = '\\Psecio\\Gatekeeper\\'.$model.'Collection';
         if (!class_exists($collectionNs)) {
-            throw new Exception\ModelNotFoundException('Collection type '.$model.' could not be found');
+            throw new \Psecio\Gatekepper\Exception\ModelNotFoundException('Collection type '.$model.' could not be found');
         }
         $model = g::modelFactory($model.'Model');
         $collection = new $collectionNs($this->getDb());
