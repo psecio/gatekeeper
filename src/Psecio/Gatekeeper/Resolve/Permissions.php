@@ -18,7 +18,6 @@ class Permissions extends \Psecio\Gatekeeper\Resolve
 
 		// Now find the ones in the user's groups too
 		foreach ($user->groups as $group) {
-			print_r($group->permissions);
 			foreach ($group->permissions as $permission) {
 				$permissions->add($permission);
 			}
