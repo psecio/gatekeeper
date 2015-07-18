@@ -408,10 +408,9 @@ class Gatekeeper
     {
         $user = new UserModel(self::$datasource, $userData);
         if (self::$datasource->save($user)  === false) {
-            echo 'ERROR: '.$user->getLastError()."\n";
             return false;
         }
-        return true;
+        return $user;
     }
 
     /**
