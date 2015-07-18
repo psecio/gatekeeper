@@ -43,30 +43,30 @@ class GatekeeperTest extends \Psecio\Gatekeeper\Base
     /**
      * Test getting the user's throttle information (model instance)
      */
-    public function testGetUserThrottle()
-    {
-        $userId = 42;
+    // public function testGetUserThrottle()
+    // {
+    //     $userId = 42;
 
-        // This is our model that will be returned
-        $ds = $this->buildMock(null);
-        $throttle1 = new ThrottleModel($ds, array('userId' => $userId));
+    //     // This is our model that will be returned
+    //     $ds = $this->buildMock(null);
+    //     $throttle1 = new ThrottleModel($ds, array('userId' => $userId));
 
-        $ds = $this->buildMock($throttle1, 'find');
-        $throttle = new ThrottleModel($ds);
+    //     $ds = $this->buildMock($throttle1, 'find');
+    //     $throttle = new ThrottleModel($ds);
 
-        $gk = $this->getMockBuilder('\Psecio\Gatekeeper\Gatekeeper')
-            ->setMethods(array('findThrottleByUserId'))
-            ->getMock();
+    //     $gk = $this->getMockBuilder('\Psecio\Gatekeeper\Gatekeeper')
+    //         ->setMethods(array('findThrottleByUserId'))
+    //         ->getMock();
 
-        $config = array('name' => 'test');
-        $gk::init(null, $config, $ds);
+    //     $config = array('name' => 'test');
+    //     $gk::init(null, $config, $ds);
 
-        $gk->method('findThrottleByUserId')
-            ->willReturn($throttle);
+    //     $gk->method('findThrottleByUserId')
+    //         ->willReturn($throttle);
 
-        $result = $gk::getUserThrottle($userId);
-        $this->assertEquals(42, $result->userId);
-    }
+    //     $result = $gk::getUserThrottle($userId);
+    //     $this->assertEquals(42, $result->userId);
+    // }
 
     /**
      * Test that a restriction is correctly made
