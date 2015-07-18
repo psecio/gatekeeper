@@ -1,3 +1,4 @@
+sudo: false
 language: php
 before_script:
   - wget http://getcomposer.org/composer.phar
