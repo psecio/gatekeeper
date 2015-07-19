@@ -1,34 +1,37 @@
 <?php
 
 namespace Psecio\Gatekeeper\Provider\Laravel5;
-// namespace App;
 
-use \Illuminate\Support\Facades\Auth;
-use \Psecio\Gatekeeper\Gatekeeper;
-use \Psecio\Gatekeeper\Provider\Laravel5\UserProvider;
-use \Psecio\Gatekeeper\Provider\Laravel5\AuthManager;
+use Psecio\Gatekeeper\Gatekeeper;
+use Psecio\Gatekeeper\Provider\Laravel5\UserProvider;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Routing\Router;
 
 class AuthServiceProvider extends ServiceProvider
 {
+	/**
+	 * Register (start) the service provider
+	 * 	Sets up the Gatekeeper instance with init() call
+	 */
 	public function register()
 	{
-		error_log(get_class().' :: '.__FUNCTION__);
-
 		$config = array(
-			'username' => 'gk42',
-			'password' => 'gk42',
-			'host' => '127.0.0.1',
-			'name' => 'gatekeeper'
+			'username' => env('GATEKEEPER_USER'),
+			'password' => env('GATEKEEPER_PASS'),
+			'host' => env('GATEKEEPER_HOST'),
+			'name' => env('GATEKEEPER_DATABASE'),
 		);
 		Gatekeeper::init(null, $config);
 	}
 
+	/**
+	 * Boot the provider, adding the "gatekeeper" type to the Auth handling
+	 *
+	 * @param Router $router Laravel router instance
+	 */
 	public function boot(Router $router)
     {
-		error_log(get_class().' :: '.__FUNCTION__);
-
 		Auth::extend('gatekeeper', function($app) {
 			return new UserProvider();
 		});
