@@ -139,6 +139,15 @@ class UserModel extends \Psecio\Gatekeeper\Model\Mysql
                 'method' => 'findByUserId',
                 'local' => 'id'
             )
+        ),
+        'authTokens' => array(
+            'description' => 'Current auth (remember me) tokens for the user',
+            'type' => 'relation',
+            'relation' => array(
+                'model' => '\\Psecio\\Gatekeeper\\AuthTokenCollection',
+                'method' => 'findTokensByUserId',
+                'local' => 'id'
+            )
         )
     );
 
