@@ -2,7 +2,9 @@
 
 namespace Psecio\Gatekeeper\Provider\Laravel5;
 
+use Psecio\Gatekeeper\Gatekeeper;
 use Psecio\Gatekeeper\UserModel;
+use Psecio\Gatekeeper\AuthTokenModel;
 use Illuminate\Contracts\Auth\Authenticatable;
 
 class UserAuthenticatable implements Authenticatable
@@ -38,6 +40,11 @@ class UserAuthenticatable implements Authenticatable
     public function __get($name)
     {
         return $this->model->$name;
+    }
+
+    public function getModel()
+    {
+        return $this->model;
     }
 
     /**
@@ -79,8 +86,10 @@ class UserAuthenticatable implements Authenticatable
      */
     public function getRememberToken()
     {
-error_log(get_class().' :: '.__FUNCTION__);
-    	$token = $this->model->authTokens[0]->token;
+        $tokens = $this->model->authTokens;
+        if (isset($tokens[0])) {
+            return $tokens[0]->token;
+        }
     }
 
     /**
@@ -90,10 +99,20 @@ error_log(get_class().' :: '.__FUNCTION__);
      */
     public function setRememberToken($value)
     {
-error_log(get_class().' :: '.__FUNCTION__);
-    	$token = $this->model->authTokens[0];
-        $token->token($value);
-        $token->save();
+        $tokens = $this->model->authTokens;
+        if (isset($tokens[0])) {
+            $token = $tokens[0];
+            $token->token($value);
+            $token->save();
+        } else {
+            // No token found, make one
+            $token = new AuthTokenModel(Gatekeeper::getDatasource(), [
+                'token' => $value,
+                'user_id' => $this->model->id,
+                'expires' => strtotime('+14 days')
+            ]);
+            $token->save();
+        }
     }
 
     /**
@@ -103,7 +122,6 @@ error_log(get_class().' :: '.__FUNCTION__);
      */
     public function getRememberTokenName()
     {
-error_log(get_class().' :: '.__FUNCTION__);
     	return $this->tokenName;
     }
 }

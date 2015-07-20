@@ -36,8 +36,15 @@ class UserProvider implements UserProviderInterface
      */
     public function retrieveByToken($identifier, $token)
     {
-    	error_log(get_class().' :: '.__FUNCTION__);
-        error_log(print_r($identifier, true).' - '.$token);
+        $user = (is_int($identifier))
+            ? Gatekeeper::findUserById($identifier)
+            : Gatekeeper::findUserByUsername($identifier);
+        $tokens = $user->authTokens;
+
+        if ($user === false || (isset($tokens[0]) && $tokens[0]->token !== $token)) {
+            return null;
+        }
+        return new UserAuthenticatable($user);
     }
 
     /**
@@ -49,7 +56,13 @@ class UserProvider implements UserProviderInterface
      */
     public function updateRememberToken(Authenticatable $user, $token)
     {
-    	error_log(get_class().' :: '.__FUNCTION__.' token: '.$token);
+        $tokens = $user->getModel()->authTokens;
+
+        if (isset($tokens[0])) {
+            $token = $tokens[0];
+            $token->token($token);
+            $token->save();
+        }
     }
 
     /**
@@ -81,8 +94,6 @@ class UserProvider implements UserProviderInterface
      */
     public function validateCredentials(Authenticatable $user, array $credentials)
     {
-error_log(print_r($credentials, true));
-
     	$username = $user->getAuthIdentifier();
     	$credentials = [
     		'username' => $username,
