@@ -101,7 +101,7 @@ You can disable this feature in one of two ways:
 
 ```php
 <?php
-// Either throught the init call
+// Either through the init call
 Gatekeeper::init(null, array('throttle' => false));
 
 // Or through a method call
