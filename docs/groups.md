@@ -13,7 +13,7 @@ Gatekeeper also supports hierarchical groups (see below).
 
 ## Getting All Groups
 
-You can use the `findGroupss` method on the `Gatekeeper` class to get a list (returnes a `GroupCollection`) of the current groups:
+You can use the `findGroupss` method on the `Gatekeeper` class to get a list (returns a `GroupCollection`) of the current groups:
 
 ```php
 $groups = Gatekeeper::findGroups();
