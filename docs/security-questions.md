@@ -1,6 +1,6 @@
 # Security Questions
 
-Gatekeeper includes the concept of security questions to act as a secondary mechanism for authenticating the user. Instead of trying to provide a set of questions with he installation, the tool only provides the functionality to create and verify
+Gatekeeper includes the concept of security questions to act as a secondary mechanism for authenticating the user. Instead of trying to provide a set of questions with the installation, the tool only provides the functionality to create and verify
 the answers.
 
 The answers for the questions are stored as `bcrypt` strings instead of in plain-text to prevent simple exposure if the database is compromised. It currently uses the [password hashing](http://php.net/manual/en/ref.password.php) handling in PHP for hash creation and verification. It evaluates the hashes directly and, as such, the answer is *case sensitive* and must match the answer exactly.
