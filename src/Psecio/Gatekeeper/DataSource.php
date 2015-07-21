@@ -11,6 +11,12 @@ abstract class DataSource
     public $config = array();
 
     /**
+     * Last error from a datasource request
+     * @var string
+     */
+    public $lastError = '';
+
+    /**
      * Init the object and set the configuration
      * @param array $config Configuration settings
      */

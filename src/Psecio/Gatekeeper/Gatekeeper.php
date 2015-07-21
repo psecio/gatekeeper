@@ -204,6 +204,16 @@ class Gatekeeper
     }
 
     /**
+     * Get the last error message from the current datasource
+     *
+     * @return string Error message (or empty string)
+     */
+    public static function getLastError()
+    {
+        return self::getDatasource()->lastError;
+    }
+
+    /**
      * Get the current list of restrictions
      *
      * @return array Set of restrictions
