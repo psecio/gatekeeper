@@ -59,11 +59,22 @@ echo -e "--- Setting up configuration ----------\n"
 # Our connection details are good, lets copy the file
 cp ./vendor/psecio/gatekeeper/phinx.dist.yml ./phinx.yml
 
-# And make our replacements
+# And make our replacements for phinx
 sed -i -e "s/%%DBNAME%%/$dbname/g" ./phinx.yml
 sed -i -e "s/%%HOSTNAME%%/$hostname/g" ./phinx.yml
 sed -i -e "s/%%USERNAME%%/$username/g" ./phinx.yml
 sed -i -e "s/%%PASSWORD%%/$password/g" ./phinx.yml
+rm ./phinx.yml-e
+
+# Now lets move the .env file into place
+cp ./vendor/psecio/gatekeeper/.env.dist ./.env
+
+# And make the replacements here too
+sed -i -e "s/%%DBNAME%%/$dbname/g" ./.env
+sed -i -e "s/%%HOSTNAME%%/$hostname/g" ./.env
+sed -i -e "s/%%USERNAME%%/$username/g" ./.env
+sed -i -e "s/%%PASSWORD%%/$password/g" ./.env
+rm ./.env-e
 
 echo -e "--- Running migrations ----------\n"
 
