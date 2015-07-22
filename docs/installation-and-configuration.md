@@ -43,6 +43,8 @@ up the connection and get the instance configured:
 ```php
 <?php
 require_once 'vendor/autoload.php';
+use \Psecio\Gatekeeper\Gatekeeper;
+
 Gatekeeper::init();
 ?>
 ```
