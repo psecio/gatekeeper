@@ -2,6 +2,7 @@
 
 namespace Psecio\Gatekeeper\Provider\Laravel5;
 
+use Validator;
 use Psecio\Gatekeeper\Gatekeeper;
 use Psecio\Gatekeeper\Provider\Laravel5\UserProvider;
 use Illuminate\Support\Facades\Auth;
