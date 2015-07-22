@@ -6,8 +6,9 @@ YAML='phinx.yml'
 # pre1. Check to see if the yaml file exists
 if [ -r $YAML ];
 then
-	message="$YAML file found, ending\n\n"
+	message="\033[31m$YAML file found, running migrations\n\033[0m"
 	echo -e $message
+	vendor/bin/phinx migrate
 	exit
 fi
 
@@ -16,6 +17,11 @@ echo -e "> No configuration found, please enter database information:\n"
 read -p "Hostname [localhost]: " hostname
 if [ -z $hostname ]; then
 	hostname="localhost"
+fi
+
+read -p "Database name [gatekeeper]: " dbname
+if [ -z $dbname ]; then
+	dbname="gatekeeper"
 fi
 
 read -p "Username: " username
@@ -32,11 +38,6 @@ else
 	echo -e "\n" # extra newline
 fi
 
-read -p "Database name: " dbname
-if [ -z $dbname ]; then
-	echo -e "\n\033[31mDatabase name cannot be empty!\033[0m"
-	exit;
-fi
 
 # 2. verify it can be reached
 echo -e "--- Testing database connection ----------\n"
@@ -45,12 +46,28 @@ RESULT=`mysql -u $username --password=$password -e "show databases" 2>/dev/null 
 
 if [ "$RESULT" != "$dbname" ]; then
 	echo -e "\033[31mMySQL connection failure!\n\033[0m"
+	echo -e "Please verify the following:
+ - The username/password you provided are correct
+ - That the database has been created
+ - That the user you're providing has been correctly granted permission to the database
+	"
 	exit;
 fi
 
+echo -e "--- Setting up configuration ----------\n"
 
-# 3. copy the yaml to the current directory
-# 4. replace the placeholders with database info
-# 5. run the migrations
+# Our connection details are good, lets copy the file
+cp ./vendor/psecio/gatekeeper/phinx.dist.yml ./phinx.yml
 
-echo -e "\n\n"
+# And make our replacements
+sed -i -e "s/%%DBNAME%%/$dbname/g" ./phinx.yml
+sed -i -e "s/%%HOSTNAME%%/$hostname/g" ./phinx.yml
+sed -i -e "s/%%USERNAME%%/$username/g" ./phinx.yml
+sed -i -e "s/%%PASSWORD%%/$password/g" ./phinx.yml
+
+echo -e "--- Running migrations ----------\n"
+
+# Finally we run the migrations
+vendor/bin/phinx migrate
+
+echo -e "DONE!\n\n"
