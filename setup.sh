@@ -66,8 +66,13 @@ sed -i -e "s/%%USERNAME%%/$username/g" ./phinx.yml
 sed -i -e "s/%%PASSWORD%%/$password/g" ./phinx.yml
 rm ./phinx.yml-e
 
-# Now lets move the .env file into place
-cp ./vendor/psecio/gatekeeper/.env.dist ./.env
+# Now lets move the .env file into place. If it exists, append
+if [ -f ./.env ]; then
+	sed -i '' -e '$a\' ./.env
+	cat ./vendor/psecio/gatekeeper/.env.dist >> ./.env
+else
+	cp ./vendor/psecio/gatekeeper/.env.dist ./.env
+fi
 
 # And make the replacements here too
 sed -i -e "s/%%DBNAME%%/$dbname/g" ./.env
