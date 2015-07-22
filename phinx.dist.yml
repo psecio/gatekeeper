@@ -15,10 +15,10 @@ environments:
 
     development:
         adapter: mysql
-        host: localhost
-        name: gatekeeper
-        user: username
-        pass: 'password'
+        host: %%HOSTNAME%%
+        name: %%DBNAME%%
+        user: %%USERNAME%%
+        pass: '%%PASSWORD%%'
         port: 3306
         charset: utf8
 
