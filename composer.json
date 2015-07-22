@@ -29,5 +29,6 @@
         "psr-0": {
             "Psecio": "src/"
         }
-    }
+    },
+    "bin": ["bin/setup.sh"]
 }
