@@ -373,16 +373,20 @@ class UserModel extends \Psecio\Gatekeeper\Model\Mysql
     /**
      * Check to see if the user is in the group
      *
-     * @param integer $groupId Group ID
+     * @param integer $groupId Group ID or name
      * @return boolean Found/not found in the group
      */
     public function inGroup($groupId)
     {
+        $find = ['user_id' => $this->id];
+        if (!is_numeric($groupId)) {
+            $g = Gatekeeper::findGroupByName($group);
+            $groupId = $g->id;
+        }
+        $find['group_id'] = $groupId;
+
         $userGroup = new UserGroupModel($this->getDb());
-        $userGroup = $this->getDb()->find($userGroup, array(
-            'group_id' => $groupId,
-            'user_id' => $this->id
-        ));
+        $userGroup = $this->getDb()->find($userGroup, $find);
         if ($userGroup->id === null) {
             return false;
         }
@@ -392,16 +396,20 @@ class UserModel extends \Psecio\Gatekeeper\Model\Mysql
     /**
      * Check to see if a user has a permission
      *
-     * @param integer $permId Permission ID
+     * @param integer $permId Permission ID or name
      * @return boolean Found/not found in user permission set
      */
     public function hasPermission($permId)
     {
+        $find = ['user_id' => $this->id];
+        if (!is_numeric($permId)) {
+            $p = Gatekeeper::findPermissionByName($permId);
+            $permId = $p->id;
+        }
+        $find['permission_id'] = $permId;
+
         $perm = new UserPermissionModel($this->getDb());
-        $perm = $this->getDb()->find($perm, array(
-            'permission_id' => $permId,
-            'user_id' => $this->id
-        ));
+        $perm = $this->getDb()->find($perm, $find);
         return ($perm->id !== null && $perm->id === $permId) ? true : false;
     }
 
