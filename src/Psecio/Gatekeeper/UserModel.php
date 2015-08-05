@@ -380,7 +380,7 @@ class UserModel extends \Psecio\Gatekeeper\Model\Mysql
     {
         $find = ['user_id' => $this->id];
         if (!is_numeric($groupId)) {
-            $g = Gatekeeper::findGroupByName($group);
+            $g = Gatekeeper::findGroupByName($groupId);
             $groupId = $g->id;
         }
         $find['group_id'] = $groupId;
