@@ -18,7 +18,7 @@
         "robmorgan/phinx": "*",
         "ircmaxell/password-compat": "^1.0.4",
         "ircmaxell/random-lib": "^1.1.0",
-        "vlucas/phpdotenv": "1.*",
+        "vlucas/phpdotenv": "~2",
         "symfony/expression-language": "^2.5",
         "monolog/monolog": "^1.13"
     },
