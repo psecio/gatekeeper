@@ -240,7 +240,7 @@ class Gatekeeper
     protected static function loadDotEnv($envPath)
     {
         try {
-            \Dotenv::load($envPath);
+            \Dotenv\Dotenv::load($envPath);
             $config = array(
                 'username' => $_SERVER['DB_USER'],
                 'password' => $_SERVER['DB_PASS'],
