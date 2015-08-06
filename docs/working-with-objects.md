@@ -56,3 +56,32 @@ $user = Gatekeeper::findUserByUsername('ccornutt');
 $user->delete();
 ?>
 ```
+
+## Cloning
+
+You can clone certain kinds of objects in the Gatekeeper system, duplicating the type of object and its relations.
+
+#### Users
+
+You can clone a user with the `Gatekeeper::cloneUser` method. This will create a new user with the data provided and link this new user to the same permissions and groups as the user you're cloning.
+
+```php
+<?php
+$user1 = Gatekeeper::findUserByUsername('ccornutt');
+
+$result = Gatekeeper::cloneUser($user1, [
+	'username' => 'ccornutt1',
+	'password' => 'super-secret',
+  	'email' => 'ccornut2@mydomain.com',
+  	'firstName' => 'Chris',
+  	'lastName' => 'Cornutt2'
+]);
+
+if ($result === true) {
+	echo 'User cloned successfully!';
+}
+?>
+```
+
+In this case user `cornutt1` will have the same permissions and groups as `ccornutt`. The result of the `cloneUser` function call is the success/fail status of the creation.
+
