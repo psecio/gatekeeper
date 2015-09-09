@@ -26,7 +26,8 @@ There's a "quick start" method for getting Gatekeeper up and running in two step
 
 ```
 create database gatekeeper;
-grant all on gatekeeper.* to 'gk-user'@'localhost' identified by 'some-password-here';
+CREATE USER 'gk-user'@'localhost' IDENTIFIED BY 'some-password-here';
+grant all on gatekeeper.* to 'gk-user'@'localhost';
 flush privileges;
 ```
 
