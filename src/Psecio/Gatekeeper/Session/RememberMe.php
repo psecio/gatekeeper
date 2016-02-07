@@ -188,7 +188,7 @@ class RememberMe
      */
     public function isExpired(\Psecio\Gatekeeper\AuthTokenModel $token, $delete = true)
     {
-        if (new \Datetime() > new \DateTime($token->expires)) {
+        if ($token->expires !== null && new \Datetime() > new \DateTime($token->expires)) {
             if ($delete === true) {
                 $this->deleteToken($token->token);
             }
