@@ -1,6 +1,7 @@
 # Composer
 vendor
 composer.phar
+composer.lock
 
 # IntelliJ - PhpStorm and PyCharm
 .idea
