@@ -87,6 +87,16 @@ abstract class DataSource
     public abstract function find(\Modler\Model $model, array $where = array());
 
     /**
+     * Return the number of entities in DB per condition or in general
+     *
+     * @param \Modler\Model $model Model instance
+     * @param array $where
+     * @return bool Success/fail of action
+     * @internal param array $where "Where" data to locate record
+     */
+    public abstract function count(\Modler\Model $model, array $where = array());
+
+    /**
      * Return the last error from action taken on the datasource
      *
      * @return string Error string
