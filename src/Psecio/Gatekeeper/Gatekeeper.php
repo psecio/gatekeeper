@@ -17,7 +17,7 @@ class Gatekeeper
      * @var array
      */
     private static $actions = array(
-        'find', 'delete', 'create', 'save', 'clone'
+        'find', 'delete', 'create', 'save', 'clone', 'count'
     );
 
     /**

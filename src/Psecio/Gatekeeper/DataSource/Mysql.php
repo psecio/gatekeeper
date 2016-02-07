@@ -249,7 +249,7 @@ class Mysql extends \Psecio\Gatekeeper\DataSource
             $update[] = $column.' = '.$name;
         }
 
-        $sql = 'select * from '.$model->getTableName();
+        $sql = 'select count(*) as `count` from '.$model->getTableName();
         if (!empty($update)) {
             $sql .= ' where '.implode(' and ', $update);
         }
