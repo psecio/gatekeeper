@@ -117,13 +117,12 @@ class Mysql extends \Psecio\Gatekeeper\DataSource
         $result = $this->execute($sql, $data);
         if ($result !== false) {
             $model->id = $this->getDb()->lastInsertId();
-        }
-
-        // Now handle the relations - for each of them, get the model, make it and save it
-        foreach ($relations as $index => $item) {
-            $relation = $properties[$index];
-            $instance = new $relation['relation']['model']($this);
-            $instance->create($model, $item);
+            // Now handle the relations - for each of them, get the model, make it and save it
+            foreach ($relations as $index => $item) {
+                $relation = $properties[$index];
+                $instance = new $relation['relation']['model']($this);
+                $instance->create($model, $item);
+            }
         }
 
         return $result;
