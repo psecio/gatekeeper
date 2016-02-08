@@ -117,13 +117,12 @@ class Mysql extends \Psecio\Gatekeeper\DataSource
         $result = $this->execute($sql, $data);
         if ($result !== false) {
             $model->id = $this->getDb()->lastInsertId();
-        }
-
-        // Now handle the relations - for each of them, get the model, make it and save it
-        foreach ($relations as $index => $item) {
-            $relation = $properties[$index];
-            $instance = new $relation['relation']['model']($this);
-            $instance->create($model, $item);
+            // Now handle the relations - for each of them, get the model, make it and save it
+            foreach ($relations as $index => $item) {
+                $relation = $properties[$index];
+                $instance = new $relation['relation']['model']($this);
+                $instance->create($model, $item);
+            }
         }
 
         return $result;
@@ -225,6 +224,37 @@ class Mysql extends \Psecio\Gatekeeper\DataSource
             return $collection;
         }
         return $model;
+    }
+
+    /**
+     * Find count of entities by where conditions.
+     * All where conditions applied with AND
+     *
+     * @param \Modler\Model $model Model instance
+     * @param array $where Data to use in "where" statement
+     * @return array Fetched data
+     */
+    public function count(\Modler\Model $model, array $where = array())
+    {
+        $properties = $model->getProperties();
+        list($columns, $bind) = $this->setup($where);
+
+        $update = array();
+        foreach ($bind as $column => $name) {
+            // See if we keep to transfer it over to a column name
+            if (array_key_exists($column, $properties)) {
+                $column = $properties[$column]['column'];
+            }
+            $update[] = $column.' = '.$name;
+        }
+
+        $sql = 'select count(*) as `count` from '.$model->getTableName();
+        if (!empty($update)) {
+            $sql .= ' where '.implode(' and ', $update);
+        }
+
+        $result = $this->fetch($sql, $where, true);
+        return $result;
     }
 
     /**

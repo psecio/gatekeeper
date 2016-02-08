@@ -1,0 +1,41 @@
+# Composer
+vendor
+composer.phar
+composer.lock
+
+# IntelliJ - PhpStorm and PyCharm
+.idea
+*.ipr
+*.iws
+
+# Logs
+logs
+error.log
+access.log
+
+# Netbeans
+nbproject
+.nbproject
+.nbproject/*
+nbproject/*
+nbproject/private/
+build/
+nbbuild/
+dist/
+nbdist/
+nbactions.xml
+nb-configuration.xml
+
+# Mac OSX
+.DS_Store
+# Thumbnails
+._*
+# Files that might appear on external disk
+.Spotlight-V100
+.Trashes
+
+# SublimeText project files
+/*.sublime-project
+*.sublime-workspace
+
+.env

@@ -17,7 +17,7 @@ class Gatekeeper
      * @var array
      */
     private static $actions = array(
-        'find', 'delete', 'create', 'save', 'clone'
+        'find', 'delete', 'create', 'save', 'clone', 'count'
     );
 
     /**
@@ -464,8 +464,10 @@ class Gatekeeper
             $action = new \Psecio\Gatekeeper\Handler\Delete($name, $args, self::$datasource);
         } elseif ($action == 'save') {
             $action = new \Psecio\Gatekeeper\Handler\Save($name, $args, self::$datasource);
-        }  elseif ($action == 'clone') {
+        } elseif ($action == 'clone') {
             $action = new \Psecio\Gatekeeper\Handler\CloneInstance($name, $args, self::$datasource);
+        } elseif ($action == 'count') {
+            $action = new \Psecio\Gatekeeper\Handler\Count($name, $args, self::$datasource);
         }
         return $action->execute();
     }
