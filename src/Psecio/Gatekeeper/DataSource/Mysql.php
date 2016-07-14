@@ -31,8 +31,12 @@ class Mysql extends \Psecio\Gatekeeper\DataSource
      */
     public function buildPdo(array $config)
     {
+        $dbType = 'mysql';
+        if (extension_loaded('mysqli') === true) {
+            $dbType = 'mysqli';
+        }
         return new \PDO(
-            'mysql:dbname='.$config['name'].';host='.$config['host'].';charset=utf8',
+            $dbType.':dbname='.$config['name'].';host='.$config['host'].';charset=utf8',
             $config['username'], $config['password']
         );
     }
